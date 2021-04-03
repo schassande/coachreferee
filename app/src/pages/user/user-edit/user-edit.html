@@ -1,0 +1,135 @@
+<!--
+  Generated template for the UserNewPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="cancel()" detail>
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">Account Edition</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content *ngIf="user">
+    <ion-slides centeredSlides="false" loop="true" pager="true" paginationType="bullets" effect="slide" styles="height:inherit;">
+        <ion-slide>
+            <ion-list style="width: 100%;">
+                <ion-item-group style="width: 100%;">
+                    <ion-item-divider color="light">General info</ion-item-divider>
+                    <ion-item>
+                        <ion-label *ngIf="!user.photo || !user.photo.url">No photo</ion-label>
+                        <ion-avatar item-start *ngIf="user.photo && user.photo.url"><img src="{{user.photo.url}}"></ion-avatar>
+                        <camera-icon-comp (photo)="onImage($event)" slot="end" alert="true"></camera-icon-comp>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label fixed>First name</ion-label>
+                        <ion-input type="text" [(ngModel)]="user.firstName" (ionBlur)="updateShortName()" id="firstName" name="firstName" min="3" max="15" #firstName="ngModel" required autofocus tabindex="1"></ion-input>
+                    </ion-item>
+                    <ion-item no-lines *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)" class="alert alert-danger">
+                        <div *ngIf="firstName.errors.required">A value is required.</div>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label fixed>Last name</ion-label>
+                        <ion-input type="text" [(ngModel)]="user.lastName" (ionBlur)="updateShortName()" id="lastName" name="lastName" min="3" max="25" #lastName="ngModel" required tabindex="2"></ion-input>
+                    </ion-item>
+                    <ion-item no-lines *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="alert alert-danger">
+                        <div *ngIf="lastName.errors.required">A value is required.</div>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label fixed>Short Name</ion-label>
+                        <ion-input type="text" [(ngModel)]="user.shortName" id="shortName" name="shortName" min="3" max="5" #shortName="ngModel" required tabindex="3"></ion-input>
+                    </ion-item>
+                    <ion-item no-lines *ngIf="shortName.invalid && (shortName.dirty || shortName.touched)" class="alert alert-danger">
+                        <div *ngIf="shortName.errors.required">A value is required.</div>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label fixed>Email</ion-label>
+                        <ion-input type="text" [(ngModel)]="user.email" id="email" name="email" min="3" max="30" #email="ngModel" required tabindex="4"></ion-input>
+                    </ion-item>
+                    <ion-item no-lines *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-danger">
+                        <div *ngIf="email.errors.required">A value is required.</div>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label fixed>Password</ion-label>
+                        <ion-input type="password" [(ngModel)]="user.password" max="15" tabindex="5"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>Country</ion-label>
+                        <ion-select [(ngModel)]="user.country">
+                            <ion-select-option *ngFor="let country of constantes.countries" value="{{country[0]}}">{{country[1]}}</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>Gender</ion-label>
+                        <ion-select [(ngModel)]="user.gender">
+                            <ion-select-option value="F">Female</ion-select-option>
+                            <ion-select-option value="M">Male</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label fixed>Mobile phones</ion-label>
+                        <ion-input type="phone" [(ngModel)]="user.mobilePhones"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>Speaking languages</ion-label>
+                        <ion-select [(ngModel)]="user.speakingLanguages" multiple="true">
+                            <ion-select-option *ngFor="let lang of constantes.languages" value="{{lang[0]}}">{{lang[1]}}</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-item-group>
+            </ion-list>
+        </ion-slide>
+        <ion-slide>
+            <ion-item-group>
+                <ion-item-divider color="light">Data privacy</ion-item-divider>
+                <form #form="ngForm" style="margin-bottom: 50px;">
+                    <ion-item>
+                        <ion-label style="white-space: normal; margin: 0;">Sharing of my personal (fields above) data to the application users</ion-label>
+                        <sharing-comp name="personnalInfoSharing" [(ngModel)]="user.dataSharingAgreement.personnalInfoSharing"></sharing-comp>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label style="white-space: normal; margin: 0;">Sharing of my photo to the application users</ion-label>
+                        <sharing-comp name="photoSharing" [(ngModel)]="user.dataSharingAgreement.photoSharing"></sharing-comp>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label style="white-space: normal; margin: 0;">Sharing of my assessments as referee to all coaches</ion-label>
+                        <sharing-comp name="refereeAssessmentSharing" [(ngModel)]="user.dataSharingAgreement.refereeAssessmentSharing"></sharing-comp>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label style="white-space: normal; margin: 0;">Sharing of my coachings as referee to all coaches</ion-label>
+                        <sharing-comp name="refereeCoachingInfoSharing" [(ngModel)]="user.dataSharingAgreement.refereeCoachingInfoSharing"></sharing-comp>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label style="white-space: normal; margin: 0;">Sharing of my assessments as coach to the others coaches</ion-label>
+                        <sharing-comp name="coachAssessmentSharing" [(ngModel)]="user.dataSharingAgreement.coachAssessmentSharing"></sharing-comp>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label style="white-space: normal; margin: 0;">Sharing of my coaching as coach to others coaches</ion-label>
+                        <sharing-comp name="coachCoachingInfoSharing" [(ngModel)]="user.dataSharingAgreement.coachCoachingInfoSharing"></sharing-comp>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label style="white-space: normal; margin: 0;">Sharing of assessment done by me to others coaches</ion-label>
+                        <sharing-comp name="coachProSharing" [(ngModel)]="user.dataSharingAgreement.coachProSharing"></sharing-comp>
+                    </ion-item>
+                </form>
+            </ion-item-group>
+        </ion-slide>
+    </ion-slides>
+    <div round *ngIf="error.length > 0" class="alert alert-danger">
+        Please fix the following problem(s):
+        <ul>
+            <li *ngFor="let er of error">{{er}}</li>
+        </ul>
+    </div>
+    <div style="text-align: center;">
+        <ion-button shape="round" color="danger" (click)="deleteAccount()" *ngIf="user.dataStatus !== 'NEW' && !saving">Delete Account</ion-button>
+        <ion-button shape="round" (click)="newUser($event)" [disabled]="firstName.invalid && lastName.invalid && !saving">Save</ion-button>
+    </div>
+</ion-content>

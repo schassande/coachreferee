@@ -1,0 +1,35 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="back()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">Season upgrade</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content (swipe)="onSwipe($event)">
+    <ion-item>
+        <ion-label style="text-align: center;"><span *ngIf="referee">{{referee.firstName}} {{referee.lastName}} ({{referee.shortName}})</span></ion-label>
+        <ion-icon slot="end" name="search" (click)="searchReferee()"></ion-icon>
+    </ion-item>
+    <div *ngIf="referee && upgrades">
+        <ion-item>
+            <ion-label style="text-align: center;">{{referee.referee.refereeLevel}} to {{referee.referee.nextRefereeLevel}}, {{referee.referee.refereeCategory}}</ion-label>
+        </ion-item>
+        <ion-grid *ngFor="let cru of upgrades" style="width: 100%;">
+            <ion-row>
+                <ion-col style="text-align: center; width: 75%; font-weight: bold;">{{id2competition.get(cru.competitionId).name}}</ion-col>
+                <ion-col style="text-align: center; width: 25%;">{{cru.finalDecision}} </ion-col>
+            </ion-row>
+            <ion-row *ngFor="let vote of getVotes(cru)">
+                <ion-col style="text-align: right; width: 75%;">{{id2coachShortName.get(vote.coachId)}}</ion-col>
+                <ion-col style="text-align: center; width: 25%;">{{vote.vote}} </ion-col>
+            </ion-row>
+        </ion-grid>
+    </div>
+</ion-content>

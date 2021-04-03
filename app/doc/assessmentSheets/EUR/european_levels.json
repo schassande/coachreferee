@@ -1,0 +1,1223 @@
+{
+	"users": [],
+	"referees": [],
+	"skillProfiles": [
+		{
+			"id": 2000000000101,
+			"version": 0,
+			"creationDate": "2018-11-18T07:37:27.556Z",
+			"lastUpdate": "2018-11-18T07:35:29.777Z",
+			"dataStatus": "CLEAN",
+			"name": "EURO 1",
+			"description": "EFT - Referee level1",
+			"skillSets": [{
+					"name": "Pre game duties",
+					"description": "Description of Pre game duties",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": false,
+					"skills": [{
+							"name": "Arrived on time for the game",
+							"description": "Arrived on time for the game",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "The scorecard, pen, coin",
+							"description": "The scorecard, pen, coin",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Conferred with their buddy referee(s)",
+							"description": "Conferred with their buddy referee(s)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Uniform",
+							"description": "Does the referee have an appropriate, clean and tidy uniform?",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Signal",
+					"description": "Does the referee correctly demonstrate the following signals during a game, or when asked? Correctly means: clear and correct with crisp delivery, given with authority, correct stance and posture and performed mainly on the run to indicate the mark quickly. Note: if not demonstrated on-field, test the referee off-field after the game.",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": false,
+					"skills": [{
+							"name": "Start of play",
+							"description": "Signal Start of play",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Ball to ground",
+							"description": "Signal Ball to ground",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Touchdown",
+							"description": "Signal ",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "5th touch",
+							"description": "Signal 5th touch",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "6th touch",
+							"description": "Signal 6th touch",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Half caught",
+							"description": "Signal Half caught",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "6 again",
+							"description": "Signal 6 again",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Penalty",
+							"description": "Signal Penalty",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Penalty – forward pass",
+							"description": "Signal Penalty – forward pass",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Penalty – late pass",
+							"description": "Signal Penalty – late pass",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "End of play",
+							"description": "Signal End of play",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Brief verbal explanation linked to signal to aid player understanding",
+							"description": "Brief verbal explanation linked to signal to aid player understanding",
+							"required": true,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Control, positioning, fitness",
+					"description": "Description of Signal",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "Set a consistent 5m and attempt to verbally control players",
+							"description": "Set a consistent 5m and attempt to verbally control players",
+							"required": true,
+							"proLinks": []
+						},
+						{
+							"name": "5th",
+							"description": "Description of 5th",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Keep eyes on the ball at all times",
+							"description": "Keep eyes on the ball at all times",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Consistently control the rollball (no interference)",
+							"description": "Consistently control the rollball (no interference)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Consistently control heavy touches",
+							"description": "Consistently control heavy touches",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Make reasonable effort required to keep up with the game?",
+							"description": "Make reasonable effort required to keep up with the game?",
+							"required": true,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Refereeing system",
+					"description": "Description of Signal",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": false,
+					"skills": [{
+						"name": "Keep up with play while on the sideline and give support to the on-field referee (when required)",
+						"description": "Keep up with play while on the sideline and give support to the on-field referee (when required)",
+						"required": false,
+						"proLinks": []
+					}]
+				},
+				{
+					"name": "Communications",
+					"description": "Description of Signal",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "Have an audible whistle",
+							"description": "Have an audible whistle",
+							"required": true,
+							"proLinks": []
+						},
+						{
+							"name": "Establish audible and clear verbal communication with players",
+							"description": "Establish audible and clear verbal communication with players",
+							"required": true,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Scorecard procedure",
+					"description": "Description of Signal",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": false,
+					"skills": [{
+							"name": "Ensure the scorecard is correctly completed",
+							"description": "Ensure the scorecard is correctly completed",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Mark the scorecard after touchdowns",
+							"description": "Mark the scorecard after touchdowns",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Check the score with team captains at the end of the game",
+							"description": "Check the score with team captains at the end of the game",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Rulings",
+					"description": "Description of Signal",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+						"name": "Display an adequate knowledge with consistent rulings",
+						"description": "Display an adequate knowledge with consistent rulings",
+						"required": true,
+						"proLinks": []
+					}]
+				}
+			],
+			"requirement": "MAJORITY_REQUIRED"
+		},
+
+
+
+
+
+
+
+
+
+		{
+			"id": 2000000000102,
+			"version": 0,
+			"creationDate": "2018-11-18T07:37:27.556Z",
+			"lastUpdate": "2018-11-18T07:35:29.777Z",
+			"dataStatus": "CLEAN",
+			"name": "EURO 2",
+			"description": "EFT - Referee level 2",
+			"skillSets": [{
+					"name": "Pre game duties",
+					"description": "Description of Pre game duties",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "Arrived on time for the game",
+							"description": "Arrived on time for the game",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "The scorecard, pen, coin",
+							"description": "The scorecard, pen, coin",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Conferred with their buddy referee(s)",
+							"description": "Conferred with their buddy referee(s)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Checked the field and checked the players",
+							"description": "",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Have a confident demeanour",
+							"description": "Have a confident demeanour",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Have a correct, clean and tidy uniform",
+							"description": "Have a correct, clean and tidy uniform",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Signal",
+					"description": "Does the referee correctly demonstrate the following signals during a game, or when asked? Correctly means: clear and correct with crisp delivery, given with authority, correct stance and posture and performed mainly on the run to indicate the mark quickly. Note: if not demonstrated on-field, test the referee off-field after the game.",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "Level 1 signals delivered in-game? (please note all signals observed)",
+							"description": "Level 1 signals delivered in-game? (please note all signals observed)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Play on",
+							"description": "Signal Play on",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Incorrect tap – 4 variations – not touched with foot, attacker offside, not on the mark, ball not released",
+							"description": "Signal Incorrect tap – 4 variations – not touched with foot, attacker offside, not on the mark, ball not released",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Incorrect rollball – 3 variations – outside legs, not square, rolled more than 1m",
+							"description": "Incorrect rollball – 3 variations – outside legs, not square, rolled more than 1m",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Penalty – rollball performed past the mark",
+							"description": "Penalty – rollball performed past the mark",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Penalty – offside – 2 variations – at 5m, at 10m",
+							"description": "Penalty – offside – 2 variations – at 5m, at 10m",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Penalty – obstruction",
+							"description": "Signal Penalty – obstruction",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Penalty – physical play",
+							"description": "Signal Penalty – physical play",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Penalty – disputing decisions",
+							"description": "Signal Penalty – disputing decisions",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Penalty – falsely claimed (phantom) touch",
+							"description": "Signal Penalty – falsely claimed (phantom) touch",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Penalty – voluntary rollball",
+							"description": "Signal Penalty – voluntary rollball",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Player replacement option (forced substitution)",
+							"description": "Player replacement option (forced substitution)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Player dismissed for – 2 variations – period of time (sin bin), remainder of game",
+							"description": "Player dismissed for – 2 variations – period of time (sin bin), remainder of game",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Support referee discreet signals – 4 variations – agreement | forward pass | touch | ball to ground",
+							"description": "Support referee discreet signals – 4 variations – agreement | forward pass | touch | ball to ground",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Brief verbal explanation given together with signal to aid player understanding",
+							"description": "Brief verbal explanation given together with signal to aid player understanding",
+							"required": true,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Control, positioning, fitness",
+					"description": "Control, positioning, fitness",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "Set a consistent 5m and achieve reasonable player control",
+							"description": "nominate and get a response from offside defenders",
+							"required": true,
+							"proLinks": []
+						},
+						{
+							"name": "Indicate 10m at the tap and attempt to control it",
+							"description": "Indicate 10m at the tap and attempt to control it",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Keep eyes on the ball at all times and move with the ball to be in the next desired position",
+							"description": "Keep “eyes on the ball” at all times and move with the ball to be in the next desired position",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Consistently control the rollball (no interference)",
+							"description": "Consistently control the rollball (no interference)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Position to see touches and keep out of the way on the scoreline",
+							"description": "Position to see touches and keep out of the way on the scoreline",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Consistently control heavy touches",
+							"description": "Consistently control heavy touches",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Fitness",
+					"description": "Description of Signal",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "Stay with play if the ball goes wide",
+							"description": "Stay with play if the ball goes wide",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Get to the touchdown point as the ball is grounded or use best running angle to allow best view of touchdown",
+							"description": "Get to the touchdown point as the ball is grounded or use best running angle to allow best view of touchdown",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Sprint on changes of possession",
+							"description": "Sprint on changes of possession",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Refereeing system",
+					"description": "Description of Signal",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "Interchange correctly – 2 situations – in open play, change of possession near sideline",
+							"description": "Interchange correctly – 2 situations – in open play, change of possession near sideline",
+							"required": true,
+							"proLinks": []
+						},
+						{
+							"name": "Keep up with play while on the sideline and give support to the on-field referee (when required)",
+							"description": "Keep up with play while on the sideline and give support to the on-field referee (when required)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Perform the correct (on-field) touchdown procedure",
+							"description": "Perform the correct (on-field) touchdown procedure",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Communications",
+					"description": "Communications",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "Have an audible whistle and display variation in blast length and tone",
+							"description": "Have an audible whistle and display variation in blast length and tone",
+							"required": true,
+							"proLinks": []
+						},
+						{
+							"name": "Establish audible and clear verbal communication with players",
+							"description": "Establish audible and clear verbal communication with players",
+							"required": true,
+							"proLinks": []
+						},
+						{
+							"name": "Use verbal communications on the run to aid game control",
+							"description": "Use verbal communications on the run to aid game control",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Display adequate control at the scoreline",
+							"description": "Display adequate control at the scoreline",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Handle conflict situations with confidence",
+							"description": "Handle conflict situations with confidence",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Rulings",
+					"description": "Description of Signal",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "Display an adequate knowledge with consistent rulings",
+							"description": "Display an adequate knowledge with consistent rulings",
+							"required": true,
+							"proLinks": []
+						},
+						{
+							"name": "Correctly and consistently rule on late and forward passes",
+							"description": "Correctly and consistently rule on late and forward passes",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Ensure the rollball is performed on the mark",
+							"description": "Ensure the rollball is performed on the mark",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				}
+			],
+			"requirement": "MAJORITY_REQUIRED"
+		},
+
+
+
+
+
+		{
+			"id": 2000000000103,
+			"version": 0,
+			"creationDate": "2018-11-18T07:37:27.556Z",
+			"lastUpdate": "2018-11-18T07:35:29.777Z",
+			"dataStatus": "CLEAN",
+			"name": "EURO 3",
+			"description": "EFT - Referee level 3",
+			"skillSets": [{
+					"name": "Control consistently",
+					"description": "Control",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "<b>Whistle technique</b> aids control (audible, fluctuation in tones, authority)",
+							"description": "<b>Whistle technique</b> aids control (audible, fluctuation in tones, authority)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>5 &amp; 10 metres</b> set & control (<b>checks both sides of rollball, consistent defensive lines</b>, identifies <b>shooters</b>)",
+							"description": "<b>5 &amp; 10 metres</b> set & control (<b>checks both sides of rollball, consistent defensive lines</b>, identifies <b>shooters</b>)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Change of possession</b> – 5 metre to 5 metre <b>urgency</b> and control",
+							"description": "<b>Change of possession</b> – 5 metre to 5 metre <b>urgency</b> and control",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Rollball<b> – control (the mark, the method and no interference)",
+							"description": "<b>Rollball<b> – control (the mark, the method and no interference)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Scoreline</b> – most times gets early intervention and <i>good</i> <b>advantage/control</b>",
+							"description": "<b>Scoreline</b> – most times gets early intervention and <i>good</i> <b>advantage/control</b>",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Physical play</b> – acts early to control over-vigorous touches, sledging and foul play",
+							"description": "<b>Physical play</b> – acts early to control over-vigorous touches, sledging and foul play",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Positioning consistently",
+					"description": "Positioning consistently",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "<b>Proximity to play</b> – keeps “eyes on the ball” and <b>moves with the ball</b> to be in the next appropriate position",
+							"description": "<b>Proximity to play</b> – keeps “eyes on the ball” and <b>moves with the ball</b> to be in the next appropriate position",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Reads play</b> – is attempting to identify 2nd phase play and <b>anticipate</b> play well, good movement between positions",
+							"description": "<b>Reads play</b> – is attempting to identify 2nd phase play and <b>anticipate</b> play well, good movement between positions",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Field width</b> – almost always uses full field width (aids interchanges and player control)",
+							"description": "<b>Field width</b> – almost always uses full field width (aids interchanges and player control)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Playmakers</b> – usually <b>able to identify</b> and position accordingly for good control",
+							"description": "<b>Playmakers</b> – usually <b>able to identify</b> and position accordingly for good control",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Touchdown proximity</b> - gets to the touchdown point as the ball is grounded or uses best running angle to allow best view",
+							"description": "<b>Touchdown proximity</b> - gets to the touchdown point as the ball is grounded or uses best running angle to allow best view",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Fitness</b> – good, good recovery",
+							"description": "<b>Fitness</b> – good, good recovery",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Communication - verbal consistently",
+					"description": "Communication - verbal",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "<b>Verbal communication – adds value</b> to the control of the game (<b>content</b> and <b>timing</b> to <b>effectively control offside players and/or shooters, early, clear and audible</b>)",
+							"description": "<b>Verbal communication – adds value</b> to the control of the game (<b>content</b> and <b>timing</b> to <b>effectively control offside players and/or shooters, early, clear and audible</b>)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Conflict resolution</b> – <i>good</i> methods to reduce/control conflict situations",
+							"description": "<b>Conflict resolution</b> – <i>good</i> methods to reduce/control conflict situations",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Good rapport</b> – is able to establish with players and coaches",
+							"description": "<b>Good rapport</b> – is able to establish with players and coaches",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Communication - non verbal consistently",
+					"description": "Communication - non verbal",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "Signals – clear and correct, timely and crisp delivery, with authority, correct stance and posture, mainly performed on the run, indicates the mark quickly, brief verbal instructions/explanations linked to signals to aid understanding",
+							"description": "",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "",
+							"description": "",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Refereeing system consistently",
+					"description": "",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "<b>Interchanges</b> – selects the <b>correct off-field position to enter</b>, exists without obstructing players, <b>exit angle is deep</b> enough to allow incoming referee all positioning opportunities, able to interchange at scoreline if required",
+							"description": "<b>Interchanges</b> – selects the <b>correct off-field position to enter</b>, exists without obstructing players, <b>exit angle is deep</b> enough to allow incoming referee all positioning opportunities, able to interchange at scoreline if required",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Field entry</b> – keeps up with play on entry (<b>not chasing the game</b>, sets 5m, body square from entry, uses blind side option if available for early control)",
+							"description": "<b>Field entry</b> – keeps up with play on entry (<b>not chasing the game</b>, sets 5m, body square from entry, uses blind side option if available for early control)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Field entry communications</b> – good verbal instructions on entry to control play or set up for ensuing plays",
+							"description": "<b>Field entry communications</b> – good verbal instructions on entry to control play or set up for ensuing plays",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>2x2x2</b> – keeps up with play, <b>provides support</b> when required without dominating, in line with defensive line, <b>effective verbal contribution</b> to control link and wing",
+							"description": "<b>2x2x2</b> – keeps up with play, <b>provides support</b> when required without dominating, in line with defensive line, <b>effective verbal contribution</b> to control link and wing",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Rulings consistently",
+					"description": "",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "<b>Knowledge and application</b> – applies <b>correct</b> and <b>consistent decisions</b> in accordance with the playing rules of Touch, achieves <b>appropriate game outcomes</b>",
+							"description": "<b>Knowledge and application</b> – applies <b>correct</b> and <b>consistent decisions</b> in accordance with the playing rules of Touch, achieves <b>appropriate game outcomes</b>",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Advantage</b> – gains/allows good advantage",
+							"description": "<b>Advantage</b> – gains/allows good advantage",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Referee influence</b> – sound understanding of their influence on the game (is not over-officious)",
+							"description": "<b>Referee influence</b> – sound understanding of their influence on the game (is not over-officious)",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Confidence consistently",
+					"description": "Confidence consistently",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "Handles conflict situations with confidence, has courage to make tough decisions in pressure situations",
+							"description": "Handles conflict situations with confidence, has courage to make tough decisions in pressure situations",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Displays a very <b>confident</b> demeanour – is not arrogant or authoritarian",
+							"description": "Displays a very <b>confident</b> demeanour – is not arrogant or authoritarian",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				}
+			],
+			"requirement": "ALL_REQUIRED"
+		},
+		
+		
+		
+		
+		{
+			"id": 2000000000104,
+			"version": 0,
+			"creationDate": "2018-11-18T07:37:27.556Z",
+			"lastUpdate": "2018-11-18T07:35:29.777Z",
+			"dataStatus": "CLEAN",
+			"name": "EURO 4",
+			"description": "EFT - Referee level 4",
+			"skillSets": [{
+					"name": "Control consistently",
+					"description": "Control",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "<b>Whistle technique</b> aids control (audible, fluctuation in tones, authority)",
+							"description": "<b>Whistle technique</b> aids control (audible, fluctuation in tones, authority)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>5 &amp; 10 metres</b> set & control (<b>checks both sides of rollball, consistent defensive lines</b>, identifies <b>shooters</b>)",
+							"description": "<b>5 &amp; 10 metres</b> set & control (<b>checks both sides of rollball, consistent defensive lines</b>, identifies <b>shooters</b>)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Change of possession</b> – 5 metre to 5 metre <b>urgency</b> and <b>control</b>",
+							"description": "<b>Change of possession</b> – 5 metre to 5 metre <b>urgency</b> and control",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Rollball<b> – control (the mark, the method and no interference)",
+							"description": "<b>Rollball<b> – control (the mark, the method and no interference)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Scoreline</b> – early intervention allows very good <i>good</i> <b>advantage/control</b>",
+							"description": "<b>Scoreline</b> – early intervention allows very good <i>good</i> <b>advantage/control</b>",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Physical play</b> – acts early to control over-vigorous touches, sledging and foul play",
+							"description": "<b>Physical play</b> – acts early to control over-vigorous touches, sledging and foul play",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Positioning consistently",
+					"description": "Positioning consistently",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "<b>Proximity to play</b> – keeps “eyes on the ball” and <b>moves with the ball</b> to be in the next appropriate position",
+							"description": "<b>Proximity to play</b> – keeps “eyes on the ball” and <b>moves with the ball</b> to be in the next appropriate position",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Reads play</b> – identifies 2nd phase play and <b>anticipate</b> play well, good movement between positions",
+							"description": "<b>Reads play</b> – identifies 2nd phase play and <b>anticipate</b> play well, good movement between positions",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Field width</b> – almost always uses full field width (aids interchanges and player control)",
+							"description": "<b>Field width</b> – almost always uses full field width (aids interchanges and player control)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Playmakers – identifies</b> and positions accordingly for very good control",
+							"description": "<b>Playmakers – identifies</b> and positions accordingly for very good control",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Touchdown proximity</b> - gets to the touchdown point as the ball is grounded or uses best running angle to allow best view",
+							"description": "<b>Touchdown proximity</b> - gets to the touchdown point as the ball is grounded or uses best running angle to allow best view",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Fitness</b> – very good, very good recovery",
+							"description": "<b>Fitness</b> – very good, very good recovery",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Communication - verbal consistently",
+					"description": "Communication - verbal",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "<b>Verbal communication – adds value</b> to the control of the game (<b>content</b> and <b>timing</b> to <b>effectively control offside players and/or shooters, early, clear and audible</b>)",
+							"description": "<b>Verbal communication – adds value</b> to the control of the game (<b>content</b> and <b>timing</b> to <b>effectively control offside players and/or shooters, early, clear and audible</b>)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Conflict resolution</b> – <i>very good</i> methods to reduce/control conflict situations",
+							"description": "<b>Conflict resolution</b> – <i>very good</i> methods to reduce/control conflict situations",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Good rapport</b> – quickly establishes with players and coaches",
+							"description": "<b>Good rapport</b> quickly establishes with players and coaches",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Communication - non verbal consistently",
+					"description": "Communication - non verbal",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "Signals – clear and correct, timely and crisp delivery, with authority, correct stance and posture, mainly performed on the run, indicates the mark quickly, brief verbal instructions/explanations linked to signals to aid understanding",
+							"description": "",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Body language</b> – non confrontational",
+							"description": "<b>Body language</b> – non confrontational",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Refereeing system consistently",
+					"description": "",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "<b>Interchanges</b> – selects the <b>correct off-field position to enter</b>, exists without obstructing players, <b>exit angle is deep</b> enough to allow incoming referee all positioning opportunities, able to interchange at scoreline if required",
+							"description": "<b>Interchanges</b> – selects the <b>correct off-field position to enter</b>, exists without obstructing players, <b>exit angle is deep</b> enough to allow incoming referee all positioning opportunities, able to interchange at scoreline if required",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Field entry</b> – early initiative and entry, keeps up with play on entry (<b>not chasing the game</b>, sets 5m, body square from entry, uses blind side option if available for early control)",
+							"description": "<b>Field entry</b> – early initiative and entry, keeps up with play on entry (<b>not chasing the game</b>, sets 5m, body square from entry, uses blind side option if available for early control)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Field entry communications</b> – very good verbal instructions on entry to control play or set up for ensuing plays",
+							"description": "<b>Field entry communications</b> – very good verbal instructions on entry to control play or set up for ensuing plays",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>2x2x2</b> – keeps up with play, <b>provides support</b> when required without dominating, in line with defensive line, <b>effective verbal contribution</b> to control link and wing",
+							"description": "<b>2x2x2</b> – keeps up with play, <b>provides support</b> when required without dominating, in line with defensive line, <b>effective verbal contribution</b> to control link and wing",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Rulings consistently",
+					"description": "",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "<b>Knowledge and application</b> – applies <b>correct</b> and <b>consistent decisions</b> in accordance with the playing rules of Touch, achieves <b>appropriate game outcomes</b>",
+							"description": "<b>Knowledge and application</b> – applies <b>correct</b> and <b>consistent decisions</b> in accordance with the playing rules of Touch, achieves <b>appropriate game outcomes</b>",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Advantage</b> – gains/allows very good advantage",
+							"description": "<b>Advantage</b> – gains/allows very good advantage",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Referee influence</b> – sound understanding of their influence on the game (is not over-officious)",
+							"description": "<b>Referee influence</b> – sound understanding of their influence on the game (is not over-officious)",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Confidence consistently",
+					"description": "Confidence consistently",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "Handles conflict situations with confidence, has courage to make tough decisions in pressure situations",
+							"description": "Handles conflict situations with confidence, has courage to make tough decisions in pressure situations",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Displays a very <b>confident</b> demeanour – is not arrogant or authoritarian",
+							"description": "Displays a very <b>confident</b> demeanour – is not arrogant or authoritarian",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				}
+			],
+			"requirement": "ALL_REQUIRED"
+		},
+
+		
+		
+		
+		
+				
+		
+		
+		
+		{
+			"id": 2000000000105,
+			"version": 0,
+			"creationDate": "2018-11-18T07:37:27.556Z",
+			"lastUpdate": "2018-11-18T07:35:29.777Z",
+			"dataStatus": "CLEAN",
+			"name": "EURO 5",
+			"description": "EFT - Referee level 5",
+			"skillSets": [{
+					"name": "Control consistently",
+					"description": "Control",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "<b>Whistle technique</b> aids control (audible, fluctuation in tones, authority)",
+							"description": "<b>Whistle technique</b> aids control (audible, fluctuation in tones, authority)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>5 &amp; 10 metres</b> set & control (<b>checks both sides of rollball, consistent defensive lines</b>, identifies <b>shooters</b>)",
+							"description": "<b>5 &amp; 10 metres</b> set & control (<b>checks both sides of rollball, consistent defensive lines</b>, identifies <b>shooters</b>)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Change of possession</b> – 5 metre to 5 metre <b>urgency</b> and <b>control</b>",
+							"description": "<b>Change of possession</b> – 5 metre to 5 metre <b>urgency</b> and control",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Rollball<b> – control (the mark, the method and no interference)",
+							"description": "<b>Rollball<b> – control (the mark, the method and no interference)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Scoreline</b> – early intervention allows optimum <i>good</i> <b>advantage/control</b>",
+							"description": "<b>Scoreline</b> – early intervention allows optimum <i>good</i> <b>advantage/control</b>",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Physical play</b> – acts early to control over-vigorous touches, sledging and foul play",
+							"description": "<b>Physical play</b> – acts early to control over-vigorous touches, sledging and foul play",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Positioning consistently",
+					"description": "Positioning consistently",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "<b>Proximity to play</b> – keeps “eyes on the ball” and <b>moves with the ball</b> to be in the next appropriate position, balanced body movement for maximum reaction to play",
+							"description": "<b>Proximity to play</b> – keeps “eyes on the ball” and <b>moves with the ball</b> to be in the next appropriate position, balanced body movement for maximum reaction to play",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Reads play</b> – identifies 2nd phase play and <b>anticipate</b> play extremely well, excellent movement between positions",
+							"description": "<b>Reads play</b> – identifies 2nd phase play and <b>anticipate</b> play extremely well, excellent movement between positions",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Field width</b> – almost always uses full field width (aids interchanges and player control)",
+							"description": "<b>Field width</b> – almost always uses full field width (aids interchanges and player control)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Playmakers – identifies</b> and positions accordingly for optimum control",
+							"description": "<b>Playmakers – identifies</b> and positions accordingly for optimum control",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Touchdown proximity</b> - gets to the touchdown point as the ball is grounded or uses best running angle to allow best view",
+							"description": "<b>Touchdown proximity</b> - gets to the touchdown point as the ball is grounded or uses best running angle to allow best view",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Fitness</b> – outstanding, excellent recovery",
+							"description": "<b>Fitness</b> – outstanding, excellent recovery",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Communication - verbal consistently",
+					"description": "Communication - verbal",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "<b>Verbal communication – adds value</b> to the control of the game (<b>content</b> and <b>timing</b> to <b>effectively control offside players and/or shooters, early, clear and audible</b>)",
+							"description": "<b>Verbal communication – adds value</b> to the control of the game (<b>content</b> and <b>timing</b> to <b>effectively control offside players and/or shooters, early, clear and audible</b>)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Conflict resolution</b> – <i>excellent</i> methods to reduce/control conflict situations",
+							"description": "<b>Conflict resolution</b> – <i>excellent</i> methods to reduce/control conflict situations",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Good rapport</b> – quickly establishes with players and coaches",
+							"description": "<b>Good rapport</b> quickly establishes with players and coaches",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Communication - non verbal consistently",
+					"description": "Communication - non verbal",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "Signals – clear and correct, timely and crisp delivery, with authority, correct stance and posture, mainly performed on the run, indicates the mark quickly, brief verbal instructions/explanations linked to signals to aid understanding",
+							"description": "",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Body language</b> – non confrontational",
+							"description": "<b>Body language</b> – non confrontational",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Refereeing system consistently",
+					"description": "",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "<b>Interchanges</b> – selects the <b>correct off-field position to enter</b>, exists without obstructing players, <b>exit angle is deep</b> enough to allow incoming referee all positioning opportunities, able to interchange at scoreline if required",
+							"description": "<b>Interchanges</b> – selects the <b>correct off-field position to enter</b>, exists without obstructing players, <b>exit angle is deep</b> enough to allow incoming referee all positioning opportunities, able to interchange at scoreline if required",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Field entry</b> – early initiative and entry, keeps up with play on entry (<b>not chasing the game</b>, sets 5m, body square from entry, uses blind side option if available for early control)",
+							"description": "<b>Field entry</b> – early initiative and entry, keeps up with play on entry (<b>not chasing the game</b>, sets 5m, body square from entry, uses blind side option if available for early control)",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Field entry communications</b> – excellent verbal instructions on entry to control play or set up for ensuing plays",
+							"description": "<b>Field entry communications</b> – excellent verbal instructions on entry to control play or set up for ensuing plays",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>2x2x2</b> – keeps up with play, <b>provides support</b> when required without dominating, in line with defensive line, <b>effective verbal contribution</b> to control link and wing",
+							"description": "<b>2x2x2</b> – keeps up with play, <b>provides support</b> when required without dominating, in line with defensive line, <b>effective verbal contribution</b> to control link and wing",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Rulings consistently",
+					"description": "",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "<b>Knowledge and application</b> – applies <b>correct</b> and <b>consistent decisions</b> in accordance with the playing rules of Touch, achieves <b>appropriate game outcomes</b>",
+							"description": "<b>Knowledge and application</b> – applies <b>correct</b> and <b>consistent decisions</b> in accordance with the playing rules of Touch, achieves <b>appropriate game outcomes</b>",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Advantage</b> – gains/allows maximum advantage",
+							"description": "<b>Advantage</b> – gains/allows maximum advantage",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "<b>Referee influence</b> – sound understanding of their influence on the game (is not over-officious)",
+							"description": "<b>Referee influence</b> – sound understanding of their influence on the game (is not over-officious)",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				},
+				{
+					"name": "Confidence consistently",
+					"description": "Confidence consistently",
+					"requirement": "MAJORITY_REQUIRED",
+					"required": true,
+					"skills": [{
+							"name": "Handles conflict situations with confidence, has courage to make tough decisions in pressure situations",
+							"description": "Handles conflict situations with confidence, has courage to make tough decisions in pressure situations",
+							"required": false,
+							"proLinks": []
+						},
+						{
+							"name": "Displays a very <b>confident</b> demeanour – is not arrogant or authoritarian",
+							"description": "Displays a very <b>confident</b> demeanour – is not arrogant or authoritarian",
+							"required": false,
+							"proLinks": []
+						}
+					]
+				}
+			],
+			"requirement": "ALL_REQUIRED"
+		}
+
+		],
+	"pros": [],
+	"coachings": [],
+	"assessments": []
+}

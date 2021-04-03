@@ -1,0 +1,29 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button routerLink="/home" detail>
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">Admin</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content (swipe)="onSwipe($event)">
+    <ion-list>
+        <ion-item detail routerLink="/skillprofile/list" [queryParams]="{profileType: 'REFEREE'}">
+            <ion-label class="menu-entry">Referee levels</ion-label>
+        </ion-item>
+        <ion-item detail routerLink="/skillprofile/list" [queryParams]="{profileType: 'REFEREE_COACH'}">
+            <ion-label class="menu-entry">Coach levels</ion-label>
+        </ion-item>
+        <ion-item detail routerLink="/admin/user-manager">
+            <ion-label class="menu-entry">Manage users</ion-label>
+        </ion-item>
+        <ion-item detail routerLink="/admin/coaching-activity">
+            <ion-label class="menu-entry">Users activity</ion-label>
+        </ion-item>
+    </ion-list>
+</ion-content>

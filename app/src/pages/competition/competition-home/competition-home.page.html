@@ -1,0 +1,48 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button routerLink="/competition/list" detail>
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">Competition Home</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="competition && !loading">
+    <div style="margin: 20px 0; text-align: center;">
+        <span style="font-size: 1.4em;">{{competition.name}}</span>
+        <br>{{dateService.date2string(competition.date)}} <span *ngIf="competition.allocations.length">over {{competition.allocations.length}} day(s)</span>
+        <br>in {{competition.country}} / {{competition.region}}
+    </div>
+    <ion-list>
+        <ion-item detail routerLink="/competition/{{competition.id}}/edit">
+            <ion-label class="menu-entry">Edit general infos</ion-label>
+        </ion-item>
+        <ion-item detail routerLink="/competition/{{competition.id}}/referees">
+            <ion-label class="menu-entry">Referees ({{competition.referees.length}})</ion-label>
+        </ion-item>
+        <ion-item detail routerLink="/competition/{{competition.id}}/coaches">
+            <ion-label class="menu-entry">Referee Coaches ({{competition.refereeCoaches.length}})</ion-label>
+        </ion-item>
+        <ion-item detail routerLink="/competition/{{competition.id}}/games" *ngIf="competition.allocations.length">
+            <ion-label class="menu-entry">Games ({{competition.allocations.length}})</ion-label>
+        </ion-item>
+        <ion-item detail routerLink="/competition/{{competition.id}}/upgrades" *ngIf="competition.referees.length">
+            <ion-label class="menu-entry">Upgrades</ion-label>
+        </ion-item>
+        <ion-item detail routerLink="/competition/{{competition.id}}/ranking" *ngIf="competition.referees.length">
+            <ion-label class="menu-entry">Ranking</ion-label>
+        </ion-item>
+        <ion-item detail routerLink="/competition/import">
+            <ion-label class="menu-entry">Import</ion-label>
+        </ion-item>
+        <ion-item (click)="onDelete()">
+            <ion-label class="menu-entry">Delete</ion-label>
+        </ion-item>
+    </ion-list>
+    <div *ngIf="owner" style="font-size:0.7em; text-align: center;"><br>Own by {{owner}}</div>
+</ion-content>

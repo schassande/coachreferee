@@ -1,0 +1,57 @@
+<!--
+  Generated template for the RefereeListPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button routerLink="/home" detail>
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">List of referees</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content (swipe)="onSwipe($event)">
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-row>
+            <ion-col>
+                <ion-fab-button (click)="exportReferees()">
+                    <ion-icon name="download"></ion-icon>
+                </ion-fab-button>
+            </ion-col>
+            <ion-col>
+                <ion-fab-button routerLink="/referee/import">
+                    <ion-icon name="attach"></ion-icon>
+                </ion-fab-button>
+            </ion-col>
+            <ion-col>
+                <ion-fab-button (click)="newReferee()" class="plusButton">+</ion-fab-button>
+            </ion-col>
+        </ion-row>
+    </ion-fab>
+    <ion-searchbar [(ngModel)]="searchInput" [showCancelButton]="false" (ionChange)="onSearchBarInput()"></ion-searchbar>
+    <ion-item>
+        <ion-label>Sort by</ion-label>
+        <ion-select [(ngModel)]="sortBy" (ionChange)="onSearchBarInput()">
+            <ion-select-option value="shortName">Short name</ion-select-option>
+            <ion-select-option value="level">Level</ion-select-option>
+        </ion-select>
+    </ion-item>
+    <ion-list>
+        <ion-item *ngFor="let referee of referees">
+            <ion-avatar slot="start" *ngIf="!referee.photo || !referee.photo.url" (click)="refereeSelected($event, referee)"><img src="assets/imgs/badge/{{referee.referee.refereeLevel}}.png" /></ion-avatar>
+            <ion-avatar slot="start" *ngIf="referee.photo && referee.photo.url" (click)="refereeSelected($event, referee)"><img src="{{referee.photo.url}}"></ion-avatar>
+            <ion-label (click)="refereeSelected($event, referee)" class="listItemButton">
+                {{referee.shortName}}<br> {{referee.firstName}} {{referee.lastName}}<br> {{referee.referee.refereeLevel}} ({{referee.referee.refereeCategory}})
+            </ion-label>
+            <ion-icon slot="end" name="trash" (click)="deleteReferee(referee)"></ion-icon>
+        </ion-item>
+    </ion-list>
+    <div style="margin-bottom: 60px;"></div>
+</ion-content>

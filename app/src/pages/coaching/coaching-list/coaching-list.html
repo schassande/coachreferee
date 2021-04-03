@@ -1,0 +1,57 @@
+<!--
+  Generated template for the CoachingListPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button routerLink="/home" detail>
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">Game to coach</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content (swipe)="onSwipe($event)">
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button (click)="newCoaching()" class="plusButton">+</ion-fab-button>
+    </ion-fab>
+    <div>
+        <ion-searchbar style="width: 80%; display: inline-block;" [(ngModel)]="searchInput" [showCancelButton]="false" (ionChange)="onSearchBarInput()"></ion-searchbar>
+        <ion-checkbox style="display: inline-block;" [(ngModel)]="today" (ionChange)="onToday()"></ion-checkbox>
+        <ion-label style="display: inline-block;">&nbsp;Today</ion-label>
+        <div *ngIf="loading" style="margin: 20px auto; text-align: center;">
+            <ion-spinner></ion-spinner>
+        </div>
+        <ion-refresher (ionRefresh)="doRefresh($event)" closeDuration="700ms" slot="fixed">
+            <ion-refresher-content></ion-refresher-content>
+        </ion-refresher>
+    </div>
+    <ion-list style="margin: 0px 0 60px 0;">
+        <div *ngFor="let coachingList of coachingLists">
+            <ion-item-group *ngIf="!today || coachingList.today">
+                <ion-item-divider color="light">
+                    <ion-icon name="{{ coachingList.visible ? 'remove' : 'add'}}" (click)="toggleCoachingListVisibility(coachingList)"></ion-icon> &nbsp;
+                    <span>{{coachingList.competitionName}} - {{coachingList.day}}</span>
+                    <ion-icon name="lock-closed-outline" slot="end" (click)="lockCoachings(coachingList)" style="margin-right: 15px;"></ion-icon>
+
+                </ion-item-divider>
+                <div *ngIf="coachingList.visible">
+                    <ion-item *ngFor="let coaching of coachingList.coachings" [color]="getCoachingColor(coaching)">
+                        <!-- #BEF990 style='--color: #D8FFFF;' -->
+                        <ion-label style="border: none;" class="listItemButton" (click)="coachingSelected($event, coaching)">
+                            <p>{{getCoachingDate(coaching)}} {{coaching.timeSlot}}: Field {{coaching.field}}, {{coaching.gameCategory}}<br> Referees: {{getRefereeShortNames(coaching)}}</p>
+                        </ion-label>
+                        <ion-icon slot="end" name="trash" (click)="deleteCoaching(coaching)"></ion-icon>
+                    </ion-item>
+                </div>
+            </ion-item-group>
+        </div>
+    </ion-list>
+</ion-content>

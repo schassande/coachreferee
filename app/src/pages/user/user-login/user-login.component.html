@@ -1,0 +1,46 @@
+<ion-header>
+    <ion-toolbar>
+        <span slot="start" style="margin-left: 10px;"><img src="assets/imgs/logo.png" height="30" /></span>
+        <ion-title style="text-align: center;">Login</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <div style="text-align: center; margin-top: 30px;"><img src="assets/imgs/logo.png" height="120" /></div>
+    <div style="text-align: center; margin: 10px 0;">Welcome to Referee Coach application !<br><br>Please enter your email and your password<br>to log in or create an account.</div>
+    <ion-list>
+        <ion-item>
+            <ion-label position="stacked">Email</ion-label>
+            <ion-input type="email" [(ngModel)]="email" tabindex="1"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label position="stacked">Password</ion-label>
+            <ion-input type="password" [(ngModel)]="password" tabindex="2"></ion-input>
+        </ion-item>
+        <ion-item style="text-align: right;">
+            <ion-label>Remenber on this device&nbsp;</ion-label>
+            <ion-checkbox scope="end " [checked]="savePassword "></ion-checkbox>
+        </ion-item>
+    </ion-list>
+    <div style="text-align: right; margin-right: 10px; ">
+        <a (click)="resetPassword() ">Reset password</a> &nbsp;
+    </div>
+    <div *ngIf="errors && errors.length " style="margin: 5px 20px ">
+        <div style="color: red; ">Errors:</div>
+        <ul>
+            <li *ngFor="let error of errors ">{{error}}</li>
+        </ul>
+    </div>
+    <div style="text-align: center; margin-top: 20px; ">
+        <ion-button shape="round " color="success " size="large " (click)="createAccount() ">
+            <ion-icon name="add " scope="start "></ion-icon>
+            Create<br>account
+        </ion-button>
+        <ion-button shape="round " size="large " (click)="login() ">
+            <ion-icon name="log-in " scope="start "></ion-icon>
+            Login
+        </ion-button>
+    </div>
+</ion-content>

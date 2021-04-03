@@ -1,0 +1,82 @@
+<!--
+  Generated template for the RefereeViewPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="navBack()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title>Referee <span *ngIf="referee">{{referee.shortName}}</span></ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content (swipe)="onSwipe($event)" *ngIf="referee">
+    <div>
+        <div style="text-align: center; margin-top: 20px;">
+            <ion-icon *ngIf="!referee.photo || !referee.photo.url" size="large" name="person"></ion-icon>
+            <img src="{{referee.photo.url}}" *ngIf="referee.photo && referee.photo.url" height="100">
+        </div>
+
+        <div style="margin: 20px 0 0 10px; text-align: center;">
+            <span style="font-size: 1.4em;">{{referee.firstName}} {{referee.lastName}}</span>
+            <br>from {{refereeCountry}}
+        </div>
+        <ul>
+            <li>Contact: {{referee.mobilePhones}} {{referee.email}}</li>
+            <li>Speaking languages : {{refereeLanguage ? refereeLanguage.join(", ") : ''}}</li>
+            <li>Gender: {{referee.gender == 'M' ? 'Male' : (referee.gender == 'F' ? 'Female' : '-')}}</li>
+            <li>Referee Level: {{referee.referee.refereeLevel}}</li>
+            <li>Referee category: {{referee.referee.refereeCategory}}</li>
+            <li *ngIf="referee.referee.nextRefereeLevel">Looking for upgrade?: {{referee.referee.nextRefereeLevel}}</li>
+            <li *ngIf="referee.refereeCoach.refereeCoachLevel">Referee coach Level: {{referee.refereeCoach.refereeCoachLevel}}</li>
+        </ul>
+        <div style="text-align: center; margin: 10px;"><img src="assets/imgs/badge/{{referee.referee.refereeLevel}}.png" height="100" /></div>
+        <div style="text-align: right;" padding>
+            <ion-button shape="round" (click)="editReferee()" style="margin-bottom: 20px;">Edit</ion-button>
+        </div>
+    </div>
+    <ion-list *ngIf="coachings">
+        <ion-item-divider color="light">Coachings ({{coachings.length}})</ion-item-divider>
+        <ion-item *ngFor="let coaching of coachings" (click)="coachingSelected($event, coaching)" style="border: none;">
+            <ion-label>
+                {{coaching.competition}}<br>{{coachingService.getCoachingDateAsString(coaching)}} &nbsp;&nbsp;{{coaching.timeSlot}} &nbsp;&nbsp;Field {{coaching.field}}, &nbsp;&nbsp;{{coaching.gameCategory}}
+                <div> Referees: <span *ngFor="let referee of coaching.referees; last as isLast">{{referee.refereeShortName}}<span *ngIf="!isLast">, </span></span>
+                    <div *ngFor="let positiveFeedback of coaching.referees[getRefIdx(coaching)].positiveFeedbacks" class="feedback">+
+                        <span [ngClass]="{'delivered': positiveFeedback.deliver}">{{positiveFeedback.skillName}}</span></div>
+                    <div *ngFor="let feedback of coaching.referees[getRefIdx(coaching)].feedbacks" class="feedback">-{{feedback.appliedLater ? '&gt;+': ''}}
+                        <span [ngClass]="{'delivered': feedback.deliver}">{{feedback.problemShortDesc}}</span></div>
+                </div>
+            </ion-label>
+        </ion-item>
+        <div style="text-align: right;" padding>
+            <ion-button shape="round" (click)="sendCoachings()" *ngIf="coachings.length > 0">
+                <ion-icon name="send"></ion-icon>
+            </ion-button>
+        </div>
+    </ion-list>
+    <ion-list *ngIf="assessments">
+        <ion-item-divider color="light">Assessements ({{assessments.length}})</ion-item-divider>
+        <ion-item *ngFor="let assessment of assessments" (click)="assessmentSelected($event, assessment)" style="border: none;">
+            <ion-label>
+                {{assessment.competition}}
+                <br>{{dateService.date2string(assessment.date)}} &nbsp;&nbsp;{{assessment.timeSlot}} &nbsp;&nbsp;Field {{assessment.field}}, &nbsp;&nbsp;{{assessment.gameCategory}}
+                <br>{{assessment.profileName}}: {{assessment.competency}}
+            </ion-label>
+        </ion-item>
+        <div style="text-align: right;" padding>
+            <ion-button shape="round" (click)="sendAssessments()" *ngIf="assessments.length > 0">
+                <ion-icon name="send"></ion-icon>
+            </ion-button>
+        </div>
+    </ion-list>
+    <div style="text-align: right;" padding>
+        <ion-button shape="round" (click)="assessReferee()" style="margin-bottom: 20px;">Assess</ion-button>
+    </div>
+</ion-content>

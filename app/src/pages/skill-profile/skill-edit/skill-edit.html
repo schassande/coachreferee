@@ -1,0 +1,65 @@
+<!--
+  Generated template for the SkillEditPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="saveNback()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title>Skill Edition</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+
+</ion-header>
+
+
+<ion-content padding>
+    <ion-list *ngIf="skill">
+        <ion-item text-wrap>
+            <ion-label fixed>Name</ion-label>
+            <ion-input type="text" [(ngModel)]="skill.name"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label fixed>Description</ion-label>
+            <ion-textarea placeholder="Enter a description of skill" rows="3" [(ngModel)]="skill.description"></ion-textarea>
+        </ion-item>
+        <ion-item>
+            <ion-label fixed>Required</ion-label>
+            <ion-toggle [(ngModel)]="skill.required"></ion-toggle>
+        </ion-item>
+        <ion-item text-wrap>
+            <ion-label fixed>Point values</ion-label>
+            <ion-input type="text" [(ngModel)]="pointValues"></ion-input>
+        </ion-item>
+        <ion-item-group style="border: 1px solid lightgrey; margin-top: 20px;">
+            <ion-item-divider color="light" style="text-align: center; font-size: 1.2em;">Associated PRO</ion-item-divider>
+            <ion-item *ngFor="let pro of skill.proLinks">
+                <ion-label (click)="proLinkSelected($event, pro)" text-wrap><span innerHTML="{{pro.problemShortDesc}}"></span></ion-label>
+                <ion-icon slot="end" name="trash" (click)="deletePro(pro)"></ion-icon>
+            </ion-item>
+            <ion-searchbar [(ngModel)]="searchInput" [showCancelButton]="false" debounce="300" (ionChange)="onSearchBarInput($event)"></ion-searchbar>
+            <ion-list>
+                <ion-item *ngFor="let pro of searchPros" text-wrap>
+                    <ion-label (click)="proSelected($event, pro)">
+                        <span innerHTML="{{pro.problemShortDesc}}"></span>
+                        <ul>
+                            <li>Problem: <span innerHTML="{{pro.problem}}"></span></li>
+                            <li>Remedy: <span innerHTML="{{pro.remedy}}"></span></li>
+                            <li>Outcome: <span innerHTML="{{pro.outcome}}"></span></li>
+                            <li>Skill: <span innerHTML="{{pro.skillName}}"></span></li>
+                        </ul>
+                    </ion-label>
+                    <ion-icon slot="end" name="add" (click)="addPRO(null, pro)"></ion-icon>
+                </ion-item>
+            </ion-list>
+        </ion-item-group>
+    </ion-list>
+</ion-content>

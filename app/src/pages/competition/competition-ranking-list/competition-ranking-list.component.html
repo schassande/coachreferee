@@ -1,0 +1,26 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="back()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">List of Ranking List</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-item *ngFor="let list of competitionRankingLists">
+        <ion-label (click)="listSelected(list)">{{list.listName}}</ion-label>
+        <ion-icon slot="end" name="trash" (click)="deleteList(list)"></ion-icon>
+    </ion-item>
+
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-col>
+            <ion-fab-button (click)="newList()" class="plusButton">+</ion-fab-button>
+        </ion-col>
+    </ion-fab>
+</ion-content>

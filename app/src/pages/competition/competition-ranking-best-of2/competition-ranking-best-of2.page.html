@@ -1,0 +1,92 @@
+<ion-content>
+    <ion-grid *ngIf="refereeData1 || refereeData2">
+        <ion-row>
+            <ion-col *ngIf="refereeData1 && refereeData1.referee" style="width: 50%; border-right: 1px solid lightgrey;">
+                <div style="text-align: center; margin-top: 20px;">
+                    <img src="{{refereeData1.referee.photo.url}}" *ngIf="refereeData1.referee.photo && refereeData1.referee.photo.url" height="100">
+                </div>
+                <div style="margin: 20px 0 0 10px; text-align: center;">
+                    <span style="font-size: 1.4em;">{{refereeData1.referee.firstName}}<br>{{refereeData1.referee.lastName}}</span>
+                    <br>from {{refereeData1.referee.country}}
+                </div>
+            </ion-col>
+            <ion-col *ngIf="refereeData2 && refereeData2.referee" style="width: 50%;">
+                <div style="text-align: center; margin-top: 20px;">
+                    <img src="{{refereeData2.referee.photo.url}}" *ngIf="refereeData2.referee.photo && refereeData2.referee.photo.url" height="100">
+                </div>
+                <div style="margin: 20px 0 0 10px; text-align: center;">
+                    <span style="font-size: 1.4em;">{{refereeData2.referee.firstName}}<br>{{refereeData2.referee.lastName}}</span>
+                    <br>from {{refereeData2.referee.country}}
+                </div>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col *ngIf="refereeData1 && refereeData1.referee" style="width: 50%; border-right: 1px solid lightgrey;">
+                <div style="text-align: center; margin: 10px;"><img src="assets/imgs/badge/{{refereeData1.referee.referee.refereeLevel}}.png" height="50" /></div>
+                <ul>
+                    <li>{{refereeData1.referee.gender == 'M' ? 'Male' : (refereeData1.referee.gender == 'F' ? 'Female' : '-')}}</li>
+                    <li>{{refereeData1.referee.referee.refereeCategory}}</li>
+                    <li *ngIf="refereeData1.referee.referee.nextRefereeLevel">Upgrade?: {{refereeData1.referee.referee.nextRefereeLevel}}</li>
+                </ul>
+            </ion-col>
+            <ion-col *ngIf="refereeData2 && refereeData2.referee" style="width: 50%;">
+                <div style="text-align: center; margin: 10px;"><img src="assets/imgs/badge/{{refereeData2.referee.referee.refereeLevel}}.png" height="50" /></div>
+                <ul>
+                    <li>{{refereeData2.referee.gender == 'M' ? 'Male' : (refereeData2.referee.gender == 'F' ? 'Female' : '-')}}</li>
+                    <li>{{refereeData2.referee.referee.refereeCategory}}</li>
+                    <li *ngIf="refereeData2.referee.referee.nextRefereeLevel">Upgrade {{refereeData2.referee.referee.nextRefereeLevel}}</li>
+                </ul>
+            </ion-col>
+        </ion-row>
+        <ion-row style="border-bottom: 1px solid lightgrey;">
+            <ion-col *ngIf="refereeData1 && refereeData1.referee" style="width: 50%; border-right: 1px solid lightgrey; text-align: center;">
+                <ion-button shape="round" (click)="onRefereeSelected(refereeData1.refereeId)">{{refereeData1.referee.shortName}} is better</ion-button>
+            </ion-col>
+            <ion-col *ngIf="refereeData2 && refereeData2.referee" style="width: 50%; text-align: center;">
+                <ion-button shape="round" (click)="onRefereeSelected(refereeData2.refereeId)">{{refereeData2.referee.shortName}} is better</ion-button>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col colspan="1" style="text-align: center;">
+                <ion-label style="text-align: center; font-weight: bold;">Coachings</ion-label>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col *ngIf="refereeData1 && refereeData1.coachings" style="width: 50%; border-right: 1px solid lightgrey;">
+                <ion-item *ngFor="let coaching of refereeData1.coachings" style="border: none;">
+                    <ion-label>
+                        {{coachingService.getCoachingDateAsString(coaching)}}&nbsp;{{coaching.timeSlot}}
+                        <div> Refs: <span *ngFor="let referee of coaching.referees; last as isLast"><span *ngIf="referee.refereeId !== refereeData1.refereeId">{{referee.refereeShortName}}<span *ngIf="!isLast">, </span></span>
+                            </span>
+                            <div *ngFor="let positiveFeedback of coaching.referees[getRefIdx(coaching, refereeData1.refereeId)].positiveFeedbacks" class="feedback">+
+                                <span [ngClass]="{'delivered': positiveFeedback.deliver}">{{positiveFeedback.skillName}}</span></div>
+                            <div *ngFor="let feedback of coaching.referees[getRefIdx(coaching, refereeData1.refereeId)].feedbacks" class="feedback">-{{feedback.appliedLater ? '&gt;+': ''}}
+                                <span [ngClass]="{'delivered': feedback.deliver}">{{feedback.problemShortDesc}}</span></div>
+                        </div>
+                    </ion-label>
+                </ion-item>
+            </ion-col>
+            <ion-col *ngIf="refereeData2 && refereeData2.coachings" style="width: 50%;">
+                <ion-item *ngFor="let coaching of refereeData2.coachings" style="border: none;">
+                    <ion-label>
+                        {{coachingService.getCoachingDateAsString(coaching)}}&nbsp;{{coaching.timeSlot}}
+                        <div> Refs: <span *ngFor="let referee of coaching.referees; last as isLast"><span *ngIf="referee.refereeId !== refereeData2.refereeId">{{referee.refereeShortName}}<span *ngIf="!isLast">, </span></span>
+                            </span>
+                            <div *ngFor="let positiveFeedback of coaching.referees[getRefIdx(coaching, refereeData2.refereeId)].positiveFeedbacks" class="feedback">+
+                                <span [ngClass]="{'delivered': positiveFeedback.deliver}">{{positiveFeedback.skillName}}</span></div>
+                            <div *ngFor="let feedback of coaching.referees[getRefIdx(coaching, refereeData2.refereeId)].feedbacks" class="feedback">-{{feedback.appliedLater ? '&gt;+': ''}}
+                                <span [ngClass]="{'delivered': feedback.deliver}">{{feedback.problemShortDesc}}</span></div>
+                        </div>
+                    </ion-label>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+        <ion-row *ngIf="refereeData1 || refereeData2">
+            <ion-col colspan="1" style="text-align: center;">
+                <ion-button shape="round" (click)="back()">Cancel</ion-button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    <div style="margin-top: 150px;">&nbsp;</div>
+
+</ion-content>

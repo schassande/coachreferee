@@ -1,0 +1,61 @@
+<!--
+  Generated template for the ProEditPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="savePRO()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">PRO Edition</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+
+</ion-header>
+
+
+<ion-content>
+    <ion-list *ngIf="pro">
+        <ion-item>
+            <ion-label fixed>Name</ion-label>
+            <ion-textarea placeholder="Enter a short description of the problem" rows="3" [(ngModel)]="pro.problemShortDesc"></ion-textarea>
+        </ion-item>
+        <ion-item>
+            <ion-label fixed>Problem</ion-label>
+            <ion-textarea placeholder="Enter a description of the problem" rows="5" [(ngModel)]="pro.problem"></ion-textarea>
+        </ion-item>
+        <ion-item>
+            <ion-label fixed>Remedy</ion-label>
+            <ion-textarea placeholder="Enter a description of the remedy" rows="5" [(ngModel)]="pro.remedy"></ion-textarea>
+        </ion-item>
+        <ion-item>
+            <ion-label fixed>Outcome</ion-label>
+            <ion-textarea placeholder="Enter a description of the outcome" rows="5" [(ngModel)]="pro.outcome"></ion-textarea>
+        </ion-item>
+        <ion-item>
+            <ion-label fixed>Skill</ion-label>
+            <ion-input type="text" [(ngModel)]="pro.skillName"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label fixed>Complete</ion-label>
+            <ion-toggle [checked]="pro.complete" (ionChange)="onToggleComplete()"></ion-toggle>
+        </ion-item>
+        <ion-item>
+            <ion-label fixed>Public</ion-label>
+            <ion-toggle [checked]="pro.sharedPublic" (ionChange)="onTogglePublic()"></ion-toggle>
+        </ion-item>
+    </ion-list>
+    <div style="text-align: center; margin-bottom: 50px;" *ngIf="owner">
+        <ion-button shape="round" style='--background:green;' (click)="savePRO()">Save</ion-button>
+    </div>
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="pro">
+        <ion-fab-button style='--background:red; font-size: 1.6em;' *ngIf="owner && pro.dataStatus !== 'NEW'" (click)="deletePRO()">X</ion-fab-button>
+    </ion-fab>
+</ion-content>

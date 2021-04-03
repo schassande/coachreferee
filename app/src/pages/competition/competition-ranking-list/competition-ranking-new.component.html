@@ -1,0 +1,49 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="back()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">Create a Ranking List</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div style="margin: 10px;">
+        <div>
+            <ion-label style="margin-bottom: 10px;">Choose the type of list:</ion-label>
+            <ion-radio-group [(ngModel)]="typeName">
+                <div *ngFor="let t of typeNames" style="margin-left: 50px; margin-top: 10px;">
+                    <ion-radio [value]="t[0]"></ion-radio> {{ t[1] }}
+                </div>
+            </ion-radio-group>
+        </div>
+        <div style="margin: 20px 0;">
+            <ion-label style="margin-bottom: 10px;">Choose the category of list:</ion-label>
+            <ion-radio-group [(ngModel)]="category">
+                <div *ngFor="let cat of categories" style="margin-left: 50px; margin-top: 10px;">
+                    <ion-radio [value]="cat[0]"></ion-radio> {{ cat[1] }}
+                </div>
+            </ion-radio-group>
+        </div>
+        <div style="margin: 20px 0;">
+            <ion-label style="margin-bottom: 10px;">Which ranking method do you want to use?</ion-label>
+            <ion-radio-group [(ngModel)]="method">
+                <div *ngFor="let meth of methods" style="margin-left: 50px; margin-top: 10px;">
+                    <ion-radio [value]="meth[0]"></ion-radio> {{ meth[1] }}
+                </div>
+            </ion-radio-group>
+        </div>
+
+        <div style="text-align: center;">
+            <ion-button (click)="back()" shape="round">Cancel</ion-button>
+            <ion-button (click)="newList()" [disabled]="saving" color="success" shape="round">
+                <span *ngIf="saving"><ion-spinner></ion-spinner> </span>Create
+            </ion-button>
+        </div>
+    </div>
+</ion-content>

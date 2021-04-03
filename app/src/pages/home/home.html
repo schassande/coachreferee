@@ -1,0 +1,49 @@
+<ion-header>
+    <ion-toolbar>
+        <span slot="start" style="margin-left: 10px;"><img src="assets/imgs/logo.png" height="30" /></span>
+        <ion-title style="text-align: center;">Coach Referee App</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <ion-list>
+        <ion-item detail routerLink="/competition/list">
+            <ion-label class="menu-entry">Competitions</ion-label>
+        </ion-item>
+        <ion-item detail routerLink="/coaching/list">
+            <ion-label class="menu-entry">Coach a game</ion-label>
+        </ion-item>
+        <ion-item detail routerLink="/assessment/list">
+            <ion-label class="menu-entry">Assess</ion-label>
+        </ion-item>
+        <ion-item detail routerLink="/referee/list">
+            <ion-label class="menu-entry">Referees</ion-label>
+        </ion-item>
+        <ion-item detail routerLink="/pro/list">
+            <ion-label class="menu-entry">PROs</ion-label>
+        </ion-item>
+        <ion-item detail routerLink="/xp/list">
+            <ion-label class="menu-entry">Coach XP</ion-label>
+        </ion-item>
+        <ion-item detail routerLink="/referee/upgrades">
+            <ion-label class="menu-entry">Season upgrades</ion-label>
+        </ion-item>
+        <ion-item detail routerLink="/settings">
+            <ion-label class="menu-entry">Settings</ion-label>
+        </ion-item>
+        <ion-item detail routerLink="/admin" *ngIf="isLevelAdmin()">
+            <ion-label class="menu-entry">Admin</ion-label>
+        </ion-item>
+        <ion-item (click)="addToHome()" *ngIf="showInstallBtn">
+            <ion-label class="menu-entry">Install on device</ion-label>
+        </ion-item>
+    </ion-list>
+    <div color="light" style="text-align: center; font-size: 0.8em; margin-top: 10px;">Connected as {{getShortName()}}.</div>
+    <div style="text-align: center; margin-top: 30px;">
+        <a (click)="inviteCoach()">Invite a coach to use the app?</a>
+        <br>
+        <br>Make sure you trust the people you invite. You answer for him/her.
+    </div>
+</ion-content>

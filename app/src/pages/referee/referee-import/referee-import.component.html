@@ -1,0 +1,55 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button routerLink="/referee/list" detail>
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">Import Referees</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <p style="padding: 10px 10px 0 10px; text-align: justify">This page permits to import referees into common database. The import format is CSV.<br>Download a <a href="assets/referees.csv">template of the expected CSV file</a>.</p>
+    <div style="text-align: center">
+        <span>
+            <input type="file" #inputReferees accept="*.csv" style="display: none;" (change)="importRefereeFromCsv($event)" />
+            <ion-button shape="round" (click)="loadFile()" [disabled]="analysisStatus == 'ANALYSING'">Browse file</ion-button>
+        </span>
+    </div>
+    <div *ngIf="analysisStatus === 'ANALYSING'" style="text-align: center; margin: 10px;">Analysing...</div>
+    <div *ngIf="analysisStatus === 'ANALYSED'" style="margin: 10px;">
+        <p>The analysis is finished. {{nbToImport}}/{{importedDatas.length}} referee(s) can be imported.</p>
+        <div style="text-align: right"><a (click)="selectAll()">Select all</a>, <a (click)="unselectAll()">Unselect all</a></div>
+        <div style="text-align: right"><a (click)="showAll()">Show all</a>, <a (click)="showNotImported()">Show not imported only</a></div>
+        <ion-list>
+            <div *ngFor="let importedData of importedDatas">
+                <ion-item *ngIf="!showNotImportedOnly || importedData.errors.length || importedData.foundReferee">
+                    <ion-label>
+                        <span>{{importedData.readReferee.firstName}} {{importedData.readReferee.lastName}} ({{importedData.readReferee.shortName}})</span>
+                        <span><br>Line {{importedData.lineNumber}}</span>
+                        <span *ngIf="importedData.foundReferee" style="background-color: orange;"><br>Already exist in database
+                        <br>{{importedData.foundReferee.firstName}} {{importedData.foundReferee.lastName}} from {{importedData.foundReferee.country}}
+                    </span>
+                        <span *ngIf="!importedData.foundReferee">
+                        <br>from: {{importedData.readReferee.country}}
+                        <br>email: {{importedData.readReferee.email}}
+                        <br>phones: {{importedData.readReferee.mobilePhones}}
+                        <br>Level: {{importedData.readReferee.referee.refereeLevel}}/{{importedData.readReferee.referee.refereeCategory}}/{{importedData.readReferee.gender}}
+                        <span *ngIf="importedData.readReferee.referee.nextRefereeLevel">=&gt;{{importedData.readReferee.referee.nextRefereeLevel}}</span>
+                        <br>Lang: {{importedData.readReferee.speakingLanguages}}
+                        <span *ngIf="importedData.foundReferee" style="background-color: orange;"><br>Already exist in database</span>
+                        <span *ngFor="let error of importedData.errors" style="background-color: red;"><br>ERROR: {{error}}</span>
+                        </span>
+                    </ion-label>
+                    <ion-checkbox *ngIf="importedData.errors.length === 0 && !importedData.foundReferee" slot="end" [(ngModel)]="importedData.toImport" (ionChange)="computesEnableImportButton()"></ion-checkbox>
+                </ion-item>
+            </div>
+        </ion-list>
+        <div style="text-align: center">
+            <ion-button shape="round" (click)="importReferees()" [disabled]="!showImportButton">Import selected referees</ion-button>
+        </div>
+    </div>
+</ion-content>

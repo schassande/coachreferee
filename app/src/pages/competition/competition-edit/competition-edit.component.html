@@ -1,0 +1,58 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="saveNback()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">Competition Edition</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="competition && !loading" (swipe)="onSwipe($event)">
+    <ion-list>
+        <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;">
+            <ion-item-divider color="light" style="text-align: center; font-size: 1.2em; padding: 10px;">
+                <ion-label>Competition information</ion-label>
+            </ion-item-divider>
+            <ion-item>
+                <ion-label position="fixed">name:</ion-label>
+                <ion-input type="text" [(ngModel)]="name" minlength="1" required="true"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label position="fixed">Date:</ion-label>
+                <ion-datetime displayFormat="YYYY-MM-DD" pickerFormat="YYYY-MM-DD" [(ngModel)]="date" style="text-align: center;"></ion-datetime>
+            </ion-item>
+            <ion-item>
+                <ion-label position="fixed">Region:</ion-label>
+                <ion-select *ngIf="!readonly" [(ngModel)]="competition.region" style="text-align: center;">
+                    <ion-select-option *ngFor="let region of regions" value="{{region}}">{{region}}</ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-item>
+                <ion-label position="fixed">Country:</ion-label>
+                <ion-select [(ngModel)]="competition.country">
+                    <ion-select-option *ngFor="let country of constantes.countries" value="{{country[0]}}">{{country[1]}}</ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-item>
+                <ion-label position="fixed">Owner:</ion-label>
+                <ion-label>{{owner}}</ion-label>
+                <ion-icon slot="end" name="search" (click)="searchOwner()"></ion-icon>
+            </ion-item>
+        </ion-item-group>
+    </ion-list>
+    <div *ngIf="errors && errors.length" style="margin: 5px 20px">
+        <div style="color: red;">Detected errors:</div>
+        <ul>
+            <li *ngFor="let error of errors">{{error}}</li>
+        </ul>
+    </div>
+    <div style="text-align: center">
+        <ion-button shape="round" (click)="back()">Cancel</ion-button>
+        <ion-button shape="round" (click)="saveNback()">Save</ion-button>
+    </div>
+</ion-content>

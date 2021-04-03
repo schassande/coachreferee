@@ -1,0 +1,31 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button routerLink="/home" detail>
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">Choose an assessment</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content (swipe)="onSwipe($event)">
+    <ion-searchbar [(ngModel)]="searchInput" [showCancelButton]="false" (ionChange)="onSearchBarInput()"></ion-searchbar>
+    <ion-list>
+        <ion-item-group style="margin-top: 20px;" *ngFor="let assessmentList of assessmentLists">
+            <ion-item-divider color="light">{{assessmentList.competitionName}} - {{assessmentList.day}}</ion-item-divider>
+            <ion-item *ngFor="let assessment of assessmentList.assessments" [color]="isPast(assessment) ? '' : 'burlywood'">
+                <ion-label style="border: none;" class="listItemButton" (click)="assessmentSelected($event, assessment)">
+                    <p>{{assessment.profileType == 'REFEREE_COACH' ? 'Coach' : 'Referee'}}: {{assessment.refereeShortName}} assess to {{assessment.profileName}}<br> {{getAssessmentDate(assessment)}} {{assessment.timeSlot}}: Field {{assessment.field}}, {{assessment.gameCategory}}</p>
+                </ion-label>
+                <ion-icon slot="end" name="trash" (click)="deleteAssessment(assessment)"></ion-icon>
+            </ion-item>
+        </ion-item-group>
+    </ion-list>
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button (click)="newAssessment()" class="plusButton">+</ion-fab-button>
+    </ion-fab>
+</ion-content>

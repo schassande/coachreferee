@@ -1,0 +1,69 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="back()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">Ranking List</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="list">
+    <ion-item>
+        <ion-label style="text-align: center">List: <span style="font-weight: bold;">{{list.listName}}</span>
+            <span><br>Loading ...</span></ion-label>
+    </ion-item>
+    <ion-item>
+        <ion-label>Competition: {{competition.name}}</ion-label>
+    </ion-item>
+    <ion-list *ngIf="!list.ranked && !showBestOf2">
+        <ion-reorder-group id="reorder" [disabled]="false" (ionItemReorder)="onReorder($event)">
+            <ion-item *ngFor="let group of list.groups; let groupIdx = index">
+                <ion-label>Group: {{ group.groupName }}, {{group.ranked ? 'Ranked' : 'Not ranked'}}
+                    <ul>
+                        <li *ngFor="let track of competitionRefereeRankingService.toList(group)">
+                            <span *ngFor="let ref of track; let trackIdx = index">
+                                <span *ngIf="trackIdx > 0"> &gt; </span> {{ref.refereeShortName}}
+                            </span>
+                        </li>
+                    </ul>
+                </ion-label>
+                <ion-reorder slot="end"></ion-reorder>
+            </ion-item>
+        </ion-reorder-group>
+    </ion-list>
+    <ion-list *ngIf="list.ranked && !showBestOf2 && id2referee">
+        <ion-reorder-group id="reorder" [disabled]="false" (ionItemReorder)="onReorderReferee($event)">
+            <ion-item *ngFor="let ref of list.rankedReferees; let refIdx = index">
+                <ion-label>{{ refIdx + 1 }}: {{id2referee.get(ref.refereeId).firstName}} {{id2referee.get(ref.refereeId).lastName}} ({{ ref.refereeShortName}}) - {{ id2referee.get(ref.refereeId).referee.refereeLevel}}</ion-label>
+                <ion-reorder slot="end"></ion-reorder>
+            </ion-item>
+        </ion-reorder-group>
+    </ion-list>
+
+    <app-competition-ranking-best-of2 [competition]="competition" [refereeData1]="refereeData1" [refereeData2]="refereeData2" (choice)="onChoice($event)" *ngIf="showBestOf2"></app-competition-ranking-best-of2>
+
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-row>
+            <ion-col>
+                <ion-fab-button (click)="deleteList()" style='--background:red; margin-bottom: 10px;' class="plusButton">
+                    <ion-icon name="trash"></ion-icon>
+                </ion-fab-button>
+            </ion-col>
+            <ion-col *ngIf="!list.ranked && list.method === 'A' && !showBestOf2 && !loading">
+                <ion-fab-button (click)="autoRanking()" class="plusButton">
+                    <ion-icon name="git-compare"></ion-icon>
+                </ion-fab-button>
+            </ion-col>
+            <ion-col *ngIf="!list.ranked && list.method !== 'M'">
+                <ion-fab-button (click)="manualRanking()" class="plusButton">
+                    <ion-icon name="hand"></ion-icon>
+                </ion-fab-button>
+            </ion-col>
+        </ion-row>
+    </ion-fab>
+</ion-content>

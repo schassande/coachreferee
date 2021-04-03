@@ -1,0 +1,58 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button routerLink="/home" detail>
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">Yearly coaching XP</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content (swipe)="onSwipe($event)">
+    <ion-item *ngIf="isAdmin">
+        <ion-label>Coach</ion-label>
+        <ion-select [(ngModel)]="selectedCoachId" (ionChange)="onCoachChange()">
+            <ion-select-option *ngFor="let coach of coaches" [value]="coach.id">{{coach.shortName}}</ion-select-option>
+        </ion-select>
+    </ion-item>
+    <div *ngIf="years && years.length > 0">
+        <ion-item *ngIf="years.length > 1">
+            <ion-label>Year</ion-label>
+            <ion-select [(ngModel)]="selectedYear" (ionChange)="onYearChange()">
+                <ion-select-option *ngFor="let year of years" [value]="year">{{year}}</ion-select-option>
+            </ion-select>
+        </ion-item>
+        <div style="margin: 10px 10px 10px 5px;">
+            <ion-label>XP :</ion-label>
+        </div>
+        <ion-grid>
+            <ion-row class="ion-justify-content-center" style="padding: 5px 0; border: 1px grey solid;">
+                <ion-col align-self-center size="5">Event Name</ion-col>
+                <ion-col align-self-center size="2" style="text-align: center;">Class</ion-col>
+                <ion-col align-self-center size="2" style="text-align: center;">Days</ion-col>
+                <ion-col align-self-center size="3" style="text-align: center;">Time</ion-col>
+            </ion-row>
+            <ion-row *ngFor="let xp of xps" class="ion-justify-content-center" (click)="xpSelected(xp)" style="padding: 5px 0; border: 1px grey solid;">
+                <ion-col align-self-center size="5">{{xp.eventName}}</ion-col>
+                <ion-col align-self-center size="2" style="text-align: center;">{{xp.eventClass}}</ion-col>
+                <ion-col align-self-center size="2" style="text-align: center;">{{xp.days.length}}</ion-col>
+                <ion-col align-self-center size="3" style="text-align: center;">{{computeAmount(xp)}}</ion-col>
+            </ion-row>
+            <ion-row class="ion-justify-content-center" style="margin-top: 10px;">
+                <ion-col align-self-center size="2" offset="7" style="border: 1px grey solid;">Total</ion-col>
+                <ion-col align-self-center size="3" style="text-align: center; border: 1px grey solid;">{{amount2str(yearDuration)}}</ion-col>
+            </ion-row>
+        </ion-grid>
+    </div>
+    <p *ngIf="!years || years.length == 0" style="margin: 20px 10px; text-align: center; font-style: italic;">
+        Use the Xp feature to record your coaching experience over the year.
+        <br>Please use the + button to register your coaching experience for each tournament/competition.
+    </p>
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button (click)="newXp()" class="plusButton">+</ion-fab-button>
+    </ion-fab>
+</ion-content>

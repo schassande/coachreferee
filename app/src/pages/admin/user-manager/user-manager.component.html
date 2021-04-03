@@ -1,0 +1,45 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button routerLink="/admin" detail>
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">User Manager</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content (swipe)="onSwipe($event)">
+    <ion-list>
+        <ion-item>
+            <ion-label style="width: 50%">Active: {{stats.nbActive}}/{{stats.total}}</ion-label>
+            <ion-label style="width: 50%">Pending: {{stats.nbValidationRequired}}/{{stats.total}}</ion-label>
+        </ion-item>
+        <ion-item>
+            <ion-label style="width: 50%">locked: {{stats.nbLocked}}/{{stats.total}}</ion-label>
+            <ion-label style="width: 50%">Deleted: {{stats.nbDeleted}}/{{stats.total}}</ion-label>
+        </ion-item>
+        <ion-item *ngFor="let user of users">
+            <ion-icon slot="start" *ngIf="user.photo && !user.photo.url" name="person"></ion-icon>
+            <ion-avatar slot="start" *ngIf="user.photo && user.photo.url"><img src="{{user.photo.url}}"></ion-avatar>
+            <ion-label>
+                <span (click)="userSelected(user)">
+                    <span style="font-weight: bold; font-size: 1.2em;">{{user.firstName}} {{user.lastName}} ({{user.shortName}})</span>
+                <br>{{user.email}}
+                <br>{{user.id}}
+                </span>
+                <div *ngIf="user.accountStatus !== 'ACTIVE'">Status: <span style="font-weight: bold; font-size: 1.2em; color: red;">{{user.accountStatus}}</span></div>
+                <div style="margin: 10px 0; text-align: center; font-size: 0.8em;">
+                    <ion-button *ngIf="user.accountStatus === 'ACTIVE'" color="warning" name="lock" shape="round" (click)="lock(user)">Lock</ion-button>
+                    <ion-button *ngIf="user.accountStatus === 'LOCKED'" color="warning" name="unlock" shape="round" (click)="unlock(user)">UnlocK</ion-button>
+                    <ion-button *ngIf="user.accountStatus === 'VALIDATION_REQUIRED'" color="success" name="checkmark" shape="round" (click)="validate(user)">validate</ion-button>
+                    <ion-button *ngIf="user.accountStatus === 'VALIDATION_REQUIRED'" color="danger" name="close" shape="round" (click)="unvalidate(user)">Reject</ion-button>
+                    <ion-button name="trash" color="danger" shape="round" (click)="delete(user)">Delete</ion-button>
+                    <ion-button name="resetPassword" shape="round" (click)="resetPassword(user)">Reset Pwd</ion-button>
+                </div>
+            </ion-label>
+        </ion-item>
+    </ion-list>
+</ion-content>

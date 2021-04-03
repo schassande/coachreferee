@@ -1,0 +1,145 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="saveNback()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">{{ assessment && assessment.dataStatus == 'NEW' ? 'Create' : 'Edit'}} an assessment</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="assessment">
+    <ion-list>
+        <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;">
+            <ion-item-divider color="light" style="text-align: center; font-size: 1.2em;">Game info</ion-item-divider>
+            <ion-item>
+                <ion-label>Competition:</ion-label>
+                <a (click)="onClickCompetition()">{{assessment.competition ? assessment.competition : 'Click here'}}</a>
+            </ion-item>
+            <ion-item *ngIf="assessment.dataStatus == 'NEW'">
+                <ion-label>Type:</ion-label>
+                <ion-select item-content *ngIf="!readonly" [(ngModel)]="assessment.profileType" (ionChange)="onProfileTypechange()" style="text-align: center;">
+                    <ion-select-option value="REFEREE">Referee</ion-select-option>
+                    <ion-select-option value="REFEREE_COACH">Coach</ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-item>
+                <ion-grid fixed="true" class="coachEditGrid">
+                    <ion-row>
+                        <ion-col size="4" align-self="flex-start">
+                            <ion-item>
+                                <ion-label position="stacked">Date:</ion-label>
+                                <ion-input *ngIf="readonly" type="text" [(ngModel)]="date" readonly="true" style="text-align: center;"></ion-input>
+                                <ion-datetime *ngIf="!readonly" displayFormat="YYYY-MM-DD" pickerFormat="YYYY-MM-DD" [(ngModel)]="date" style="text-align: center;"></ion-datetime>
+                            </ion-item>
+                        </ion-col>
+                        <ion-col size="4" align-self="flex-start">
+                            <ion-label position="stacked">Slot:</ion-label>
+                            <ion-input *ngIf="readonly" type="text" [(ngModel)]="assessment.timeSlot" readonly="true" style="text-align: center;"></ion-input>
+                            <ion-datetime item-content *ngIf="!readonly" displayFormat="HH:mm" minuteValues="0,5,10,15,20,25,30,35,40,45,50,55" [(ngModel)]="assessment.timeSlot" style="text-align: center;"></ion-datetime>
+                        </ion-col>
+                        <ion-col size="4" align-self="flex-start">
+                            <ion-label position="stacked">Field:</ion-label>
+                            <ion-input *ngIf="readonly" type="text" [(ngModel)]="assessment.field" readonly="true" style="text-align: center;"></ion-input>
+                            <ion-select item-content *ngIf="!readonly" [(ngModel)]="assessment.field" style="text-align: center;">
+                                <ion-select-option *ngFor="let item of [].constructor(25); let i = index" value="{{i+1}}">{{i+1}}</ion-select-option>
+                            </ion-select>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+            </ion-item>
+            <ion-item *ngIf="assessment.profileType !== 'REFEREE_COACH'">
+                <ion-grid fixed="true" class="coachEditGrid">
+                    <ion-row>
+                        <ion-col size="4" align-self="flex-start">
+                            <ion-label position="stacked">Speed:</ion-label>
+                            <ion-input *ngIf="readonly" type="text" [(ngModel)]="assessment.gameSpeed" readonly="true" style="text-align: center;"></ion-input>
+                            <ion-select *ngIf="!readonly" [(ngModel)]="assessment.gameSpeed" class="stackedSelect" style="text-align: center;">
+                                <ion-select-option value="Low">Low</ion-select-option>
+                                <ion-select-option value="Medium">Medium</ion-select-option>
+                                <ion-select-option value="High">High</ion-select-option>
+                            </ion-select>
+                        </ion-col>
+                        <ion-col size="4" align-self="flex-start">
+                            <ion-label position="stacked">Skill:</ion-label>
+                            <ion-input *ngIf="readonly" type="text" [(ngModel)]="assessment.gameSkill" readonly="true" style="text-align: center;"></ion-input>
+                            <ion-select *ngIf="!readonly" [(ngModel)]="assessment.gameSkill" class="stackedSelect" style="text-align: center;">
+                                <ion-select-option value="Low">Low</ion-select-option>
+                                <ion-select-option value="Medium">Medium</ion-select-option>
+                                <ion-select-option value="High">High</ion-select-option>
+                            </ion-select>
+                        </ion-col>
+                        <ion-col size="4" align-self="flex-start">
+                            <ion-label position="stacked">Category:</ion-label>
+                            <ion-input *ngIf="readonly" type="text" [(ngModel)]="assessment.gameCategory" readonly="true" style="text-align: center;"></ion-input>
+                            <ion-select *ngIf="!readonly" [(ngModel)]="assessment.gameCategory" class="stackedSelect" style="text-align: center;">
+                                <ion-select-option value="OPEN">OPEN</ion-select-option>
+                                <ion-select-option value="XO">XO</ion-select-option>
+                                <ion-select-option value="MO">MO</ion-select-option>
+                                <ion-select-option value="WO">WO</ion-select-option>
+
+                                <ion-select-option value="MO30">MO30</ion-select-option>
+                                <ion-select-option value="MO35">MO35</ion-select-option>
+                                <ion-select-option value="MO40">MO40</ion-select-option>
+                                <ion-select-option value="MO45">MO45</ion-select-option>
+                                <ion-select-option value="MO50">MO50</ion-select-option>
+                                <ion-select-option value="MO55">MO55</ion-select-option>
+                                <ion-select-option value="MO60">MO60</ion-select-option>
+
+                                <ion-select-option value="SMX">SMX</ion-select-option>
+                                <ion-select-option value="X21">X21</ion-select-option>
+
+                                <ion-select-option value="WO27">WO27</ion-select-option>
+                                <ion-select-option value="WO30">WO30</ion-select-option>
+                                <ion-select-option value="WO35">WO35</ion-select-option>
+                                <ion-select-option value="WO40">WO40</ion-select-option>
+                                <ion-select-option value="WO45">WO45</ion-select-option>
+                                <ion-select-option value="WO50">WO50</ion-select-option>
+                                <ion-select-option value="WO55">WO55</ion-select-option>
+                                <ion-select-option value="WO60">WO60</ion-select-option>
+                            </ion-select>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+            </ion-item>
+        </ion-item-group>
+        <ion-item>
+            <ion-label>{{ assessment.profileType === 'REFEREE_COACH' ? 'Coach' : 'Referee'}}: {{getReferee()}}</ion-label>
+            <ion-icon *ngIf="!readonly" slot="end" name="search" (click)="searchReferee(0)"></ion-icon>
+        </ion-item>
+        <ion-item>
+            <ion-label>Assessed Level:</ion-label>
+            <ion-input *ngIf="readonly" type="text" [(ngModel)]="assessment.profileName" readonly="true" style="text-align: right;"></ion-input>
+            <ion-select *ngIf="!readonly" [(ngModel)]="profileId" (ionChange)="updateAssessedLevel()">
+                <ion-select-option *ngFor="let profile of profiles" value="{{profile.id}}">{{profile.name}}</ion-select-option>
+            </ion-select>
+        </ion-item>
+    </ion-list>
+    <ion-item>
+        <ion-grid>
+            <ion-row style="text-align: center; margin-top: 10px;">
+                <ion-col offset-2 col-2 style="margin-right: 10px;" *ngIf="assessment.dataStatus !== 'NEW'">
+                    <ion-button shape="round" size="large" [disabled]="!assessmentValid" (click)="switchLockCoaching()" *ngIf="assessmentOwner" style="width: 100%;">
+                        <ion-icon *ngIf="!closed" name="lock-closed-outline"></ion-icon>
+                        <ion-icon *ngIf="closed" name="lock-open-outline"></ion-icon>
+                    </ion-button>
+                </ion-col>
+                <ion-col col-2 style="margin-right: 10px;" *ngIf="assessment.dataStatus !== 'NEW'">
+                    <ion-button shape="round" size="large" [disabled]="!assessmentValid && sending" (click)="sendAssessment()" style="width: 100%;">
+                        <ion-spinner *ngIf="sending"></ion-spinner>
+                        <ion-icon name="send"></ion-icon>
+                    </ion-button>
+                </ion-col>
+                <ion-col col-4 style="margin-right: 10px;">
+                    <ion-button shape="round" size="large" [disabled]="!assessmentValid" (click)="assess($event)" style="width: 100%;">Assess</ion-button>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </ion-item>
+    <div color="light" style="text-align: center; font-size: 0.8em; margin-top: 10px;">Assessed by {{assessmentCoach}}</div>
+
+</ion-content>

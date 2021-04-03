@@ -1,0 +1,31 @@
+{
+    "name": "refcoach",
+    "version": "2.6.4",
+    "description": "Ref Coach project",
+    "author": "Sebastien Chassande-Barrioz",
+    "homepage": "https://coachreferee.com",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/schassande/coachreferee.git"
+    },
+    "scripts": {
+        "noproxy": "set HTTP_PROXY= && set HTTPS_PROXY=",
+        "start": "cd mobile && ionic serve",
+        "build": "cd mobile && ionic build --prod --service-worker",
+        "deploy": "cd firebase && firebase deploy",
+        "target-www": "firebase target:apply hosting  www coachreferee-site",
+        "target-app": "firebase target:apply hosting  app refcoach-676e3",
+        "deploy-www": "firebase deploy --only hosting:www",
+        "deploy-app": "firebase deploy --only hosting:app",
+        "deploy-function": "firebase deploy --only functions"
+    },
+    "private": true,
+    "devDependencies": {
+        "grunt": "^1.3.0",
+        "grunt-contrib-jshint": "^3.0.0",
+        "grunt-copy": "^0.1.0",
+        "grunt-exec": "^3.0.0",
+        "grunt-git-tag": "0.0.5",
+        "grunt-markdown": "^0.7.0"
+    }
+}

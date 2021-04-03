@@ -1,0 +1,19 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button routerLink="/admin" detail>
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">Statistics of the app</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="dataReady">
+    <canvas baseChart chartType="bar" [datasets]="[{ data: nbCoachings, label: 'Nb Coaching'}]" [labels]="labels" [options]="{ responsive: true, scales: { yAxes: [{ display: true, ticks: { beginAtZero: true } }] } }"></canvas>
+    <canvas baseChart chartType="bar" [datasets]="[{ data: nbUsers, label: 'Nb active users'}]" [labels]="labels" [options]="{ scales: { yAxes: [{ display: true, ticks: { beginAtZero: true, stepSize: 1 } }] } }"></canvas>
+    <canvas baseChart chartType="bar" [datasets]="[{ data: coachingByUsers, label: 'Coaching by users'}]" [labels]="users"></canvas>
+</ion-content>

@@ -1,0 +1,67 @@
+<!--
+  Generated template for the SettingsPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="saveSettings()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">Settings</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+
+<ion-content (swipe)="onSwipe($event)">
+    <ion-list *ngIf="settings">
+        <ion-item>
+            <ion-label>NB Period</ion-label>
+            <ion-input type="number" min="1" max="4" [(ngModel)]="settings.nbPeriod" (ionChange)="onNbPeriodChange()"></ion-input>
+        </ion-item>
+        <ion-item detail routerLink="/user/edit/{{currentUser.id}}">
+            <ion-label class="menu-entry">My account</ion-label>
+        </ion-item>
+        <ion-item (click)="addToHome()" *ngIf="showInstallBtn">
+            <ion-label class="menu-entry">Install on device</ion-label>
+        </ion-item>
+    </ion-list>
+    <div style="text-align: center; margin-top: 10px;" *ngIf="!env.production">
+        <span>
+            <input type="file" #inputReferees accept="*.csv"
+            style="display: none;" (change)="importRefereeFromCsv($event)" />
+            <ion-button shape="round" (click)="importReferees()">Import referees</ion-button>
+        </span>
+    </div>
+    <div style="text-align: center; margin-top: 10px;" *ngIf="!env.production">
+        <ion-button shape="round" (click)="importLevelsAus()">Import Aus Levels</ion-button>
+    </div>
+    <div style="text-align: center; margin-top: 10px;" *ngIf="!env.production">
+        <ion-button shape="round" (click)="importLevelsEuro()">Import Euro Levels</ion-button>
+    </div>
+    <div style="text-align: center; margin-top: 10px;" *ngIf="!env.production">
+        <ion-button shape="round" (click)="importLevelsNZ()">Import NZ Levels</ion-button>
+    </div>
+    <div style="text-align: center; margin-top: 10px;" *ngIf="!env.production">
+        <ion-button shape="round" (click)="importCoachLevelsEuro()">Import Euro Coach Levels</ion-button>
+    </div>
+    <div style="text-align: center; margin-top: 10px;" *ngIf="!env.production">
+        <ion-button shape="round" (click)="migrateUserRole()">Migrate user role</ion-button>
+    </div>
+
+    <p *ngFor="let m of msg" class="message">{{m}}</p>
+    <div color="light" style="text-align: center; font-size: 0.8em; margin-top: 10px;">
+        <div>The author of application is <br><a href="mailto:chassande@gmail.com">Sebastien Chassande-Barrioz</a>.</div>
+        <div>Version: {{env.version}}</div>
+    </div>
+    <div style="text-align: left; font-size: 0.8em; margin-top: 10px;">
+        <div>Debug info:</div>
+        <div style="margin-left: 20px;" innerHtml="{{launchMode}}"></div>
+    </div>
+</ion-content>

@@ -1,0 +1,69 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="saveNback()" detail>
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">Assess
+            <span *ngIf="referee">{{referee.shortName}}</span>
+            <span *ngIf="assessment"><ion-icon slot="end" name="star" [ngStyle]="{ color: assessment.competency =='YES' ? 'green' : (assessment.competency =='NO' ? 'red' : 'white') }" class="group-competency"></ion-icon></span>
+        </ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content *ngIf="profile && assessment" padding>
+    <div [ngStyle]="{ 
+            'width': '100%', 
+            'text-align': 'center', 
+            'padding': '20px 0', 
+            'color': profile.color, 
+            'background-color': profile.backgroundColor 
+        }">{{profile.name}}</div>
+
+    <div *ngFor="let skillSet of profile.skillSets; index as skillSetIdx" style="margin-top: 20px;">
+        <ion-item-divider color="light" (click)="toggleGroup(skillSetIdx)">
+            <ion-icon name="{{ isGroupShown(skillSetIdx) ? 'remove' : 'add'}}"></ion-icon> &nbsp;
+            <span innerHTML="{{skillSet.name}}"></span>&nbsp;<span *ngIf="skillSet.required">*</span>
+            <span slot="end" *ngIf="skillSet.requirement != 'POINTS'">({{requirementToString(skillSet.requirement)}})</span>
+            <ion-icon slot="end" name="star" *ngIf="skillSet.requirement != 'POINTS'" [ngStyle]="{ color: assessment.skillSetEvaluation[skillSetIdx].competency == 'YES' ? 'green' : (assessment.skillSetEvaluation[skillSetIdx].competency == 'NO' ? 'red' : 'white') }"
+                class="group-competency"></ion-icon>
+            <span slot="end" *ngIf="skillSet.requirement == 'POINTS'" style="margin-right: 10px;">{{assessment.skillSetEvaluation[skillSetIdx].competencyPoints}}/{{getSkillSetMaxPoints(skillSetIdx)}} pts</span>
+        </ion-item-divider>
+        <div *ngIf="isGroupShown(skillSetIdx)">
+            <ion-item *ngFor="let skill of skillSet.skills; index as skillIdx" text-wrap>
+                <ion-label>
+                    <span innerHTML="{{skill.name}}"></span>
+                </ion-label>
+                <span slot="end" style="margin: 5px 0;" *ngIf="skillSet.requirement != 'POINTS'">
+                    <competency-comp
+                        [value]="assessment.skillSetEvaluation[skillSetIdx].skillEvaluations[skillIdx].competency" 
+                        (change)="updateSKillCompetency(skillSetIdx, skillIdx, $event)">
+                    </competency-comp>
+                    <div *ngIf="skill.required" style="text-align: center; color: red; margin-top: 5px; font-size: 0.8em;">Required</div>
+                </span>
+                <span slot="end" style="margin: 5px 0;" *ngIf="skillSet.requirement == 'POINTS'">
+                    <competency-points-comp
+                        [value]="assessment.skillSetEvaluation[skillSetIdx].skillEvaluations[skillIdx].competencyPoints"
+                        [description]="skill.description"
+                        [pointsValues]="skill.pointValues"
+                        (change)="onSkillPointchange(skillSetIdx, skillIdx, $event)">
+                    </competency-points-comp>
+                </span>
+            </ion-item>
+            <ion-textarea placeholder="Comment about {{skillSet.name}}" rows="1" [(ngModel)]="assessment.skillSetEvaluation[skillSetIdx].comment" (ionBlur)="saveAssessment()"></ion-textarea>
+        </div>
+    </div>
+    <div style="margin-top: 20px;">
+        <ion-item-divider color="light">
+            Global
+            <span slot="end">({{profile.requirement == 'POINTS' ? assessment.competencyPoints +'/' + profile.requiredPoints : requirementToString(profile.requirement) }})</span>
+            <ion-icon slot="end" name="star" [ngStyle]="{ color: assessment.competency =='YES' ? 'green' : (assessment.competency =='NO' ? 'red' : 'white') }" class="group-competency"></ion-icon>
+        </ion-item-divider>
+        <ion-item>
+            <ion-textarea placeholder="Evaluation Comment" rows="7" [(ngModel)]="assessment.comment" (ionBlur)="saveAssessment()"></ion-textarea>
+        </ion-item>
+    </div>
+</ion-content>

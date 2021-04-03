@@ -1,0 +1,68 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="saveNback()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">Coaching XP</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="xp" (swipe)="onSwipe($event)">
+    <ion-list>
+        <ion-item>
+            <ion-label>Event name:</ion-label>
+            <ion-input type="text" [(ngModel)]="xp.eventName"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label>Event class:</ion-label>
+            <ion-input type="text" [(ngModel)]="xp.eventClass"></ion-input>
+        </ion-item>
+        <ion-item *ngIf="coach">
+            <ion-label>Coach:</ion-label>
+            <ion-input type="text" readonly="true">&nbsp;{{coach.shortName}}</ion-input>
+        </ion-item>
+    </ion-list>
+    <div style="margin: 10px 10px 0 30px;" *ngFor="let cd of xp.days; let i = index">
+        <ion-item-divider color="light">
+            <ion-label>Day {{i + 1}}</ion-label>
+            <ion-icon slot="end" name="trash" [ngStyle]="{ color: 'red' }" class="group-competency" (click)="delete(i)" style="margin-right: 5px;"></ion-icon>
+        </ion-item-divider>
+        <ion-item>
+            <ion-label position="fixed" style="min-width: 60%;">Date</ion-label>
+            <ion-datetime displayFormat="YYYY-MM-DD" pickerFormat="YYYY-MM-DD" [value]="getCDDate(cd)" (ionChange)="onCDDate(cd, $event)" style="text-align: center;"></ion-datetime>
+        </ion-item>
+        <ion-item>
+            <ion-label position="fixed" style="min-width: 60%;">Game duration (min)</ion-label>
+            <ion-input type="number" [(ngModel)]="cd.gameDuration" (ionChange)="onGameDataChange(cd)"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label position="fixed" style="min-width: 60%;">Nb games</ion-label>
+            <ion-input type="number" [(ngModel)]="cd.nbGames" (ionChange)="onGameDataChange(cd)"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label position="fixed" style="min-width: 60%;">Total Coaching (min)</ion-label>
+            <ion-input type="number" [(ngModel)]="cd.coachingDuration"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label position="fixed" style="min-width: 60%;">Referee allocation</ion-label>
+            <ion-select item-content [(ngModel)]="cd.refereeAllocation" style="text-align: center;">
+                <ion-select-option value="No">No</ion-select-option>
+                <ion-select-option value="Contribute">Contribute</ion-select-option>
+                <ion-select-option value="Yes">Yes</ion-select-option>
+            </ion-select>
+        </ion-item>
+    </div>
+    <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+        <ion-fab-button style='--background:red; font-size: 1.6em; margin-bottom: 10px;' (click)="deleteXp()" *ngIf="xpId">
+            <ion-icon name="trash"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button style='--background:green; font-size: 1.6em; margin-bottom: 10px;' (click)="newDay()">+</ion-fab-button>
+    </ion-fab>
+</ion-content>

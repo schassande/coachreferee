@@ -1,0 +1,170 @@
+<!--
+  Generated template for the CoachingNewPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="saveNback()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">Pre game coaching</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="coaching" (swipe)="onSwipe($event)">
+    <ion-list>
+        <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;">
+            <ion-item-divider color="light" style="text-align: center; font-size: 1.2em; padding: 10px;">
+                <ion-label>Game information</ion-label>
+            </ion-item-divider>
+            <ion-item>
+                <ion-label position="fixed">Competition:</ion-label>
+                <a (click)="onClickCompetition()">{{coaching.competition ? coaching.competition : 'Click here'}}</a>
+            </ion-item>
+            <ion-item>
+                <ion-grid fixed="true" class="coachEditGrid">
+                    <ion-row>
+                        <ion-col size="4" align-self="flex-start">
+                            <ion-item>
+                                <ion-label position="stacked">Date:</ion-label>
+                                <ion-input *ngIf="readonly" type="text" [(ngModel)]="date" readonly="true" style="text-align: center;"></ion-input>
+                                <ion-datetime *ngIf="!readonly" displayFormat="YYYY-MM-DD" pickerFormat="YYYY-MM-DD" [(ngModel)]="date" style="text-align: center;"></ion-datetime>
+                            </ion-item>
+                        </ion-col>
+                        <ion-col size="4" align-self="flex-start">
+                            <ion-label position="stacked">Slot:</ion-label>
+                            <ion-input *ngIf="readonly" type="text" [(ngModel)]="coaching.timeSlot" readonly="true" style="text-align: center;"></ion-input>
+                            <ion-datetime item-content *ngIf="!readonly" displayFormat="HH:mm" minuteValues="0,5,10,15,20,25,30,35,40,45,50,55" [(ngModel)]="coaching.timeSlot" style="text-align: center;"></ion-datetime>
+                        </ion-col>
+                        <ion-col size="4" align-self="flex-start">
+                            <ion-label position="stacked">Field:</ion-label>
+                            <ion-input *ngIf="readonly" type="text" [(ngModel)]="coaching.field" readonly="true" style="text-align: center;"></ion-input>
+                            <ion-select item-content *ngIf="!readonly" [(ngModel)]="coaching.field" style="text-align: center;">
+                                <ion-select-option *ngFor="let item of [].constructor(25); let i = index" value="{{i+1}}">{{i+1}}</ion-select-option>
+                            </ion-select>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+            </ion-item>
+            <ion-item>
+                <ion-grid fixed="true" class="coachEditGrid">
+                    <ion-row>
+                        <ion-col size="4" align-self="flex-start">
+                            <ion-label position="stacked">Speed:</ion-label>
+                            <ion-input *ngIf="readonly" type="text" [(ngModel)]="coaching.gameSpeed" readonly="true" style="text-align: center;"></ion-input>
+                            <ion-select *ngIf="!readonly" [(ngModel)]="coaching.gameSpeed" class="stackedSelect" style="text-align: center;">
+                                <ion-select-option value="Low">Low</ion-select-option>
+                                <ion-select-option value="Medium">Medium</ion-select-option>
+                                <ion-select-option value="High">High</ion-select-option>
+                            </ion-select>
+                        </ion-col>
+                        <ion-col size="4" align-self="flex-start">
+                            <ion-label position="stacked">Skill:</ion-label>
+                            <ion-input *ngIf="readonly" type="text" [(ngModel)]="coaching.gameSkill" readonly="true" style="text-align: center;"></ion-input>
+                            <ion-select *ngIf="!readonly" [(ngModel)]="coaching.gameSkill" class="stackedSelect" style="text-align: center;">
+                                <ion-select-option value="Low">Low</ion-select-option>
+                                <ion-select-option value="Medium">Medium</ion-select-option>
+                                <ion-select-option value="High">High</ion-select-option>
+                            </ion-select>
+                        </ion-col>
+                        <ion-col size="4" align-self="flex-start">
+                            <ion-label position="stacked">Category:</ion-label>
+                            <ion-input *ngIf="readonly" type="text" [(ngModel)]="coaching.gameCategory" readonly="true" style="text-align: center;"></ion-input>
+                            <ion-select *ngIf="!readonly" [(ngModel)]="coaching.gameCategory" class="stackedSelect" style="text-align: center;">
+                                <ion-select-option value="OPEN">OPEN</ion-select-option>
+                                <ion-select-option value="XO">XO</ion-select-option>
+                                <ion-select-option value="MO">MO</ion-select-option>
+                                <ion-select-option value="WO">WO</ion-select-option>
+
+                                <ion-select-option value="MO30">MO30</ion-select-option>
+                                <ion-select-option value="MO35">MO35</ion-select-option>
+                                <ion-select-option value="MO40">MO40</ion-select-option>
+                                <ion-select-option value="MO45">MO45</ion-select-option>
+                                <ion-select-option value="MO50">MO50</ion-select-option>
+                                <ion-select-option value="MO55">MO55</ion-select-option>
+                                <ion-select-option value="MO60">MO60</ion-select-option>
+
+                                <ion-select-option value="SMX">SMX</ion-select-option>
+                                <ion-select-option value="X21">X21</ion-select-option>
+
+                                <ion-select-option value="WO27">WO27</ion-select-option>
+                                <ion-select-option value="WO30">WO30</ion-select-option>
+                                <ion-select-option value="WO35">WO35</ion-select-option>
+                                <ion-select-option value="WO40">WO40</ion-select-option>
+                                <ion-select-option value="WO45">WO45</ion-select-option>
+                                <ion-select-option value="WO50">WO50</ion-select-option>
+                                <ion-select-option value="WO55">WO55</ion-select-option>
+                                <ion-select-option value="WO60">WO60</ion-select-option>
+                            </ion-select>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+            </ion-item>
+        </ion-item-group>
+        <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;">
+            <ion-item-divider color="light" style="text-align: center; font-size: 1.2em; padding: 10px;">
+                <ion-label>Coached referees</ion-label>
+            </ion-item-divider>
+            <ion-item>
+                <ion-label>1: {{getReferee(0)}}</ion-label>
+                <ion-icon *ngIf="!readonly" slot="end" name="search" (click)="searchReferee(0)"></ion-icon>
+            </ion-item>
+            <ion-item>
+                <ion-label>2: {{getReferee(1)}}</ion-label>
+                <ion-icon *ngIf="!readonly" slot="end" name="search" (click)="searchReferee(1)"></ion-icon>
+            </ion-item>
+            <ion-item>
+                <ion-label>3: {{getReferee(2)}}</ion-label>
+                <ion-icon *ngIf="!readonly" slot="end" name="search" (click)="searchReferee(2)"></ion-icon>
+            </ion-item>
+        </ion-item-group>
+        <ion-item>
+            <ion-grid>
+                <ion-row style="text-align: center; margin-top: 10px;">
+                    <ion-col style="margin-right: 10px;" *ngIf="coaching.dataStatus !== 'NEW'">
+                        <ion-button shape="round" size="large" (click)="switchLockCoaching()" style="width: 100%;" *ngIf="coachingOwner">
+                            <ion-icon *ngIf="!closed" name="lock-closed-outline"></ion-icon>
+                            <ion-icon *ngIf="closed" name="lock-open-outline"></ion-icon>
+                        </ion-button>
+                    </ion-col>
+                    <ion-col style="margin-right: 10px;" *ngIf="coaching.dataStatus !== 'NEW'">
+                        <ion-button shape="round" size="large" (click)="sendCoaching()" [disabled]="sending" style="width: 100%;" *ngIf="coachingOwner">
+                            <ion-spinner *ngIf="sending"></ion-spinner>
+                            <ion-icon name="send"></ion-icon>
+                        </ion-button>
+                    </ion-col>
+                    <ion-col>
+                        <ion-button shape="round" size="large" (click)="coach($event)" style="width: 100%;" [disabled]="!isValid()">
+                            <span *ngIf="coachingOwner">Coach</span>
+                            <span *ngIf="!coachingOwner">View</span>
+                        </ion-button>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-item>
+        <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;" *ngIf="coachingOwner">
+            <ion-item-divider color="light" style="text-align: center; font-size: 1.2em; padding: 10px;">
+                <ion-label>Coaching shared with</ion-label>
+                <ion-button shape="round" slot="end" (click)="shareWith()" *ngIf="coachingOwner">
+                    <ion-icon name="share-social-outline"></ion-icon>
+                </ion-button>
+            </ion-item-divider>
+            <ion-item *ngFor="let user of sharedWith.users">
+                <ion-label>User {{user.firstName}} {{user.lastName}}</ion-label>
+                <ion-icon slot="end" name="trash" (click)="deleteSharedUser(user)" *ngIf="coachingOwner"></ion-icon>
+            </ion-item>
+            <ion-item *ngFor="let group of sharedWith.groups">
+                <ion-label>Group {{group.name}}</ion-label>
+                <ion-icon slot="end" name="trash" (click)="deleteSharedGroup(group)" *ngIf="coachingOwner"></ion-icon>
+            </ion-item>
+        </ion-item-group>
+    </ion-list>
+    <div color="light" style="text-align: center; font-size: 0.8em;">Coach by {{coachingCoach}}</div>
+</ion-content>

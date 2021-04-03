@@ -1,0 +1,85 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button routerLink="/competition/list" detail>
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">Import Competition</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <p style="padding: 10px 10px 0 10px; text-align: justify">This page permits to import the referee and referee coach allocation of a competition. The import format is CSV.<br>Download a <a href="assets/referee_allocations.csv">template of the expected CSV file</a>.
+        <br>Choose import options before picking a file:</p>
+    <ion-list>
+        <ion-item>
+            <ion-label>Existing games<br>(true: update/ false: replace)</ion-label>
+            <ion-checkbox [(ngModel)]="updateExisting" scope="end" [disabled]="analysisStatus !== 'NONE'"></ion-checkbox>
+        </ion-item>
+        <ion-item>
+            <ion-label>Remove unreferenced games</ion-label>
+            <ion-checkbox [(ngModel)]="removeUnreferenced" scope="end" [disabled]="analysisStatus !== 'NONE'"></ion-checkbox>
+        </ion-item>
+    </ion-list>
+    <div style="text-align: center">
+        <span>
+          <input type="file" #inputCompetition accept="*.csv" style="display: none;" (change)="importCompetitionFromCsv($event)" />
+          <ion-button shape="round" (click)="loadFile()" [disabled]="analysisStatus == 'ANALYSING'">Browse file</ion-button>
+      </span>
+    </div>
+    <div *ngIf="analysisStatus === 'ANALYSING'" style="text-align: center; margin: 10px;">Analysing...</div>
+    <div *ngIf="analysisStatus === 'ANALYSED'" style="margin: 10px;">
+        <p>The analysis is finished.
+            <span *ngIf="nbError !== 0">But {{nbError}} error(s) detected. Please fix the problem and resubmit your file.</span>
+        </p>
+        <ion-list>
+            <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;">
+                <ion-item-divider color="light" style="text-align: center; font-size: 1.2em; padding: 10px;">
+                    <ion-label>{{importedDatas.dataToImport.allocations.length}} game(s)</ion-label>
+                </ion-item-divider>
+                <ion-item *ngFor="let ana of importedDatas.gameAnalysis">
+                    <ion-label>
+                        Game: {{ana.dataToImport.id}}
+                        <div *ngIf="ana.dataFromDB" style="float: right; color: orange;">UPDATE</div>
+                        <div *ngIf="!ana.dataFromDB" style="float: right; color: green;">NEW</div>
+                        <br>Date: {{dateService.date2string(ana.dataToImport.date)}}, TimeSlot: {{ana.dataToImport.timeSlot}}
+                        <br>Field: {{ana.dataToImport.field}}, Category: {{ana.dataToImport.gameCategory}}
+                        <br>Referees:<span *ngFor="let ref of ana.dataToImport.referees"> {{ref.refereeShortName}}</span>
+                        <br>Coaches:<span *ngFor="let refco of ana.dataToImport.refereeCoaches"> {{refco.coachShortName}}</span>
+                        <span *ngFor="let error of ana.errors"><br>ERROR: {{error}}</span>
+                    </ion-label>
+                </ion-item>
+            </ion-item-group>
+            <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;">
+                <ion-item-divider color="light" style="text-align: center; font-size: 1.2em; padding: 10px;">
+                    <ion-label>{{importedDatas.refereeAnalysis.length}} new referee(s) detected over {{importedDatas.dataToImport.referees.length}}</ion-label>
+                </ion-item-divider>
+                <ion-item *ngFor="let ana of importedDatas.refereeAnalysis">
+                    <ion-label>
+                        <span *ngIf="ana.dataFromDB">{{ana.dataFromDB.firstName}} {{ana.dataFromDB.lastName}}, {{ana.dataFromDB.referee.refereeLevel}}, </span>{{ana.id}}
+                        <p *ngFor="let error of ana.errors" class="error"><br>ERROR: {{error}}</p>
+                    </ion-label>
+                </ion-item>
+            </ion-item-group>
+            <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;">
+                <ion-item-divider color="light" style="text-align: center; font-size: 1.2em; padding: 10px;">
+                    <ion-label>{{importedDatas.refereeCoachAnalysis.length}} coach(s)</ion-label>
+                </ion-item-divider>
+                <ion-item *ngFor="let ana of importedDatas.refereeCoachAnalysis">
+                    <ion-label>
+                        <span *ngIf="ana.dataFromDB">{{ana.dataFromDB.firstName}} {{ana.dataFromDB.lastName}}, </span>{{ana.id}}
+                        <div *ngIf="!ana.dataFromDB" style="float: right; color: orange;">IGNORED</div>
+                        <div *ngIf="ana.dataFromDB && isNewCoach(ana.dataFromDB.id)" style="float: right; color: green;">NEW</div>
+                        <p *ngIf="ana.errors.length > 0" class="warning"><br>Warning: {{ana.errors[0]}}</p>
+                    </ion-label>
+                </ion-item>
+            </ion-item-group>
+        </ion-list>
+        <div style="text-align: center">
+            <ion-button shape="round" (click)="importCompetition()" [disabled]="!showImportButton">Import games</ion-button>
+        </div>
+    </div>
+</ion-content>

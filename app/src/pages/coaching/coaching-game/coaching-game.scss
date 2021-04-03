@@ -1,0 +1,42 @@
+page-coaching-game {}
+
+.buttonReferee {
+    width: 30%;
+    text-align: center;
+    background-color: darkgrey;
+}
+
+.refTab {
+    font-size: 1.3em !important;
+}
+
+ion-toolbar {
+    width: 100%;
+    text-align: center;
+}
+
+.yellowStar {
+    color: red;
+}
+
+.star {
+    float: left;
+    margin-right: 5px;
+}
+
+.period1 {
+    background-color: #b0e5f775;
+}
+
+.period2 {
+    background-color: #ffda7379;
+}
+
+.feedbackTxt {
+    white-space: pre-wrap;
+}
+
+.badge-warning {
+    font-weight: bold;
+    color: red;
+}

@@ -1,0 +1,82 @@
+<!--
+  Generated template for the SkillProfileEditPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="saveNback()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title>{{profileType == 'REFEREE_COACH' ? 'Coach' : 'Referee'}} level edition</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+
+</ion-header>
+
+
+<ion-content padding>
+    <ion-list *ngIf="skillProfile">
+        <ion-item text-wrap>
+            <ion-label fixed>Name:</ion-label>
+            <ion-input type="text" [(ngModel)]="skillProfile.name" placeholder="Enter a level name"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label fixed>Description:</ion-label>
+            <ion-textarea placeholder="Enter a description of the level" rows="3" [(ngModel)]="skillProfile.description"></ion-textarea>
+        </ion-item>
+        <ion-item>
+            <ion-label>Requirement:</ion-label>
+            <ion-select [(ngModel)]="skillProfile.requirement">
+                <ion-select-option value="ALL_REQUIRED">All domain</ion-select-option>
+                <ion-select-option value="MAJORITY_REQUIRED">Domain majority</ion-select-option>
+                <ion-select-option value="POINTS">Points</ion-select-option>
+            </ion-select>
+        </ion-item>
+        <ion-item *ngIf="skillProfile.requirement == 'POINTS'">
+            <ion-label>Required points:</ion-label>
+            <ion-input type="number" [(ngModel)]="skillProfile.requiredPoints"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label>Background Color:</ion-label>
+            <ion-input type="string" [(ngModel)]="skillProfile.backgroundColor"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label>Color:</ion-label>
+            <ion-input type="string" [(ngModel)]="skillProfile.color"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label>{{profileType == 'REFEREE_COACH' ? 'Coach' : 'Referee'}} level:</ion-label>
+            <ion-select [(ngModel)]="skillProfile.level">
+                <ion-select-option *ngFor="let level of levels" value="{{level}}">{{level}}</ion-select-option>
+            </ion-select>
+        </ion-item>
+        <ion-item-group style="border: 1px solid lightgrey; margin-top: 20px;" *ngIf="skillProfile.name">
+            <ion-item-divider color="light " style="text-align: center; font-size: 1.2em;">Sets of skills</ion-item-divider>
+            <ion-item *ngFor="let skillSet of skillProfile.skillSets; index as idx" text-wrap>
+                <ion-label (click)="skillSetSelected($event, skillSet, idx)" text-wrap>{{skillSet.name}}</ion-label>
+                <ion-icon slot="end" name="trash" (click)="deleteSkillSet(skillSet)"></ion-icon>
+            </ion-item>
+            <ion-item>
+                <ion-input type="text" placeholder="Enter a name of a new set of skills" [(ngModel)]="skillSetName"></ion-input>
+                <ion-button slot="end" shape="round" size="small" (click)="newSkillSet($event)" [disabled]="!skillSetName" style='--background:green'>
+                    <ion-icon name="add"></ion-icon>
+                </ion-button>
+            </ion-item>
+        </ion-item-group>
+    </ion-list>
+    <div style="text-align: center;">
+        <ion-button (click)="saveSkillProfile($event)" shape="round" style="--background:green;" *ngIf="skillProfile && skillProfile.name">Save</ion-button>
+    </div>
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="!readonly && skillProfile && skillProfile.name">
+        <ion-fab-button (click)="deleteSkillProfile($event)" style='--background:red; font-size: 1.6em;' *ngIf="skillProfile.dataStatus !=='NEW'">
+            <ion-icon name="trash"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+</ion-content>

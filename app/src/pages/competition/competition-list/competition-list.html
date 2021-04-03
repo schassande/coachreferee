@@ -1,0 +1,54 @@
+<!--
+  Generated template for the CompetitionListPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button routerLink="/home" detail>
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">Competitions</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+
+<ion-content (swipe)="onSwipe($event)">
+    <div slot="fixed" style="width: 100%;     background: white;">
+        <ion-searchbar [(ngModel)]="searchInput" [showCancelButton]="false" (ionChange)="onSearchBarInput()"></ion-searchbar>
+        <div *ngIf="loading" style="margin: 20px auto; text-align: center;">
+            <ion-spinner></ion-spinner>
+        </div>
+    </div>
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" closeDuration="700ms">
+        <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+    <ion-list style="margin: 60px 0 60px 0;" *ngIf="competitions && competitions.length">
+        <ion-item *ngFor="let competition of competitions">
+            <ion-label style="border: none;" class="listItemButton" (click)="competitionSelected(competition)">{{competition.name}}
+                <br>{{dateService.date2string(competition.date)}}, {{competition.country}}</ion-label>
+            <ion-icon slot="end" name="trash" (click)="deleteCompetition(competition)"></ion-icon>
+        </ion-item>
+    </ion-list>
+    <p *ngIf="!competitions || competitions.length == 0" style="margin: 70px 10px 0 10px; text-align: center; font-style: italic;">
+        Use this section to declare competitions. For each competition, you declare the list of referees and the list of referee coaches.
+    </p>
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-row>
+            <ion-col>
+                <ion-fab-button routerLink="/competition/import">
+                    <ion-icon name="attach"></ion-icon>
+                </ion-fab-button>
+            </ion-col>
+            <ion-col>
+                <ion-fab-button (click)="newCompetition()" class="plusButton">+</ion-fab-button>
+            </ion-col>
+        </ion-row>
+    </ion-fab>
+</ion-content>

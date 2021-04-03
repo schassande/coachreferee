@@ -1,0 +1,7 @@
+.vscode
+hosting/app/*
+hosting/www/*
+html/*
+node_modules
+mobile/firebase-config.json
+mobile/src/environments/environment.ts

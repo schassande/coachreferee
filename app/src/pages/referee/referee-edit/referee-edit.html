@@ -1,0 +1,160 @@
+<!--
+  Generated template for the RefereeNewPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="cancel()" detail>
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">Referee Edition</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+
+<ion-content *ngIf="referee" (swipe)="onSwipe($event)">
+    <ion-slides centeredSlides="false" loop="true" pager="true" paginationType="bullets" effect="slide" styles="height:inherit; width: 100%;" style="width: 100%;">
+        <ion-slide style="width: 100%;">
+            <ion-list style="margin-bottom: 50px; width: 100%;">
+                <ion-item-group>
+                    <ion-item-divider color="light">Person</ion-item-divider>
+                </ion-item-group>
+                <ion-item>
+                    <ion-label slot="start" *ngIf="!referee.photo || !referee.photo.url">No photo</ion-label>
+                    <ion-avatar slot="start" *ngIf="referee.photo && referee.photo.url"><img src="{{referee.photo.url}}"></ion-avatar>
+                    <camera-icon-comp (photo)="onImage($event)" slot="end" alert="true"></camera-icon-comp>
+                </ion-item>
+                <ion-item>
+                    <ion-label fixed>First name</ion-label>
+                    <ion-input type="text" [(ngModel)]="referee.firstName" id="firstName" name="firstName" min="3" max="15" #firstName="ngModel" required autofocus tabindex="1" (ionBlur)="updateShortName()"></ion-input>
+                </ion-item>
+                <ion-item no-lines *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)" class="alert alert-danger">
+                    <div *ngIf="firstName.errors.required">A value is required.</div>
+                </ion-item>
+                <ion-item>
+                    <ion-label fixed>Last name</ion-label>
+                    <ion-input type="text" [(ngModel)]="referee.lastName" id="lastName" name="lastName" min="3" max="15" #lastName="ngModel" required tabindex="2" (ionBlur)="updateShortName()"></ion-input>
+                </ion-item>
+                <ion-item no-lines *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="alert alert-danger">
+                    <div *ngIf="lastName.errors.required">A value is required.</div>
+                </ion-item>
+                <ion-item>
+                    <ion-label fixed>Short Name</ion-label>
+                    <ion-input type="text" [(ngModel)]="referee.shortName" id="shortName" name="shortName" min="3" max="5" #shortName="ngModel" required tabindex="3"></ion-input>
+                </ion-item>
+                <ion-item no-lines *ngIf="shortName.invalid && (shortName.dirty || shortName.touched)" class="alert alert-danger">
+                    <div *ngIf="shortName.errors.required">A value is required.</div>
+                </ion-item>
+                <ion-item>
+                    <ion-label>Gender</ion-label>
+                    <ion-select [(ngModel)]="referee.gender">
+                        <ion-select-option value="F">Female</ion-select-option>
+                        <ion-select-option value="M">Male</ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <ion-item>
+                    <ion-label>Country</ion-label>
+                    <ion-select [(ngModel)]="referee.country">
+                        <ion-select-option *ngFor="let country of constantes.countries" value="{{country[0]}}">{{country[1]}}</ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <ion-item>
+                    <ion-label fixed>Email</ion-label>
+                    <ion-input type="text" [(ngModel)]="referee.email" id="email" name="email" min="3" max="30" #email="ngModel"></ion-input>
+                </ion-item>
+                <ion-item>
+                    <ion-label fixed>Mobile phones</ion-label>
+                    <ion-input type="phone" [(ngModel)]="referee.mobilePhones"></ion-input>
+                </ion-item>
+            </ion-list>
+        </ion-slide>
+        <ion-slide style="width: 100%;">
+            <ion-list style="width: 100%;">
+                <ion-item-group>
+                    <ion-item-divider color="light">Referee</ion-item-divider>
+                    <ion-item>
+                        <ion-label>Referee Level</ion-label>
+                        <ion-select [(ngModel)]="referee.referee.refereeLevel">
+                            <ion-select-option *ngFor="let refereeLevel of constantes.refereeLevels" value="{{refereeLevel}}">{{refereeLevel}}</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>Referee category</ion-label>
+                        <ion-select [(ngModel)]="referee.referee.refereeCategory">
+                            <ion-select-option value="JUNIOR">Junior</ion-select-option>
+                            <ion-select-option value="OPEN">Open</ion-select-option>
+                            <ion-select-option value="SENIOR">Senior</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>Looking for upgrade?</ion-label>
+                        <ion-select [(ngModel)]="referee.referee.nextRefereeLevel">
+                            <ion-select-option value="">No</ion-select-option>
+                            <ion-select-option *ngFor="let refereeLevel of constantes.refereeLevels" value="{{refereeLevel}}">{{refereeLevel}}</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label>Referee coach Level</ion-label>
+                        <ion-select [(ngModel)]="referee.refereeCoach.refereeCoachLevel">
+                            <ion-select-option *ngFor="let refereeCoachLevel of constantes.refereeCoachLevels" value="{{refereeCoachLevel}}">{{refereeCoachLevel}}</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-item-group>
+                <ion-item>
+                    <ion-label>Speaking languages</ion-label>
+                    <ion-select [(ngModel)]="referee.speakingLanguages" multiple="true">
+                        <ion-select-option *ngFor="let lang of constantes.languages" value="{{lang[0]}}">{{lang[1]}}</ion-select-option>
+                    </ion-select>
+                </ion-item>
+            </ion-list>
+        </ion-slide>
+        <ion-slide style="width: 100%;" *ngIf="referee.dataSharingAgreement">
+            <form #form="ngForm">
+                <ion-item-group>
+                    <ion-item-divider color="light">Data privacy</ion-item-divider>
+                </ion-item-group>
+                <ion-item text-wrap>
+                    <ion-label style="white-space: normal; margin-top: 0 5px; font-size: 0.9em;">Sharing of my personal (fields above) data to the application users</ion-label>
+                    <span slot="end" style="margin: 5px 0;">
+                        <sharing-comp name="personnalInfoSharing" [(ngModel)]="referee.dataSharingAgreement.personnalInfoSharing"></sharing-comp>
+                    </span>
+                </ion-item>
+                <ion-item text-wrap>
+                    <ion-label style="white-space: normal; margin-top: 0 5px; font-size: 0.9em;">Sharing of my photo to the application users</ion-label>
+                    <span slot="end" style="margin: 5px 0;">
+                        <sharing-comp name="photoSharing" [(ngModel)]="referee.dataSharingAgreement.photoSharing"></sharing-comp>
+                    </span>
+                </ion-item>
+                <ion-item text-wrap>
+                    <ion-label style="white-space: normal; margin-top: 0 5px; font-size: 0.9em;">Sharing of my assessments as referee to all coaches</ion-label>
+                    <span slot="end" style="margin: 5px 0;">
+                        <sharing-comp name="refereeAssessmentSharing" [(ngModel)]="referee.dataSharingAgreement.refereeAssessmentSharing"></sharing-comp>
+                    </span>
+                </ion-item>
+                <ion-item text-wrap>
+                    <ion-label style="white-space: normal; margin: 0 5px; font-size: 0.9em;">Sharing of my coachings as referee to all coaches</ion-label>
+                    <span slot="end" style="margin: 5px 0;">
+                        <sharing-comp name="refereeCoachingInfoSharing" [(ngModel)]="referee.dataSharingAgreement.refereeCoachingInfoSharing"></sharing-comp>
+                    </span>
+                </ion-item>
+            </form>
+        </ion-slide>
+    </ion-slides>
+
+    <div round *ngIf="error && error.length > 0" class="alert alert-danger">
+        Please fix the following problem(s):
+        <ul>
+            <li *ngFor="let er of error">{{er}}</li>
+        </ul>
+    </div>
+
+    <div style="text-align: center;">
+        <ion-button shape="round" (click)="save()">Save</ion-button>
+        <ion-button shape="round" (click)="cancel()" style="margin-left: 10px;">Cancel</ion-button>
+    </div>
+
+</ion-content>

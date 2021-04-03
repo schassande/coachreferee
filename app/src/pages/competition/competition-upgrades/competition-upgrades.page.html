@@ -1,0 +1,83 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="back()">
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title style="text-align: center;">Competition Upgrades</ion-title>
+        <ion-buttons slot="end">
+            <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-item *ngIf="!loading">
+        <ion-label>Upgrade to:</ion-label>
+        <ion-select slot="end" [(ngModel)]="currentUgradeLevel" (ionChange)="onUpgradeLevelChanged()">
+            <ion-select-option *ngFor="let upgradeLevel of upgradeLevels" [value]="upgradeLevel">{{upgradeLevel}}</ion-select-option>
+        </ion-select>
+    </ion-item>
+    <ion-item *ngIf="!loading">
+        <ion-label>Referee:</ion-label>
+        <ion-select slot="end" [(ngModel)]="refereeToUpgrade" (ionChange)="onRefereeChanged()">
+            <ion-select-option *ngFor="let ru of refereesToUpgrade" [value]="ru">{{ru.referee.firstName}} ({{ru.referee.shortName}})</ion-select-option>
+        </ion-select>
+    </ion-item>
+    <ion-item *ngIf="refereeToUpgrade">
+        <ion-label>
+            <div style="text-align: center; font-size: 1.2em; font-weight: bold;">{{refereeToUpgrade.referee.firstName}} {{refereeToUpgrade.referee.lastName}} ({{refereeToUpgrade.referee.shortName}}) - {{refereeToUpgrade.referee.referee.refereeCategory}}</div>
+            <div *ngFor="let coaching of refereeToUpgrade.coachings" style="margin-top: 20px;">
+                <span style="font-weight: bold;">{{coachingService.getCoachingDateAsString(coaching)}} &nbsp;&nbsp;{{coaching.timeSlot}} &nbsp;&nbsp;Field {{coaching.field}}, &nbsp;&nbsp;{{coaching.gameCategory}}</span>
+                <div> Referees: <span *ngFor="let cref of coaching.referees; last as isLast">{{cref.refereeShortName}}<span *ngIf="!isLast">, </span></span>
+                    <div *ngIf="coaching.referees[getRefIdx(coaching, refereeToUpgrade.referee.id)]; let coachingRef">
+                        <div *ngFor="let positiveFeedback of coachingRef.positiveFeedbacks" class="feedback">+
+                            <span [ngClass]="{'delivered': positiveFeedback.deliver}">{{positiveFeedback.skillName}}</span></div>
+                        <div *ngFor="let feedback of coachingRef.feedbacks" class="feedback">-{{feedback.appliedLater ? '&gt;+': ''}}
+                            <span [ngClass]="{'delivered': feedback.deliver}">{{feedback.problemShortDesc}}</span></div>
+                        <div>upgrade: {{coachingRef.upgrade}}, rank: {{coachingRef.rank}}</div>
+                    </div>
+                </div>
+            </div>
+        </ion-label>
+    </ion-item>
+    <div *ngIf="refereeToUpgrade && competitionRefereeUpgrade">
+        <h1 style="text-align: center;">Panel decision</h1>
+        <div>
+            <div>
+                <div class="decision-table-col-coach decision-table-header">Coach</div>
+                <div class="decision-table-col decision-table-header">Yes</div>
+                <div class="decision-table-col decision-table-header">Possible</div>
+                <div class="decision-table-col decision-table-header">No</div>
+                <div class="decision-table-col decision-table-header">DNS</div>
+            </div>
+            <div *ngFor="let vote of votes">
+                <div class="decision-table-col-coach">{{getCoachShortName(vote.coachId)}}</div>
+                <ion-radio-group [(ngModel)]="vote.vote" (ionChange)="setVote(vote)">
+                    <div class="decision-table-col">
+                        <ion-radio value="Yes" [disabled]="!isPanelDirector && vote.coachId !== userId"></ion-radio>
+                    </div>
+                    <div class="decision-table-col">
+                        <ion-radio value="Possible" [disabled]="!isPanelDirector && vote.coachId !== userId"></ion-radio>
+                    </div>
+                    <div class="decision-table-col">
+                        <ion-radio value="No" [disabled]="!isPanelDirector && vote.coachId !== userId"></ion-radio>
+                    </div>
+                    <div class="decision-table-col">
+                        <ion-radio value="DNS" [disabled]="!isPanelDirector && vote.coachId !== userId"></ion-radio>
+                    </div>
+                </ion-radio-group>
+            </div>
+            <div>
+                <div class="decision-table-col-coach" style="font-weight: bold;">Decision</div>
+                <ion-radio-group [(ngModel)]="competitionRefereeUpgrade.finalDecision" (ionChange)="setDecision()">
+                    <div class="decision-table-col"><ion-radio value="Yes" [disabled]="!isPanelDirector"></ion-radio></div>
+                    <div class="decision-table-col"><ion-radio value="Possible" [disabled]="!isPanelDirector"></ion-radio></div>
+                    <div class="decision-table-col"><ion-radio value="No" [disabled]="!isPanelDirector"></ion-radio></div>
+                    <div class="decision-table-col"><ion-radio value="DNS" [disabled]="!isPanelDirector"></ion-radio></div>
+                </ion-radio-group>
+            </div>
+        </div>
+    </div>
+</ion-content>

@@ -1,0 +1,2 @@
+firstName, lastName, shortName, country, email, gender, mobilePhones, speakingLanguages, refereeLevel, refereeCategory, nextRefereeLevel
+John, Toto, JTO, France, toto@gmail.com, M, 0673160932, "French, English", EURO_3, OPEN, EURO_4
