@@ -1,0 +1,178 @@
+<!DOCTYPE  html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>doc</title>
+    <style>
+      /*github.com style (c) Vasily Polovnyov <vast@whiteants.net>*/
+      pre code {
+        display: block; padding: 0.5em;
+        color: #333;
+        background: #f8f8ff
+      }
+      pre .comment,
+      pre .template_comment,
+      pre .diff .header,
+      pre .javadoc {
+        color: #998;
+        font-style: italic
+      }
+      pre .keyword,
+      pre .css .rule .keyword,
+      pre .winutils,
+      pre .javascript .title,
+      pre .nginx .title,
+      pre .subst,
+      pre .request,
+      pre .status {
+        color: #333;
+        font-weight: bold
+      }
+      pre .number,
+      pre .hexcolor,
+      pre .ruby .constant {
+        color: #099;
+      }
+      pre .string,
+      pre .tag .value,
+      pre .phpdoc,
+      pre .tex .formula {
+        color: #d14
+      }
+      pre .title,
+      pre .id {
+        color: #900;
+        font-weight: bold
+      }
+      pre .javascript .title,
+      pre .lisp .title,
+      pre .clojure .title,
+      pre .subst {
+        font-weight: normal
+      }
+      pre .class .title,
+      pre .haskell .type,
+      pre .vhdl .literal,
+      pre .tex .command {
+        color: #458;
+        font-weight: bold
+      }
+      pre .tag,
+      pre .tag .title,
+      pre .rules .property,
+      pre .django .tag .keyword {
+        color: #000080;
+        font-weight: normal
+      }
+      pre .attribute,
+      pre .variable,
+      pre .lisp .body {
+        color: #008080
+      }
+      pre .regexp {
+        color: #009926
+      }
+      pre .class {
+        color: #458;
+        font-weight: bold
+      }
+      pre .symbol,
+      pre .ruby .symbol .string,
+      pre .lisp .keyword,
+      pre .tex .special,
+      pre .prompt {
+        color: #990073
+      }
+      pre .built_in,
+      pre .lisp .title,
+      pre .clojure .built_in {
+        color: #0086b3
+      }
+      pre .preprocessor,
+      pre .pi,
+      pre .doctype,
+      pre .shebang,
+      pre .cdata {
+        color: #999;
+        font-weight: bold
+      }
+      pre .deletion {
+        background: #fdd
+      }
+      pre .addition {
+        background: #dfd
+      }
+      pre .diff .change {
+        background: #0086b3
+      }
+      pre .chunk {
+        color: #aaa
+      }
+    </style>
+  </head>
+  <body>  
+    <h1 id="coaching-game">Coaching Game</h1>
+<h2 id="introduction">Introduction</h2>
+<p>This page is the main page for coaching a game. You can can coach one, two or three referees.
+For each referee, you can note positive points and axis of improvment.</p>
+<h2 id="referee-tab-selector">Referee tab selector</h2>
+<p>On the top there is a tab for each referee permitting you to switch between them. The selected referee has yellow/gold background.
+Under the referee tab selector, more information about the selected referee are shown: first name, last name and referee level</p>
+<p>In referee tab selector, each referee is named by its short name and there is two small numbers:</p>
+<ul>
+<li>The first is the number of strengths you noted.</li>
+<li>The second is the number of axis of improvment you noted</li>
+</ul>
+<p>When a number value is zero, the number is shown in red. It means you have no feedback for him.</p>
+<h2 id="positive-point">Positive point</h2>
+<p>To add a positive point to the selected referee, click on the <strong>+ green</strong> button (bottom right).
+A new page is shown. On this page you can write:</p>
+<ul>
+<li>a <strong>short description</strong> of the positive point</li>
+<li>a <strong>full description</strong> of the positive point</li>
+<li>you can set the <strong>period</strong> number of the observed point</li>
+<li>The <strong>deliver</strong> field indicates if you decided to deliver this point to the referee during a coaching session.</li>
+</ul>
+<p>To register the positive point, simply click on the back arrow on top left corner. If the short description is empty, no feedback is added to the coaching.
+When you come back on the coaching page, the new positive point is listed in the corresponding section. In this section, on each lind of positive point, you have two icons:</p>
+<ul>
+<li>the <strong>!</strong> icon represents the <strong>deliver</strong>&#39;** field. Click on it to change the status</li>
+<li>The <strong>trash</strong> icon at the end permit to delete the item.</li>
+</ul>
+<h2 id="axis-of-improvment">Axis of improvment</h2>
+<p>To add an axis of improvment to the selected referee, click on the <strong>+ red</strong> button (bottom right). A page is shown : Edition of an axis of improvment.
+This page offers a search bar on the top. By writing words in this section you search PRO (<strong>Problem, Remedy, Outcome</strong>) elements from your library. Two case:</p>
+<ul>
+<li>If you find an existing PRO which matches to the axis of improvment you want to note, click on the item. The form below is filled by the PRO description.</li>
+<li>If no PRO exists or matches to what you want, just continue to write the in the search bar to fill the short description. Most of the time, during a game you don&#39;t have time to write the full PRO sections. You could do it later after the tournament (See PRO section for more information). Filling the short descrpition is enought to deliver you feedback.
+The page of the edition of an axis of improvment offers others features:</li>
+<li>The field <strong>Apply Later</strong> indicates if this axis has been improvment later during the game, for instance in the next period/half.</li>
+<li>The field <strong>priority</strong> permits to define a priority between the items.</li>
+<li>You can set the <strong>period</strong> number of the observed point</li>
+<li>The <strong>deliver</strong> field indicates if you decided to deliver this point to the referee during a coaching session.</li>
+<li>The button <strong>Register PRO in Library</strong> permits to store the PRO you wrote in your own library in order to reuse it in another coaching.</li>
+<li>The button <strong>Apply to ohers referees too</strong> permits to add this feedback to the others referees of the game.</li>
+</ul>
+<p>To register the axis of improvment, simply click on the back arrow on top left corner. If the short description is empty, no feedback is added to the coaching.
+When you come back on the coaching page, the new axis of improvment point is listed in the corresponding section. In this section, on each line of axis of improvment, you have three or four icons:</p>
+<ul>
+<li>The <strong>!</strong> icon represents the <strong>deliver</strong>&#39;** field. Click on it to change the status</li>
+<li>The lightning icon represents the <strong>Apply Later</strong> flag</li>
+<li>The number is <strong>period</strong> of the observed item</li>
+<li>The <strong>trash</strong> icon at the end permit to delete the item.</li>
+</ul>
+<h2 id="bottom-of-the-page">Bottom of the page</h2>
+<p>On the bottom of the page you can rank the three referee between them.</p>
+<p>When a referee is looking for an upgrade you can note a feeling about the upgrade. Possible values are the following:</p>
+<ul>
+<li>Yes: You vote <strong>yes</strong> for an upgrade</li>
+<li>DNS: It means <strong>Do Not See</strong>. You do not see the referee to evaluate. Maybe you focus your game on another referee.</li>
+<li>DNSE: It means <strong>Do Not See Enough</strong>. You do not see the referee enough on the game to evaluate. </li>
+<li>No: You vote <strong>no</strong> for an upgrade.</li>
+</ul>
+<p>The bottom of the page contains buttons with number: 1, 2. Click on the right button to set the number of the half/period. The blue button is the selection period.</p>
+
+  </body>
+</html>
+.

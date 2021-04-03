@@ -1,0 +1,117 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Coach Referee - Google Sheet Export</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="https://coachreferee.com/assets/css/main.css" />
+    <style>
+        .formLine {
+            margin: 10px 0;
+        }
+        
+        .titre {
+            font-size: 2em !important;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .itemLabel {
+            width: 20%;
+            display: inline-block;
+            margin-right: 10px;
+            text-align: right;
+        }
+        
+        .formLine .inputUrl {
+            width: 70%;
+        }
+        
+        .formLine input {
+            color: black;
+        }
+        
+        .inputDate {
+            text-align: center;
+        }
+        
+        .submit {
+            text-align: center;
+        }
+        
+        body h1 {
+            text-align: center;
+        }
+        
+        body form {
+            margin: auto;
+        }
+        
+        .warning {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body class="homepage is-preload">
+    <div id="page-wrapper">
+        <section id="main" class="wrapper style1">
+            <div class="titre">Coach Referee - Google Sheet Export</div>
+            <div class="container">
+
+                <p>Please enter the urls of the google sheets describing your tournament.</p>
+                <form action="https://script.google.com/macros/s/AKfycbzT7eJdbVK1YTi_zhCWUzR4LEQDIT5XCC49IPzYewxj8KWDZzw/exec" method="get">
+                    <div class="formLine">
+                        <div class="itemLabel">Tournament Info Url:</div><input type="url" name="tournamentInfoUrl" class="inputUrl" placeholder="https://docs.google.com/spreadsheets/..." value="https://docs.google.com/spreadsheets/d/16rZ7IOiZdLNno6C-vFDJxy_tY0RsSbB5PHfnHBQeiMk/edit#gid=1762929786">
+                    </div>
+                    <div class="formLine">
+                        <div class="itemLabel">Appointment Url day 1:</div><input type="url" name="appointmentUrl1" class="inputUrl" placeholder="https://docs.google.com/spreadsheets/..." value="https://docs.google.com/spreadsheets/d/16vPKKvNs-oAuK_TW9zv5fSXS82Yk-CasMPghOKinf2U/edit#gid=1323386629">
+                    </div>
+                    <div class="formLine">
+                        <div class="itemLabel">Appointment Url day 2:</div><input type="url" name="appointmentUrl2" class="inputUrl" placeholder="https://docs.google.com/spreadsheets/..." value="https://docs.google.com/spreadsheets/d/1_QY5xca8MLffekDRz5a13s57ejimkAXTgW2N4LZDKMs/edit#gid=1756106537">
+                    </div>
+                    <div class="formLine">
+                        <div class="itemLabel">Appointment Url day 3:</div><input type="url" name="appointmentUrl3" class="inputUrl" placeholder="https://docs.google.com/spreadsheets/...">
+                    </div>
+                    <div class="formLine">
+                        <div class="itemLabel">Appointment Url day 4:</div><input type="url" name="appointmentUrl4" class="inputUrl" placeholder="https://docs.google.com/spreadsheets/...">
+                    </div>
+                    <div class="formLine">
+                        <div class="itemLabel">Appointment Url day 5:</div><input type="url" name="appointmentUrl5" class="inputUrl" placeholder="https://docs.google.com/spreadsheets/...">
+                    </div>
+                    <div class="formLine">
+                        <div class="itemLabel">Coaching Url:</div><input type="url" name="coachingUrl" class="inputUrl" placeholder="https://docs.google.com/spreadsheets/..." value="https://docs.google.com/spreadsheets/d/1PfCXrIQUsqcs5nRl5dlg6vxiGzh1WO26gP4NR0-Qmco/edit#gid=1126336899">
+                    </div>
+                    <div class="formLine">
+                        <div class="itemLabel">European Referee Url:</div><input type="url" name="refereeUrl" class="inputUrl" placeholder="https://docs.google.com/spreadsheets/..." value="https://docs.google.com/spreadsheets/d/1OeqtAZeYVnGWYl5v0-SjUaQfPasg4CS2xOsydmNkQ5o/edit#gid=615806059">
+                    </div>
+
+                    <div class="formLine">
+                        <div class="itemLabel">First date:</div><input type="date" name="firstDate" value="2019-08-03" class="inputDate">
+                    </div>
+                    <div class="formLine">
+                        <div class="itemLabel">Nb Max Slot:</div><input type="number" name="nbMaxSlot" value="15" class="inputNumber">
+                    </div>
+                    <div class="formLine">
+                        <div class="itemLabel">Nb Max Referee:</div><input type="number" name="nbMaxReferee" value="40" class="inputNumber">
+                    </div>
+                    <div class="formLine">
+                        <div class="itemLabel">nbMaxCoach:</div><input type="number" name="nbMaxCoach" value="10" class="inputNumber">
+                    </div>
+                    <div class="formLine">
+                        <div class="itemLabel">Nb Max Referee From DB:</div><input type="number" name="nbMaxRefereeFromDB" value="150" class="inputNumber">
+                    </div>
+                    <div class="formLine">
+                        <div class="itemLabel">Nb Max Coach From DB:</div><input type="number" name="nbMaxCoachFromDB" value="100" class="inputNumber">
+                    </div>
+                    <div class="submit"><input type="submit"></div>
+                    <p class="warning">Warning:: The operation takes several minutes, please wait...</p>
+                </form>
+            </div>
+        </section>
+    </div>
+</body>
+
+</html>

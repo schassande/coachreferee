@@ -1,0 +1,143 @@
+<!DOCTYPE  html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>doc</title>
+    <style>
+      /*github.com style (c) Vasily Polovnyov <vast@whiteants.net>*/
+      pre code {
+        display: block; padding: 0.5em;
+        color: #333;
+        background: #f8f8ff
+      }
+      pre .comment,
+      pre .template_comment,
+      pre .diff .header,
+      pre .javadoc {
+        color: #998;
+        font-style: italic
+      }
+      pre .keyword,
+      pre .css .rule .keyword,
+      pre .winutils,
+      pre .javascript .title,
+      pre .nginx .title,
+      pre .subst,
+      pre .request,
+      pre .status {
+        color: #333;
+        font-weight: bold
+      }
+      pre .number,
+      pre .hexcolor,
+      pre .ruby .constant {
+        color: #099;
+      }
+      pre .string,
+      pre .tag .value,
+      pre .phpdoc,
+      pre .tex .formula {
+        color: #d14
+      }
+      pre .title,
+      pre .id {
+        color: #900;
+        font-weight: bold
+      }
+      pre .javascript .title,
+      pre .lisp .title,
+      pre .clojure .title,
+      pre .subst {
+        font-weight: normal
+      }
+      pre .class .title,
+      pre .haskell .type,
+      pre .vhdl .literal,
+      pre .tex .command {
+        color: #458;
+        font-weight: bold
+      }
+      pre .tag,
+      pre .tag .title,
+      pre .rules .property,
+      pre .django .tag .keyword {
+        color: #000080;
+        font-weight: normal
+      }
+      pre .attribute,
+      pre .variable,
+      pre .lisp .body {
+        color: #008080
+      }
+      pre .regexp {
+        color: #009926
+      }
+      pre .class {
+        color: #458;
+        font-weight: bold
+      }
+      pre .symbol,
+      pre .ruby .symbol .string,
+      pre .lisp .keyword,
+      pre .tex .special,
+      pre .prompt {
+        color: #990073
+      }
+      pre .built_in,
+      pre .lisp .title,
+      pre .clojure .built_in {
+        color: #0086b3
+      }
+      pre .preprocessor,
+      pre .pi,
+      pre .doctype,
+      pre .shebang,
+      pre .cdata {
+        color: #999;
+        font-weight: bold
+      }
+      pre .deletion {
+        background: #fdd
+      }
+      pre .addition {
+        background: #dfd
+      }
+      pre .diff .change {
+        background: #0086b3
+      }
+      pre .chunk {
+        color: #aaa
+      }
+    </style>
+  </head>
+  <body>  
+    <h1 id="competition-import">Competition Import</h1>
+<p>This page permits to import a competition from a .csv file descriptor. Each ligne of the CSV file is a game of the competition. Each line describes the minimal information of a game with the referee coaching concern.</p>
+<p>On a first step you select a file from your device. The application analyses your file. If a competition with the same name already exists, the application will merge the data. For each game the referees and the coaches are analysed. If the coach are an user this app, a coaching will be created automatically.</p>
+<p>This feature is very useful in a tournament because after your allocation of the referee coches you can send them their allocation via the application.</p>
+<h2 id="about-the-csv-file-format">About the CSV file format</h2>
+<p>The CSV file must use comma as separator of columns. An header is expected with the name of columns. The columns of the CSV file are the following:</p>
+<ul>
+<li>gameId: The identifier of the game. It must be unique over the competition. It is highly recommended to provide a value. It helps to recognize on second import.</li>
+<li>competition: The name of the competition. All lines of the file MUST have the same competition name.</li>
+<li>date: The date of the first competition day. The date format is YYYY-MM-DD  (YYYY is the year over 4 digits, MM is the month number over 2 digits from 1 to 12, DD is the day number from 1 to 31)</li>
+<li>timeSlot: The time slot of the game. the format is HH:mm (HH is the hour from 0 to 24, mm is the minute from 0 to 59)</li>
+<li>field: The number of the field (1 ... )</li>
+<li>category: The category of the game. Value from: MO, WO, XO, MO30, MO35, MO40, MO45, MO50, WO27, WO30, WO35, SMX, OPEN)</li>
+<li>referee1: The short name of the first referee of the game. The short name must be the one used in the application. It is the unique way to recognize the referee from the database.</li>
+<li>referee2: Same as referee1 but it is about the second referee of the game.</li>
+<li>referee3: Same as referee1 but it is about the third referee of the game.</li>
+<li>refereeCoach1: The short name of the first referee coach of the game. The short name must be the one used in the application. It is the unique way to recognize an user of the application.</li>
+<li>refereeCoach2: Same as refereecoach1 but it is about the second referee coach of the game.</li>
+<li>refereeCoach3: Same as refereecoach1 but it is about the second referee coach of the game.</li>
+</ul>
+<h2 id="import-options">Import options</h2>
+<h3 id="existing-games">Existing games</h3>
+<p>When you import a csv file about an existing competition (the second time for instance), you can specify to update or not the existing games.</p>
+<h3 id="remove-unreferenced-games">Remove unreferenced games</h3>
+<p>When you import a csv file about an existing competition (the second time for instance), you can specify if you want to remove the games which are present in database but not listed in your csv file. This option permits to do partial imports for only new games.</p>
+
+  </body>
+</html>
+.

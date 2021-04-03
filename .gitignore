@@ -1,6 +1,5 @@
 .vscode
 hosting/app/*
-hosting/www/*
 html/*
 node_modules
 mobile/firebase-config.json
