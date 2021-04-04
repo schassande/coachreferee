@@ -54,12 +54,15 @@ export async function requestWithCorsAndId(request:any, response:any, coreFuncti
         //Verify token
         admin.auth().verifyIdToken(tokenId)
             .then((decoded: admin.auth.DecodedIdToken) => {
-                // console.log('decoded: ' + decoded);
+                console.log('decoded: ' + decoded);
                 return coreFunction(request, response, ctx)
                     .catch((err: any) => {
                         console.log(err);
                         response.status(500).send({ error: err});
                     });
+            })
+            .catch((err) => {
+                console.error(err);
             });
     });
 }

@@ -16,7 +16,7 @@ module.exports = function(grunt) {
             'git-tag': { cwd: 'app', cmd: 'git tag' },
             'app-build': { cwd: 'app', cmd: 'ionic build --prod --service-worker' },
             'function-build': { cwd: 'functions', cmd: 'npm run build' },
-            'deploy-app': { cwd: 'firebase', cmd: 'firebase deploy' },
+            'deploy-app': { cwd: '.', cmd: 'firebase deploy' },
             'set-target-deploy-www': { cwd: '.', cmd: 'firebase target:apply hosting  www coachreferee-site' },
             'set-target-deploy-app': { cwd: '.', cmd: 'firebase target:apply hosting  app refcoach-676e3' },
             'deploy-www': { cwd: 'hosting', cmd: 'firebase deploy --only hosting:www' },
