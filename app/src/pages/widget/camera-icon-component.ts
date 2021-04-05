@@ -14,7 +14,7 @@ export interface PhotoEvent {
 }
 
 @Component({
-    selector: 'camera-icon-comp',
+    selector: 'app-camera-icon-comp',
     template: `
         <span *ngIf="visible" style="margin: 0 5px;">
             <ion-spinner slot="{{slot}}" *ngIf="loading"></ion-spinner>
