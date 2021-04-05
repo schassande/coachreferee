@@ -3,7 +3,7 @@ import { DateService } from './../../../app/service/DateService';
 import { Coaching } from './../../../app/model/coaching';
 import { CoachingService } from './../../../app/service/CoachingService';
 import { Component, OnInit } from '@angular/core';
-import { map, flatMap } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
 @Component({
@@ -87,7 +87,7 @@ export class CoachingActivityPage implements OnInit {
             elem.coach = ruser.data.shortName;
           }
       }));
-      obs = obs.pipe(flatMap(() => newObs));
+      obs = obs.pipe(mergeMap(() => newObs));
     });
     obs.subscribe(() => {
       this.coachingByUsers = nbCoachingByUser.map( (elem) => elem.nb);

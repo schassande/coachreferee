@@ -10,7 +10,7 @@ import { CompetitionService } from './../../../app/service/CompetitionService';
 import { NavController, AlertController } from '@ionic/angular';
 import { Competition, RefereeRef } from './../../../app/model/competition';
 import { Component, OnInit } from '@angular/core';
-import { map, catchError, flatMap } from 'rxjs/operators';
+import { map, catchError, mergeMap } from 'rxjs/operators';
 import { of, Observable, Subject } from 'rxjs';
 import { CompetitionRefereeRankingService } from 'src/app/service/CompetitionRefereeRankingService';
 
@@ -52,7 +52,7 @@ export class CompetitionRankingPage implements OnInit, RefereeComparator {
     // load id from url path
     return this.route.paramMap.pipe(
       // load competition from the id
-      flatMap( (paramMap) => this.competitionService.get(paramMap.get('id')).pipe(
+      mergeMap( (paramMap) => this.competitionService.get(paramMap.get('id')).pipe(
         map( (rcompetition) => {
           this.competition = rcompetition.data;
           if (!this.competition) {
@@ -70,13 +70,13 @@ export class CompetitionRankingPage implements OnInit, RefereeComparator {
           return of(paramMap);
         })
       )),
-      flatMap( (paramMap) => this.competitionRefereeRankingService.get(paramMap.get('listId')).pipe(
+      mergeMap( (paramMap) => this.competitionRefereeRankingService.get(paramMap.get('listId')).pipe(
         map( (rlist) => {
           this.list = rlist.data;
           return paramMap;
         })
       )),
-      flatMap((paramMap) => this.competitionRefereeRankingService.loadReferees(
+      mergeMap((paramMap) => this.competitionRefereeRankingService.loadReferees(
         this.list.ranked ? this.list.rankedReferees : this.competition.referees).pipe(
         map( (id2referee) => {
           this.id2referee = id2referee;
@@ -84,7 +84,7 @@ export class CompetitionRankingPage implements OnInit, RefereeComparator {
           return paramMap;
         })
       )),
-      flatMap((paramMap) => {
+      mergeMap((paramMap) => {
         if (!this.list.ranked) {
           return this.competitionRefereeRankingService.loadCoachings(this.competition.id, this.list.rankedReferees).pipe(
             map((refereeId2coachings) => {

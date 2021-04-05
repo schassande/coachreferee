@@ -1,4 +1,4 @@
-import { flatMap, map, catchError } from 'rxjs/operators';
+import { mergeMap, map, catchError } from 'rxjs/operators';
 import { Observable, from, of } from 'rxjs';
 import { Component, Input, forwardRef, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/storage';
@@ -75,7 +75,7 @@ export class CameraIconComponent  {
             obs = from(child.put(imageURI, {contentType: 'image/jpeg'}).then().then());
         } else {
             obs = this.encodeImageUri(imageURI).pipe(
-                flatMap( (image64) => {
+                mergeMap( (image64) => {
                     // console.log('uploadImage: image64.length=', image64.length, imageURI);
                         // Perhaps this syntax might change, it's no error here!
                     return from(child.put(image64, {contentType: 'image/jpeg'}).then().then());
@@ -83,7 +83,7 @@ export class CameraIconComponent  {
             );
         }
         return obs.pipe(
-            flatMap( (snapshot: any) => {
+            mergeMap( (snapshot: any) => {
                     // console.log('uploadImage: snapshot=' + JSON.stringify(snapshot.metadata, null, 2));
                 const gsUrl = 'gs://' + environment.firebase.storageBucket + '/' + snapshot.metadata.fullPath;
                 // console.log('gsUrl=' + gsUrl);

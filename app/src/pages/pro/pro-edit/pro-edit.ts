@@ -7,7 +7,7 @@ import { ConnectedUserService } from '../../../app/service/ConnectedUserService'
 import { ResponseWithData } from '../../../app/service/response';
 import { PersistentPRO } from '../../../app/model/coaching';
 import { PROService } from '../../../app/service/PROService';
-import { flatMap, map } from 'rxjs/operators';
+import { mergeMap, map } from 'rxjs/operators';
 
 /**
  * Generated class for the ProEditPage page.
@@ -41,7 +41,7 @@ export class ProEditPage implements OnInit {
 
   private loadPRO(): Observable<PersistentPRO> {
     return this.route.paramMap.pipe(
-      flatMap( (paramMap) => {
+      mergeMap( (paramMap) => {
         const proId: string  = paramMap.get('id');
         if (proId !== null && proId !== '-1') {
           return this.proService.get(proId);

@@ -2,7 +2,7 @@ import { ConnectedUserService } from './../../../app/service/ConnectedUserServic
 import { NavController } from '@ionic/angular';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { map, flatMap } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 
 import { Coaching } from '../../../app/model/coaching';
 import { Competition, GameAllocation, AnalysedImport, AnalysedImportCompetition } from '../../../app/model/competition';
@@ -162,12 +162,12 @@ export class CompetitionImportComponent implements OnInit {
         return iag;
       }),
       map( () => iag.dataToImport.referees = [] ), // clean the referees of the game
-      flatMap(() => this.analyseReferee(jsonGame.referee1, iag)),
-      flatMap(() => this.analyseReferee(jsonGame.referee2, iag)),
-      flatMap(() => this.analyseReferee(jsonGame.referee3, iag)),
-      flatMap(() => this.analyseRefereeCoach(jsonGame.refereeCoach1, iag, 0)),
-      flatMap(() => this.analyseRefereeCoach(jsonGame.refereeCoach2, iag, 1)),
-      flatMap(() => this.analyseRefereeCoach(jsonGame.refereeCoach3, iag, 2)),
+      mergeMap(() => this.analyseReferee(jsonGame.referee1, iag)),
+      mergeMap(() => this.analyseReferee(jsonGame.referee2, iag)),
+      mergeMap(() => this.analyseReferee(jsonGame.referee3, iag)),
+      mergeMap(() => this.analyseRefereeCoach(jsonGame.refereeCoach1, iag, 0)),
+      mergeMap(() => this.analyseRefereeCoach(jsonGame.refereeCoach2, iag, 1)),
+      mergeMap(() => this.analyseRefereeCoach(jsonGame.refereeCoach3, iag, 2)),
       map(() => iag)
     );
   }
@@ -483,13 +483,13 @@ export class CompetitionImportComponent implements OnInit {
     this.importedDatas.gameAnalysis.forEach((ana) => {
       ana.dataToImport.refereeCoaches.forEach((refco) => {
         if (refco.coachingId) {
-          obs = obs.pipe(flatMap(() => this.updateCoaching(ana, refco)));
+          obs = obs.pipe(mergeMap(() => this.updateCoaching(ana, refco)));
         } else if (refco.coachId && refco.coachShortName) {
-          obs = obs.pipe(flatMap(() => this.createCoaching(ana, refco)));
+          obs = obs.pipe(mergeMap(() => this.createCoaching(ana, refco)));
         }
       });
     });
-    obs = obs.pipe(flatMap(() => this.competitionService.save(this.importedDatas.dataToImport)));
+    obs = obs.pipe(mergeMap(() => this.competitionService.save(this.importedDatas.dataToImport)));
     obs.subscribe((rcomp) => {
       if (rcomp.data) {
         this.navController.navigateRoot(`/competition/edit/${rcomp.data.id}`);
@@ -507,7 +507,7 @@ export class CompetitionImportComponent implements OnInit {
   updateCoaching(ana: AnalysedImport<GameAllocation>,
                  refco: {coachId: string, coachShortName: string, coachingId: string}): Observable<any> {
     return this.coachingService.get(refco.coachingId).pipe(
-      flatMap((rcoaching) => {
+      mergeMap((rcoaching) => {
         if (!rcoaching.data) {
           if (refco.coachId) {
             // the coaching does not exist any more, than re create it
@@ -531,7 +531,7 @@ export class CompetitionImportComponent implements OnInit {
           let obs: Observable<any> = this.createCoaching(ana, refco);
           if (!coachingStarted) {
             // delete the coaching beacause it is not already started
-            obs = obs.pipe(flatMap(() => this.coachingService.delete(refco.coachingId)));
+            obs = obs.pipe(mergeMap(() => this.coachingService.delete(refco.coachingId)));
           }
           return obs;
         } else if (coachingStarted) {

@@ -3,7 +3,7 @@ import { DateService } from '../../../app/service/DateService';
 import { NavController, ToastController } from '@ionic/angular';
 import { UserService } from '../../../app/service/UserService';
 import { Xp, CoachingDay } from '../../../app/model/xphistory';
-import { map, flatMap, catchError } from 'rxjs/operators';
+import { map, mergeMap, catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { ConnectedUserService } from '../../../app/service/ConnectedUserService';
 import { User } from '../../../app/model/user';
@@ -52,7 +52,7 @@ export class XpListComponent implements OnInit {
   public ngOnInit() {
     this.helpService.setHelp('xp-list');
     this.computeCoaches().pipe(
-      flatMap(() => this.computeXps())
+      mergeMap(() => this.computeXps())
     ).subscribe();
   }
 

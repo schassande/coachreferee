@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { map, flatMap } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { NavController } from '@ionic/angular';
 
@@ -42,7 +42,7 @@ export class SkillEditPage implements OnInit {
 
   ngOnInit() {
     this.route.paramMap.pipe(
-      flatMap((paramMap: ParamMap) => {
+      mergeMap((paramMap: ParamMap) => {
         this.skillProfileId = paramMap.get('skillProfileid');
         this.skillSetIdx = parseInt(paramMap.get('skillSetIdx'), 10);
         this.skillIdx = parseInt(paramMap.get('skillIdx'), 10);

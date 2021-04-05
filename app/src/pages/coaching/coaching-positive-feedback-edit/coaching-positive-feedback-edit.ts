@@ -1,6 +1,6 @@
 import { HelpService } from './../../../app/service/HelpService';
 import { Component, OnInit } from '@angular/core';
-import { flatMap, map } from 'rxjs/operators';
+import { mergeMap, map } from 'rxjs/operators';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { NavController } from '@ionic/angular';
@@ -46,7 +46,7 @@ export class CoachingPositiveFeedbackEditPage implements OnInit {
     this.helpService.setHelp('coaching-game-positive-point');
     this.appCoach = this.connectedUserService.getCurrentUser();
     this.route.paramMap.pipe(
-      flatMap( (paramMap: ParamMap) => {
+      mergeMap( (paramMap: ParamMap) => {
         this.coachingId = paramMap.get('id');
         this.refereeIndex = parseInt(paramMap.get('refereeIdx'), 10);
         this.feedbackIndex = parseInt(paramMap.get('feedbackIdx'), 10);

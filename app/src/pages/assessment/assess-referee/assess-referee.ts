@@ -15,7 +15,7 @@ import { EvaluationRequirement } from '../../../app/model/skill';
 import { Referee } from '../../../app/model/user';
 import { SkillProfile } from '../../../app/model/skill';
 
-import { flatMap, map } from 'rxjs/operators';
+import { mergeMap, map } from 'rxjs/operators';
 
 /**
  * Generated class for the AssessRefereePage page.
@@ -48,14 +48,14 @@ export class AssessRefereePage implements OnInit {
   ngOnInit() {
     this.bookmarkService.clearContext();
     this.loadAssessment().pipe(
-      flatMap(() => this.loadReferee()),
-      flatMap(() => this.loadProfile())
+      mergeMap(() => this.loadReferee()),
+      mergeMap(() => this.loadProfile())
     ).subscribe(this.bookmarkPage.bind(this));
   }
 
   private loadAssessment(): Observable<ResponseWithData<Assessment>> {
     return this.route.paramMap.pipe(
-      flatMap( (paramMap: ParamMap) => this.assessmentService.get(paramMap.get('id'))),
+      mergeMap( (paramMap: ParamMap) => this.assessmentService.get(paramMap.get('id'))),
       map((response: ResponseWithData<Assessment>) => {
         this.assessment = response.data;
         console.log('Assessment loaded: ' + this.assessment.id);

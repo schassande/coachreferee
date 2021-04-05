@@ -1,7 +1,7 @@
 import { Coaching } from './../model/coaching';
 import { CoachingService } from './CoachingService';
 import { ToolService } from './ToolService';
-import { map, flatMap } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { ToastController } from '@ionic/angular';
 import { Injectable } from '@angular/core';
 import { Observable, of, forkJoin } from 'rxjs';

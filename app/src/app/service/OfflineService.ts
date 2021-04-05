@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, Query } from '@angular/fire/firestore';
 import { Observable, from, of } from 'rxjs';
-import { flatMap } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 
 import { AppSettingsService } from './AppSettingsService';
 import { AssessmentService } from './AssessmentService';
@@ -33,7 +33,7 @@ export class OfflinesService  {
     public switchOfflineMode(): Observable<LocalAppSettings> {
         let settings = null;
         return this.appSettingsService.get().pipe(
-            flatMap((s: LocalAppSettings) => {
+            mergeMap((s: LocalAppSettings) => {
                 settings = s;
                 let obs: Observable<any> = null;
                 if (settings.forceOffline) {
@@ -42,12 +42,12 @@ export class OfflinesService  {
                 } else {
                     // preload data
                     obs = this.skillProfileService.preload().pipe(
-                        flatMap(() => this.refereeService.preload()),
-                        flatMap(() => this.proService.preload()),
-                        flatMap(() => this.coachingService.preload()),
-                        flatMap(() => this.assessmentService.preload()),
-                        flatMap(() => this.competitionService.preload()),
-                        flatMap(() => {
+                        mergeMap(() => this.refereeService.preload()),
+                        mergeMap(() => this.proService.preload()),
+                        mergeMap(() => this.coachingService.preload()),
+                        mergeMap(() => this.assessmentService.preload()),
+                        mergeMap(() => this.competitionService.preload()),
+                        mergeMap(() => {
                             // for admin preload user list
                             if (this.connectedUserService.isConnected() && this.connectedUserService.getCurrentUser().role === 'ADMIN') {
                                 return this.userService.preload();
@@ -56,12 +56,12 @@ export class OfflinesService  {
                             }
                         }),
                         // then disable the network
-                        flatMap(() => from(this.firestore.firestore.disableNetwork().then(() => console.log('Offline')))),
+                        mergeMap(() => from(this.firestore.firestore.disableNetwork().then(() => console.log('Offline')))),
                     );
                 }
                 // store the offline mode
                 return obs.pipe(
-                    flatMap( () => {
+                    mergeMap( () => {
                         settings.forceOffline = !settings.forceOffline;
                         return this.appSettingsService.save(settings);
                     })

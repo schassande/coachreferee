@@ -5,7 +5,7 @@ import { DateService } from './../../../app/service/DateService';
 import { ModalController } from '@ionic/angular';
 import { Coaching } from 'src/app/model/coaching';
 import { RefereeService } from 'src/app/service/RefereeService';
-import { flatMap, map } from 'rxjs/operators';
+import { mergeMap, map } from 'rxjs/operators';
 import { Observable, forkJoin } from 'rxjs';
 import { Referee } from './../../../app/model/user';
 import { CoachingService } from './../../../app/service/CoachingService';

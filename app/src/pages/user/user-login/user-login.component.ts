@@ -1,7 +1,7 @@
 import { AngularFirestore, Query } from '@angular/fire/firestore';
 import { AppSettingsService } from './../../../app/service/AppSettingsService';
 import { LocalAppSettings } from './../../../app/model/settings';
-import { map, flatMap } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { ConnectedUserService } from './../../../app/service/ConnectedUserService';
 import { ResponseWithData } from './../../../app/service/response';
 import { User } from './../../../app/model/user';

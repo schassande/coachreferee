@@ -9,7 +9,7 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController, NavController, ToastController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { flatMap, map, catchError } from 'rxjs/operators';
+import { mergeMap, map, catchError } from 'rxjs/operators';
 import { RefereeService } from '../../../app/service/RefereeService';
 import { ResponseWithData } from '../../../app/service/response';
 import { CoachingService } from '../../../app/service/CoachingService';
@@ -69,7 +69,7 @@ export class CoachingEditPage implements OnInit {
     this.helpService.setHelp('coaching-edit');
     this.appCoach = this.connectedUserService.getCurrentUser();
     this.loadParams().pipe(
-      flatMap(() => this.loadCoaching()),
+      mergeMap(() => this.loadCoaching()),
       map((response: ResponseWithData<Coaching>) => {
         // console.log('CoachingEdit: loaded coaching, response=' + JSON.stringify(response));
         this.coaching = response.data;
@@ -111,7 +111,7 @@ export class CoachingEditPage implements OnInit {
 
   private loadCoaching(): Observable<ResponseWithData<Coaching>> {
     return this.route.paramMap.pipe(
-      flatMap( (paramMap) => {
+      mergeMap( (paramMap) => {
         return this.coachingService.get(paramMap.get('id'));
       })
     );

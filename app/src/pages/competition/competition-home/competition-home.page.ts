@@ -1,5 +1,5 @@
 import { UserService } from './../../../app/service/UserService';
-import { flatMap, map, catchError } from 'rxjs/operators';
+import { mergeMap, map, catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { ConnectedUserService } from './../../../app/service/ConnectedUserService';
 import { CompetitionService } from './../../../app/service/CompetitionService';
@@ -45,7 +45,7 @@ export class CompetitionHomePage implements OnInit {
     // load id from url path
     return this.route.paramMap.pipe(
       // load competition from the id
-      flatMap( (paramMap) => this.competitionService.get(paramMap.get('id'))),
+      mergeMap( (paramMap) => this.competitionService.get(paramMap.get('id'))),
       map( (rcompetition) => {
         this.competition = rcompetition.data;
         if (!this.competition) {
@@ -58,7 +58,7 @@ export class CompetitionHomePage implements OnInit {
         return this.competition;
       }),
       // load competition owner info
-      flatMap( () => {
+      mergeMap( () => {
         this.owner = '';
         console.log('competition.ownerId=' + this.competition.ownerId);
         if (this.competition && this.competition.ownerId) {

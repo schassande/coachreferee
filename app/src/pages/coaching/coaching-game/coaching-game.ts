@@ -7,7 +7,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { AlertController, NavController, IonSegment } from '@ionic/angular';
 import { Observable, Subscription } from 'rxjs';
-import { flatMap, map } from 'rxjs/operators';
+import { mergeMap, map } from 'rxjs/operators';
 
 import { EmailService } from '../../../app/service/EmailService';
 import { ConnectedUserService } from '../../../app/service/ConnectedUserService';
@@ -151,7 +151,7 @@ export class CoachingGamePage implements OnInit {
 
   private loadCoaching(): Observable<ResponseWithData<Coaching>> {
     return this.route.paramMap.pipe(
-      flatMap( (paramMap: ParamMap) => {
+      mergeMap( (paramMap: ParamMap) => {
         const id = paramMap.get('id');
         return this.coachingService.get(id);
       })
@@ -160,7 +160,7 @@ export class CoachingGamePage implements OnInit {
 
   private loadingReferees() {
     this.coachingService.loadingReferees(this.coaching, this.id2referee).pipe(
-      flatMap( () => {
+      mergeMap( () => {
         // referee loaded
         this.refereesLoaded = true;
         return this.route.queryParamMap;

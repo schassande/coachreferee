@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
-import { flatMap, map } from 'rxjs/operators';
+import { mergeMap, map } from 'rxjs/operators';
 import { Observable, forkJoin, of } from 'rxjs';
 
 import { CompetitionService } from './../../../app/service/CompetitionService';
@@ -49,7 +49,7 @@ export class RefereeSelectPage implements OnInit {
       // console.log('RefereeSelectPage.getRefereesDatabase(): load competition');
       // load the competition
       return this.competitionService.get(this.competitionId).pipe(
-        flatMap((rcomp) => {
+        mergeMap((rcomp) => {
           // console.log('RefereeSelectPage.getRefereesDatabase(): competition=', rcomp.data);
           this.refereesDatabase = [];
           if (rcomp.data) {
@@ -78,7 +78,7 @@ export class RefereeSelectPage implements OnInit {
 
   private searchReferee() {
     this.getRefereesDatabase().pipe(
-      flatMap( (refDb: Referee[]) => {
+      mergeMap( (refDb: Referee[]) => {
         if (!refDb || refDb.length === 0) {
           // search in the global database of referees through the service
           return this.refereeService.searchReferees(this.searchInput);

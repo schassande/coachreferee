@@ -11,7 +11,7 @@ import { CompetitionService } from './../../../app/service/CompetitionService';
 import { User } from './../../../app/model/user';
 import { Competition } from './../../../app/model/competition';
 import { Component, OnInit } from '@angular/core';
-import { map, flatMap, catchError } from 'rxjs/operators';
+import { map, mergeMap, catchError } from 'rxjs/operators';
 import { of, Observable, forkJoin } from 'rxjs';
 import { ResponseWithData } from 'src/app/service/response';
 
@@ -52,7 +52,7 @@ export class CompetitionCoachesPage implements OnInit {
     // load id from url path
     return this.route.paramMap.pipe(
       // load competition from the id
-      flatMap( (paramMap) => this.competitionService.get(paramMap.get('id'))),
+      mergeMap( (paramMap) => this.competitionService.get(paramMap.get('id'))),
       map( (rcompetition) => {
         this.competition = rcompetition.data;
         if (!this.competition) {
@@ -66,7 +66,7 @@ export class CompetitionCoachesPage implements OnInit {
         return this.competition;
       }),
       // load coaches
-      flatMap(() => this.loadCoaches()),
+      mergeMap(() => this.loadCoaches()),
       catchError((err) => {
         console.log('loadCompetition error: ', err);
         this.loading = false;

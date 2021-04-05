@@ -5,7 +5,7 @@ import { AngularFireFunctions } from '@angular/fire/functions';
 import { ToastController } from '@ionic/angular';
 import { AngularFirestore, Query } from '@angular/fire/firestore';
 import { Observable, of } from 'rxjs';
-import { map, flatMap } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { Assessment } from './../model/assessment';
 import { Referee } from './../model/user';
 import { AppSettingsService } from './AppSettingsService';
@@ -63,7 +63,7 @@ export class InvitationService extends RemotePersistentDataService<Invitation> {
                 error: { error: 'wrong email address', errorCode: 1 }});
         }
         return this.getByEmail(email).pipe(
-            flatMap( (rinv) => {
+            mergeMap( (rinv) => {
                 if (rinv.data) { // invitation already exists
                     if (rinv.data.expirationDate.getTime() < new Date().getTime()) {
                         // Postpone the expiration date
@@ -87,7 +87,7 @@ export class InvitationService extends RemotePersistentDataService<Invitation> {
                     return this.save(invitation);
                 }
             }),
-           flatMap( (rinv) => {
+           mergeMap( (rinv) => {
                if (rinv.data) {
                 return this.angularFireFunctions.httpsCallable('sendInvitation')({ invitationId: rinv.data.id });
                } else {

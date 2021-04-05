@@ -1,7 +1,7 @@
 import { ConnectedUserService } from './../../app/service/ConnectedUserService';
 import { COACH_LEVELS_EURO } from './coachLevelEuropean';
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { map, flatMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { AlertController, ToastController, NavController } from '@ionic/angular';
 import { Observable, of, concat, forkJoin } from 'rxjs';
 import { UserService } from '../../app/service/UserService';
@@ -29,7 +29,7 @@ import * as csv from 'csvtojson';
  * on Ionic pages and navigation.
  */
 @Component({
-  selector: 'page-settings',
+  selector: 'app-page-settings',
   templateUrl: 'settings.html',
 })
 export class SettingsPage implements OnInit {
@@ -345,21 +345,5 @@ export class SettingsPage implements OnInit {
     if (event.direction === 4) {
       this.navController.navigateRoot(`/home`);
     }
-  }
-  migrateUserRole() {
-    this.userService.all().pipe(
-      flatMap((rusers) => {
-        return forkJoin(rusers.data.map((user) => {
-          if (!user.applications) {
-            user.applications = [{
-              name: CurrentApplicationName,
-              roles: [user.role]
-            }];
-            return this.userService.save(user);
-          }
-          return of('');
-        }));
-      })
-    ).subscribe();
   }
 }

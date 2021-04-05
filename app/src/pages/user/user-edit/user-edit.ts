@@ -1,7 +1,7 @@
 import { InvitationService } from './../../../app/service/InvitationService';
 import { PersistentDataUpdater } from '../../../app/service/PersistentDataFonctions';
 import { Component, OnInit } from '@angular/core';
-import { map, flatMap } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { LoadingController, NavController, ToastController, AlertController } from '@ionic/angular';
 import { ConnectedUserService } from '../../../app/service/ConnectedUserService';
@@ -162,7 +162,7 @@ export class UserEditPage implements OnInit {
     if (this.isValid()) {
       this.saving = true;
       this.invitationService.getByEmail(this.user.email).pipe(
-        flatMap((rinv) => {
+        mergeMap((rinv) => {
           if (rinv.data && rinv.data.expirationDate.getTime() > new Date().getTime()) {
             console.log('The user has been invited.');
             this.user.accountStatus = 'ACTIVE';

@@ -11,7 +11,7 @@ import { ConnectedUserService } from '../../../app/service/ConnectedUserService'
 import { PRO, Feedback, PersistentPRO } from '../../../app/model/coaching';
 import { AlertOptions, AlertInput } from '@ionic/core';
 import { map } from 'rxjs/operators';
-import { flatMap } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
 
 /**
@@ -57,7 +57,7 @@ export class CoachingImprovmentFeedbackEditPage implements OnInit {
     // console.log('ionViewDidLoad CoachingImprovmentFeedbackEditPage');
     this.appCoach = this.connectedUserService.getCurrentUser();
     this.route.paramMap.pipe(
-      flatMap( (paramMap: ParamMap) => {
+      mergeMap( (paramMap: ParamMap) => {
         this.coachingId = paramMap.get('id');
         this.refereeIndex = parseInt(paramMap.get('refereeIdx'), 10);
         this.feedbackIndex = parseInt(paramMap.get('feedbackIdx'), 10);

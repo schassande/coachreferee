@@ -2,7 +2,7 @@ import { REFEREE_COACH_LEVELS, REFEREE_LEVELS } from '../../../app/model/user';
 import { AlertController, NavController } from '@ionic/angular';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Params } from '@angular/router';
-import { map, flatMap } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { ResponseWithData } from '../../../app/service/response';
 import { SkillProfile, SkillSet, ProfileType } from '../../../app/model/skill';
@@ -58,8 +58,8 @@ export class SkillProfileEditPage implements OnInit {
         }
         return this.profileType;
       }),
-      flatMap(() => this.route.paramMap),
-      flatMap( (paramMap: ParamMap) => {
+      mergeMap(() => this.route.paramMap),
+      mergeMap( (paramMap: ParamMap) => {
         this.skillProfileId = paramMap.get('skillProfileid');
         if (this.skillProfileId) {
           return this.skillProfileService.get(this.skillProfileId);

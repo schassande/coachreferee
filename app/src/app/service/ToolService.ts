@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { flatMap } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 
 @Injectable()
 export class ToolService {
@@ -30,7 +30,7 @@ export class ToolService {
 
     runObservableInSequence(obsArray: Observable<boolean>[], idx = 0): Observable<any> {
         return obsArray[idx].pipe(
-            flatMap((continu) => {
+            mergeMap((continu) => {
                 if (continu && obsArray.length > idx + 1) {
                     return this.runObservableInSequence(obsArray, idx + 1);
                 } else {

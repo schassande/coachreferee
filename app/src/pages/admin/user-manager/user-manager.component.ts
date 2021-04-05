@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { User, AccountStatus } from './../../../app/model/user';
 import { ResponseWithData } from './../../../app/service/response';
 import { UserService } from './../../../app/service/UserService';
-import { flatMap, map } from 'rxjs/operators';
+import { mergeMap, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-user-manager',
@@ -106,7 +106,7 @@ export class UserManagerComponent implements OnInit {
   validate(user: User) {
     user.accountStatus = 'ACTIVE';
     this.userService.save(user).pipe(
-      flatMap(() => this.userService.sendAccountValidated(user.id)),
+      mergeMap(() => this.userService.sendAccountValidated(user.id)),
       map(() => {
         this.computeStats();
       })
@@ -116,7 +116,7 @@ export class UserManagerComponent implements OnInit {
   unvalidate(user: User) {
     user.accountStatus = 'DELETED';
     this.userService.save(user).pipe(
-      flatMap(() => this.userService.sendAccountNotValidated(user.id)),
+      mergeMap(() => this.userService.sendAccountNotValidated(user.id)),
       map(() => {
         this.users = this.sort(this.users);
         this.computeStats();

@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   firebase: {
-    apiKey: 'XXXXXXXXXXXXXXXXXXXXX',
+    apiKey: 'AIzaSyCkimKVeEHQi3PilLUkJ8jl6XzTaZr_5FE',
     authDomain: 'refcoach-676e3.firebaseapp.com',
     databaseURL: 'https://refcoach-676e3.firebaseio.com',
     projectId: 'refcoach-676e3',

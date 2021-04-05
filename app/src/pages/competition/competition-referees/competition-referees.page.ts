@@ -3,7 +3,7 @@ import { Referee } from './../../../app/model/user';
 import { RefereeSelectPage } from './../../referee/referee-select/referee-select';
 import { ToolService } from './../../../app/service/ToolService';
 import { ResponseWithData } from './../../../app/service/response';
-import { flatMap, map, catchError } from 'rxjs/operators';
+import { mergeMap, map, catchError } from 'rxjs/operators';
 import { Observable, of, from, forkJoin } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
@@ -49,7 +49,7 @@ export class CompetitionRefereesPage implements OnInit {
     // load id from url path
     return this.route.paramMap.pipe(
       // load competition from the id
-      flatMap( (paramMap) => this.competitionService.get(paramMap.get('id'))),
+      mergeMap( (paramMap) => this.competitionService.get(paramMap.get('id'))),
       map( (rcompetition) => {
         this.competition = rcompetition.data;
         if (!this.competition) {
@@ -62,7 +62,7 @@ export class CompetitionRefereesPage implements OnInit {
         return this.competition;
       }),
       // load referees
-      flatMap(() => this.loadReferees()),
+      mergeMap(() => this.loadReferees()),
       catchError((err) => {
         console.log('loadCompetition error: ', err);
         this.loading = false;
@@ -196,7 +196,7 @@ export class CompetitionRefereesPage implements OnInit {
     });
     if (obs.length) {
       forkJoin(obs).pipe(
-        flatMap(() => this.competitionService.save(this.competition)),
+        mergeMap(() => this.competitionService.save(this.competition)),
         map(() => {
           this.refereesImported(refShortNames.length, addedRefereeNumber, unknownShortNames, alreadyAddNames);
         })

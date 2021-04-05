@@ -1,6 +1,6 @@
 import { Competition, CoachRef } from './../../../app/model/competition';
 import { CompetitionService } from './../../../app/service/CompetitionService';
-import { flatMap, map } from 'rxjs/operators';
+import { mergeMap, map } from 'rxjs/operators';
 import { CompetitionRefereeUpgrade, UpgradeVote } from './../../../app/model/upgrade';
 import { CompetitionRefereeUpgradeService } from './../../../app/service/CompetitionRefereeUpgradeService';
 import { Referee } from './../../../app/model/user';
@@ -50,7 +50,7 @@ export class RefereeSeasonUpgradeComponent implements OnInit {
     this.referee = referee;
     const year = new Date().getFullYear().toString();
     this.competitionRefereeUpgradeService.findCompetitionRefereeUpgradeByReferee(this.referee.id, year).pipe(
-      flatMap((rupgrades) => {
+      mergeMap((rupgrades) => {
         this.upgrades = rupgrades.data;
         console.log('findCompetitionRefereeUpgradeByReferee(', this.referee.id, ',', year, ')', rupgrades.data);
         const obs: Observable<any>[] = [of('')];
