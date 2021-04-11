@@ -49,7 +49,7 @@ export class OfflinesService  {
                         mergeMap(() => this.competitionService.preload()),
                         mergeMap(() => {
                             // for admin preload user list
-                            if (this.connectedUserService.isConnected() && this.connectedUserService.getCurrentUser().role === 'ADMIN') {
+                            if (this.connectedUserService.isConnected() && this.connectedUserService.isAdmin()) {
                                 return this.userService.preload();
                             } else {
                                 return of('');

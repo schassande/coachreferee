@@ -1,6 +1,6 @@
 import { AppSettingsService } from './AppSettingsService';
 import { Injectable, EventEmitter } from '@angular/core';
-import { User } from './../model/user';
+import { AppRole, CurrentApplicationName, User } from './../model/user';
 import { UserCredential } from '@firebase/auth-types';
 
 @Injectable()
@@ -45,5 +45,20 @@ export class ConnectedUserService {
     // keep the credential in case of
     console.log('User disconnected.');
     this.$userConnectionEvent.emit(this.currentUser);
+  }
+  public hasApplicationAccess(): boolean {
+    return this.isConnected() && this.currentUser.applications.filter(ar => ar.name === CurrentApplicationName).length > 0;
+  }
+
+  public hasRole(role: AppRole): boolean {
+    return this.isConnected()
+      && this.currentUser.applications.filter(ar => ar.name === CurrentApplicationName && ar.role === role).length > 0;
+  }
+
+  public isAdmin() {
+    return this.hasRole('ADMIN');
+  }
+  public isRefereeCoach() {
+    return this.hasRole('REFEREE_COACH');
   }
 }

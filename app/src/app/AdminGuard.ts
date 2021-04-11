@@ -20,14 +20,14 @@ export class AdminGuard implements CanActivate {
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Observable<boolean> {
     const connected: boolean = this.connectedUserService.getCurrentUser() != null;
     if (connected) {
-      return this.connectedUserService.getCurrentUser().role === 'ADMIN';
+      return this.connectedUserService.isAdmin();
     }
     return this.userService.autoLogin().pipe(
       map(() => {
         if (!this.connectedUserService.isConnected()) {
           this.navController.navigateRoot(['/user/login']);
         }
-        return this.connectedUserService.isConnected() && this.connectedUserService.getCurrentUser().role === 'ADMIN';
+        return this.connectedUserService.isConnected() && this.connectedUserService.isAdmin();
       })
     );
   }

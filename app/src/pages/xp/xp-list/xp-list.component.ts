@@ -130,7 +130,7 @@ export class XpListComponent implements OnInit {
     this.navController.navigateRoot(`/xp/edit/${xp.id}`);
   }
   private computeCoaches(): Observable<User> {
-    this.isAdmin = this.connectedUserService.getCurrentUser().role === 'ADMIN';
+    this.isAdmin = this.connectedUserService.isAdmin();
     this.selectedCoach = this.connectedUserService.getCurrentUser();
     this.selectedCoachId = this.selectedCoach.id;
     this.coaches = [this.selectedCoach];

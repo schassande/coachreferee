@@ -1,4 +1,3 @@
-import { CoachingImprovmentFeedbackEditPage } from './../pages/coaching/coaching-improvment-feedback-edit/coaching-improvment-feedback-edit';
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
@@ -14,6 +13,7 @@ import { CoachingListPage } from 'src/pages/coaching/coaching-list/coaching-list
 import { CoachingEditPage } from 'src/pages/coaching/coaching-edit/coaching-edit';
 import { CoachingGamePage } from 'src/pages/coaching/coaching-game/coaching-game';
 import { CoachingPositiveFeedbackEditPage } from 'src/pages/coaching/coaching-positive-feedback-edit/coaching-positive-feedback-edit';
+import { CoachingImprovmentFeedbackEditPage } from '../pages/coaching/coaching-improvment-feedback-edit/coaching-improvment-feedback-edit';
 import { CompetitionListPage } from 'src/pages/competition/competition-list/competition-list';
 import { CompetitionImportComponent } from 'src/pages/competition/competition-import/competition-import.component';
 import { CompetitionHomePage } from 'src/pages/competition/competition-home/competition-home.page';

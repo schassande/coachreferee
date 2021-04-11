@@ -7,7 +7,7 @@ import { LoadingController, NavController, ToastController, AlertController } fr
 import { ConnectedUserService } from '../../../app/service/ConnectedUserService';
 import { ResponseWithData } from '../../../app/service/response';
 import { UserService } from '../../../app/service/UserService';
-import { User, CONSTANTES } from '../../../app/model/user';
+import { User, CONSTANTES, CurrentApplicationName } from '../../../app/model/user';
 
 import { PhotoEvent } from '../../widget/camera-icon-component';
 
@@ -19,7 +19,7 @@ import { PhotoEvent } from '../../widget/camera-icon-component';
  */
 
 @Component({
-  selector: 'page-user-edit',
+  selector: 'app-page-user-edit',
   templateUrl: 'user-edit.html',
 })
 export class UserEditPage implements OnInit {
@@ -86,7 +86,8 @@ export class UserEditPage implements OnInit {
       id: null,
       accountId: null,
       accountStatus: 'VALIDATION_REQUIRED',
-      role: 'USER',
+      applications: [],
+      demandingApplications: [{name: CurrentApplicationName, role: 'REFEREE_COACH'}],
       version: 0,
       creationDate : new Date(),
       lastUpdate : new Date(),

@@ -114,6 +114,7 @@ export type AppRole = /** Depracated replaced by REFEREE_COACH */ 'USER'
     | /** Application admin */ 'ADMIN'
     | /** User of the application RefCoach */ 'REFEREE_COACH'
     | /** Referee user. */ 'REFEREE'
+    | /** National Referee Director user. */ 'NDR'
     | /** Tournament manager user in the app TournamentManager. */ 'TOURNAMENT_MANAGER'
     ;
 export type AccountStatus = 'VALIDATION_REQUIRED' | 'ACTIVE' | 'LOCKED' | 'DELETED';
@@ -130,17 +131,17 @@ export interface User extends Referee {
     defaultCompetitionId?: string;
     defaultGameCatory: GameCategory;
     dataSharingAgreement?: CoachDataSharingAgreement;
-    region?: DataRegion;
-    role?: AppRole;
-    applications?: ApplicationRole[];
+    region: DataRegion;
+    applications: ApplicationRole[];
+    demandingApplications: ApplicationRole[];
     groupIds: string[];
     authProvider?: AuthProvider;
     accountStatus: AccountStatus;
 }
 
 export interface ApplicationRole {
-    name: string;
-    roles: AppRole[];
+    name: ApplicationName;
+    role: AppRole;
 }
 
 export interface UserGroup extends PersistentData {

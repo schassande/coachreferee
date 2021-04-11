@@ -31,8 +31,7 @@ export class HomePage implements OnInit {
   }
 
   public isLevelAdmin() {
-      const role = this.currentUser.role;
-      return role === 'PROFILE_ADMIN' || role === 'ADMIN';
+      return this.connectedUserService.isAdmin();
   }
 
   ngOnInit() {

@@ -2,7 +2,7 @@ import { AngularFireFunctions } from '@angular/fire/functions';
 import { LocalAppSettings } from './../model/settings';
 import { AppSettingsService } from './AppSettingsService';
 import { AlertController, ToastController, LoadingController } from '@ionic/angular';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, Query } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { UserCredential } from '@firebase/auth-types';
 
@@ -10,10 +10,11 @@ import { ResponseWithData, Response } from './response';
 import { Observable, of, from, Subject } from 'rxjs';
 import { ConnectedUserService } from './ConnectedUserService';
 import { Injectable } from '@angular/core';
-import { User, CONSTANTES, AuthProvider } from './../model/user';
+import { User, CONSTANTES, AuthProvider, CurrentApplicationName, AppRole } from './../model/user';
 import { RemotePersistentDataService } from './RemotePersistentDataService';
 import { mergeMap, map, catchError } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
+import { PersistentDataFilter } from './PersistentDataFonctions';
 
 @Injectable()
 export class UserService  extends RemotePersistentDataService<User> {
@@ -361,7 +362,8 @@ export class UserService  extends RemotePersistentDataService<User> {
             id: null,
             accountId: cred.user.uid,
             accountStatus: 'VALIDATION_REQUIRED',
-            role: 'USER',
+            applications: [],
+            demandingApplications: [{name: CurrentApplicationName, role: 'REFEREE_COACH'}],
             authProvider,
             version: 0,
             creationDate : new Date(),
@@ -441,5 +443,78 @@ export class UserService  extends RemotePersistentDataService<User> {
             });
         }
         return users;
+    }
+
+    public findPendingValidations(role: AppRole, country: string = null): Observable<ResponseWithData<User[]>> {
+        let q: Query<User> = this.getCollectionRef().where(
+                'demandingApplications',
+                'array-contains',
+                { name : CurrentApplicationName, role}
+            );
+        if (country) {
+            q = q.where('country', '==', country);
+        }
+        return this.query(q, 'default');
+    }
+
+    public searchRefereeCoaches(text: string): Observable<ResponseWithData<User[]>> {
+        const q: Query<User> = this.getCollectionRef()
+            .where('applications', 'array-contains', { name : CurrentApplicationName, role: 'REFEREE_COACH'})
+            .where('region', '==', this.connectedUserService.getCurrentUser().region)
+            ;
+        return super.filter(this.query(q, 'default'), this.getFilterByText(text));
+    }
+
+    public getFilterByText(text: string): PersistentDataFilter<User> {
+        const validText = text && text !== null  && text.trim().length > 0 ? text.trim() : null;
+        return validText === null ? null : (user: User) => {
+            return this.stringContains(validText, user.shortName)
+                || this.stringContains(validText, user.firstName)
+                || this.stringContains(validText, user.lastName);
+        };
+    }
+
+    public validateRole(user: User, role: AppRole): Observable<ResponseWithData<User>> {
+        // validate the use of the application
+        user.demandingApplications = user.demandingApplications
+          .filter(ar => !(ar.name === CurrentApplicationName && ar.role === role));
+        user.applications.push({name: CurrentApplicationName, role});
+
+        // Active the account if required
+        const accountValidation: boolean = user.accountStatus === 'VALIDATION_REQUIRED';
+        if (accountValidation) {
+          user.accountStatus = 'ACTIVE';
+        }
+
+        // Save the user account and send emails if required
+        return this.save(user).pipe(
+          mergeMap((ruser) => {
+            if (accountValidation && ruser.data && ruser.data.accountStatus === 'ACTIVE') {
+              return this.sendAccountValidated(user.id).pipe(map(() => ruser));
+            }
+            return of(ruser);
+          }),
+        );
+      }
+
+    public unvalidateRole(user: User, role: AppRole): Observable<ResponseWithData<User>> {
+        // Invalidate the use of the application
+        user.demandingApplications = user.demandingApplications
+          .filter(ar => !(ar.name === CurrentApplicationName && ar.role === role));
+
+          // deactivate the account if required
+        if (user.demandingApplications.length === 0 && user.applications.length === 0) {
+          user.accountStatus = 'DELETED';
+        }
+
+        // Save the user account and send emails if required
+        return this.save(user).pipe(
+          mergeMap((ruser) => {
+            if (ruser.data && ruser.data.accountStatus === 'DELETED') {
+              return this.sendAccountNotValidated(user.id).pipe(map(() => ruser));
+            }
+            return of(ruser);
+          }),
+        );
     }
 }

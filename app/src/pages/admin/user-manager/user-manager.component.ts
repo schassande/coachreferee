@@ -31,7 +31,9 @@ export class UserManagerComponent implements OnInit {
   ngOnInit() {
     console.log('UserManagerComponent.ngOnInit');
     this.userService.all().subscribe((response: ResponseWithData<User[]>) => {
-      this.users = this.sort(response.data);
+      this.users = this.sort(response.data).filter(u =>
+        u.applications.filter(ar => ar.name === 'RefereeCoach').length > 0
+        || u.demandingApplications.filter(ar => ar.name === 'RefereeCoach').length > 0);
       this.error = response.error;
       if (this.users) {
         this.computeStats();
@@ -105,18 +107,14 @@ export class UserManagerComponent implements OnInit {
 
   validate(user: User) {
     user.accountStatus = 'ACTIVE';
-    this.userService.save(user).pipe(
-      mergeMap(() => this.userService.sendAccountValidated(user.id)),
-      map(() => {
-        this.computeStats();
-      })
+    this.userService.validateRole(user, 'REFEREE_COACH').pipe(
+      map(() => this.computeStats())
     ).subscribe();
   }
 
   unvalidate(user: User) {
     user.accountStatus = 'DELETED';
-    this.userService.save(user).pipe(
-      mergeMap(() => this.userService.sendAccountNotValidated(user.id)),
+    this.userService.unvalidateRole(user, 'REFEREE_COACH').pipe(
       map(() => {
         this.users = this.sort(this.users);
         this.computeStats();
