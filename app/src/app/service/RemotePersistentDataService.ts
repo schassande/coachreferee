@@ -300,7 +300,7 @@ export abstract class RemotePersistentDataService<D extends PersistentData> impl
         );
     }
 
-    protected filter(obs: Observable<ResponseWithData<D[]>>, filter: PersistentDataFilter<D>) {
+    public filter(obs: Observable<ResponseWithData<D[]>>, filter: PersistentDataFilter<D>) {
         return obs.pipe(
             map((result: ResponseWithData<D[]>) => {
                 if (!result.error && filter !== null) {
@@ -311,7 +311,7 @@ export abstract class RemotePersistentDataService<D extends PersistentData> impl
         );
     }
 
-    protected stringContains(elem: string, text: string): boolean {
+    public stringContains(elem: string, text: string): boolean {
         return elem && text && text.toLowerCase().indexOf(elem.toLowerCase()) >= 0;
     }
 

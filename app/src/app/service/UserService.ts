@@ -10,11 +10,12 @@ import { ResponseWithData, Response } from './response';
 import { Observable, of, from, Subject } from 'rxjs';
 import { ConnectedUserService } from './ConnectedUserService';
 import { Injectable } from '@angular/core';
-import { User, CONSTANTES, AuthProvider, CurrentApplicationName, AppRole } from './../model/user';
+import { User, CONSTANTES, AuthProvider, CurrentApplicationName, AppRole, RefereeLevel, RefereeCoachLevel } from './../model/user';
 import { RemotePersistentDataService } from './RemotePersistentDataService';
 import { mergeMap, map, catchError } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
 import { PersistentDataFilter } from './PersistentDataFonctions';
+import { DataRegion } from '../model/common';
 
 @Injectable()
 export class UserService  extends RemotePersistentDataService<User> {
@@ -58,7 +59,7 @@ export class UserService  extends RemotePersistentDataService<User> {
         }
         const password = user.password;
         delete user.password;
-        if (user.dataStatus === 'NEW') {
+        if (user.dataStatus === 'NEW' && user.accountStatus !== 'NO_ACCOUNT') {
             let obs: Observable<UserCredential> = null;
             if (cred !== null  && (user.authProvider === 'FACEBOOK' || user.authProvider === 'GOOGLE')) {
                 obs = of(cred);
@@ -457,12 +458,45 @@ export class UserService  extends RemotePersistentDataService<User> {
         return this.query(q, 'default');
     }
 
+    public searchUsers(criteria: UserSearchCriteria):
+            Observable<ResponseWithData<User[]>> {
+        let q: Query<User> = this.getCollectionRef();
+        if (criteria.role) {
+            console.log('filter by applications', criteria.role);
+            q = q.where('applications', 'array-contains', { name : CurrentApplicationName, role: criteria.role});
+        }
+        if (criteria.region) {
+            console.log('filter by region', criteria.region);
+            q = q.where('region', '==', criteria.region);
+        }
+        if (criteria.country) {
+            console.log('filter by country', criteria.country);
+            q = q.where('country', '==', criteria.country);
+        }
+        if (criteria.refereeLevel) {
+            console.log('filter by refereeLevel', criteria.refereeLevel);
+            q = q.where('referee.refereeLevel', '==', criteria.refereeLevel);
+        }
+        if (criteria.refereeCoachLevel) {
+            console.log('filter by refereeCoachLevel', criteria.refereeCoachLevel);
+            q = q.where('refereeCoach.refereeCoachLevel', '==', criteria.refereeCoachLevel);
+        }
+        return super.filter(this.query(q, 'default'), this.getFilterByText(criteria.text));
+    }
+
     public searchRefereeCoaches(text: string): Observable<ResponseWithData<User[]>> {
-        const q: Query<User> = this.getCollectionRef()
-            .where('applications', 'array-contains', { name : CurrentApplicationName, role: 'REFEREE_COACH'})
-            .where('region', '==', this.connectedUserService.getCurrentUser().region)
-            ;
-        return super.filter(this.query(q, 'default'), this.getFilterByText(text));
+        return this.searchUsers({
+            role: 'REFEREE_COACH',
+            region: this.connectedUserService.getCurrentUser().region,
+            text});
+    }
+
+    public searchReferees(text: string = null, country: string = null, refereeLevel: RefereeLevel = null):
+            Observable<ResponseWithData<User[]>> {
+        return this.searchUsers({
+            role: 'REFEREE',
+            // region: this.connectedUserService.getCurrentUser().region,
+            country, refereeLevel, text});
     }
 
     public getFilterByText(text: string): PersistentDataFilter<User> {
@@ -517,4 +551,26 @@ export class UserService  extends RemotePersistentDataService<User> {
           }),
         );
     }
+
+    public listToCSV(referees: User[]): string {
+        let content = 'firstName, lastName, shortName, country, email, gender, mobilePhones'
+        + ', speakingLanguages, refereeLevel, refereeCategory, nextRefereeLevel\n';
+        referees.forEach((ref) => {
+            content += `${ref.firstName},${ref.lastName},${ref.shortName},${ref.country},${ref.email},${ref.firstName}`;
+            content += `,${ref.gender},${ref.firstName},`;
+            content += `"${ref.mobilePhones ? ref.mobilePhones : ''}"`;
+            content += `,"${ref.speakingLanguages ? ref.speakingLanguages.join(',') : ''}"`;
+            content += `,${ref.referee.refereeLevel},${ref.referee.refereeCategory}`;
+            content += `,${ref.referee.nextRefereeLevel ? ref.referee.nextRefereeLevel : ''}\n`;
+        });
+        return content;
+    }
+}
+export interface UserSearchCriteria {
+    role?: AppRole;
+    text?: string;
+    region?: DataRegion;
+    country?: string;
+    refereeLevel?: RefereeLevel;
+    refereeCoachLevel?: RefereeCoachLevel;
 }

@@ -67,6 +67,28 @@ export const COUNTRIES: string[][] = [
     ['Wales', 'Wales'],
     ['Other', 'Other']
 ];
+export const EUROPEAN_COUNTRIES: string[][] = [
+    ['Austria',	'Austria'],
+    ['Belgium', 'Belgium'],
+    ['Czech Republic' ,	'Czech Republic'],
+    ['England', 'England'],
+    ['France' , 'France'],
+    ['Germany', 'Germany'],
+    ['Guernesey', 'Guernesey'],
+    ['Hungary', 'Hungary'],
+    ['Ireland', 'Ireland'],
+    ['Italy', 'Italy'],
+    ['Jersey', 'Jersey'],
+    ['Luxembourg', 'Luxembourg'],
+    ['Netherlands', 'Netherlands'],
+    ['Portugal', 'Portugal'],
+    ['Scotland', 'Scotland'],
+    ['Spain', 'Spain'],
+    ['Sweden', 'Sweden'],
+    ['Switzerland', 'Switzerland'],
+    ['Wales', 'Wales'],
+    ['Other', 'Other']
+];
 export const LANGUAGES: string[][] = [
     ['EN', 'English'],
     ['FR', 'French'],
@@ -117,7 +139,7 @@ export type AppRole = /** Depracated replaced by REFEREE_COACH */ 'USER'
     | /** National Referee Director user. */ 'NDR'
     | /** Tournament manager user in the app TournamentManager. */ 'TOURNAMENT_MANAGER'
     ;
-export type AccountStatus = 'VALIDATION_REQUIRED' | 'ACTIVE' | 'LOCKED' | 'DELETED';
+export type AccountStatus = 'VALIDATION_REQUIRED' | 'ACTIVE' | 'LOCKED' | 'DELETED' | 'NO_ACCOUNT';
 
 export type ApplicationName = 'RefereeCoach' | 'Upgrade' | 'TournamentManager';
 

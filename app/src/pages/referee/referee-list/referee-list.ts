@@ -15,7 +15,7 @@ import { Referee } from '../../../app/model/user';
  */
 
 @Component({
-  selector: 'page-referee-list',
+  selector: 'app-page-referee-list',
   templateUrl: 'referee-list.html',
 })
 export class RefereeListPage implements OnInit {
@@ -41,7 +41,9 @@ export class RefereeListPage implements OnInit {
   }
 
   private searchReferee() {
+    console.log('searchReferee()');
     this.refereeService.searchReferees(this.searchInput).subscribe((response: ResponseWithData<Referee[]>) => {
+      console.log('searchReferee()=>' + response.data.length);
       this.referees = this.sortReferees(response.data);
       this.error = response.error;
     });
