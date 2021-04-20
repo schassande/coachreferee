@@ -67,6 +67,28 @@ export const COUNTRIES: string[][] = [
     ['Wales', 'Wales'],
     ['Other', 'Other']
 ];
+export const EUROPEAN_COUNTRIES: string[][] = [
+    ['Austria',	'Austria'],
+    ['Belgium', 'Belgium'],
+    ['Czech Republic' ,	'Czech Republic'],
+    ['England', 'England'],
+    ['France' , 'France'],
+    ['Germany', 'Germany'],
+    ['Guernesey', 'Guernesey'],
+    ['Hungary', 'Hungary'],
+    ['Ireland', 'Ireland'],
+    ['Italy', 'Italy'],
+    ['Jersey', 'Jersey'],
+    ['Luxembourg', 'Luxembourg'],
+    ['Netherlands', 'Netherlands'],
+    ['Portugal', 'Portugal'],
+    ['Scotland', 'Scotland'],
+    ['Spain', 'Spain'],
+    ['Sweden', 'Sweden'],
+    ['Switzerland', 'Switzerland'],
+    ['Wales', 'Wales'],
+    ['Other', 'Other']
+];
 export const LANGUAGES: string[][] = [
     ['EN', 'English'],
     ['FR', 'French'],
@@ -97,13 +119,13 @@ export interface Person extends PersistentData {
 }
 
 export interface Referee extends Person {
-    referee ?: {
+    referee: {
         refereeLevel: RefereeLevel;
         refereeCategory: RefereeCategory;
         nextRefereeLevel: RefereeLevel;
         region?: DataRegion;
     };
-    refereeCoach ?: {
+    refereeCoach: {
         refereeCoachLevel: RefereeCoachLevel;
     };
     dataSharingAgreement?: RefereeDataSharingAgreement;
@@ -114,9 +136,10 @@ export type AppRole = /** Depracated replaced by REFEREE_COACH */ 'USER'
     | /** Application admin */ 'ADMIN'
     | /** User of the application RefCoach */ 'REFEREE_COACH'
     | /** Referee user. */ 'REFEREE'
+    | /** National Referee Director user. */ 'NDR'
     | /** Tournament manager user in the app TournamentManager. */ 'TOURNAMENT_MANAGER'
     ;
-export type AccountStatus = 'VALIDATION_REQUIRED' | 'ACTIVE' | 'LOCKED' | 'DELETED';
+export type AccountStatus = 'VALIDATION_REQUIRED' | 'ACTIVE' | 'LOCKED' | 'DELETED' | 'NO_ACCOUNT';
 
 export type ApplicationName = 'RefereeCoach' | 'Upgrade' | 'TournamentManager';
 
@@ -130,17 +153,17 @@ export interface User extends Referee {
     defaultCompetitionId?: string;
     defaultGameCatory: GameCategory;
     dataSharingAgreement?: CoachDataSharingAgreement;
-    region?: DataRegion;
-    role?: AppRole;
-    applications?: ApplicationRole[];
+    region: DataRegion;
+    applications: ApplicationRole[];
+    demandingApplications: ApplicationRole[];
     groupIds: string[];
     authProvider?: AuthProvider;
     accountStatus: AccountStatus;
 }
 
 export interface ApplicationRole {
-    name: string;
-    roles: AppRole[];
+    name: ApplicationName;
+    role: AppRole;
 }
 
 export interface UserGroup extends PersistentData {

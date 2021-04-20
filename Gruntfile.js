@@ -55,6 +55,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-copy');
     grunt.loadNpmTasks('grunt-git-tag');
 
+    grunt.registerTask('app-serve', 'Build the app', ['exec:app-serve']);
     grunt.registerTask('app-build', 'Build the app', ['exec:app-build']);
 
     grunt.registerTask('app-deploy-patch', 'Upgrade to next patch version, commit, build, deploy the app only', [

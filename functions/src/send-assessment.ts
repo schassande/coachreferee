@@ -45,7 +45,7 @@ async function loadAssessmentData(request:any, response: any, ctx: any): Promise
         }
     }
     const user: User = await common.loadUser(ctx.db, request.body.data.userId, response);
-    const referee: Referee = await common.loadFromDb(ctx.db, common.collectionReferee, request.body.data.refereeId, response) as Referee;
+    const referee: Referee = await common.loadFromDb(ctx.db, common.collectionUser, request.body.data.refereeId, response) as Referee;
     const skillProfile: SkillProfile = await common.loadFromDb(ctx.db, common.collectionSkillprofile, request.body.data.skillProfileId, response) as SkillProfile;
 
     const data: AssessmentData = { assessment, user, referee, skillProfile};

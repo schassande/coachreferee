@@ -48,13 +48,13 @@ async function loadCoachingData(request:any, response: any, ctx: any): Promise<C
     }
     const referees: Referee[] = []
     if (coaching.referees[0] && coaching.referees[0].refereeId) {
-        referees.push(await common.loadFromDb(ctx.db, common.collectionReferee, coaching.referees[0].refereeId, response) as Referee);        
+        referees.push(await common.loadFromDb(ctx.db, common.collectionUser, coaching.referees[0].refereeId, response) as Referee);        
     }
     if (coaching.referees[1] && coaching.referees[1].refereeId) {
-        referees.push(await common.loadFromDb(ctx.db, common.collectionReferee, coaching.referees[1].refereeId, response) as Referee);        
+        referees.push(await common.loadFromDb(ctx.db, common.collectionUser, coaching.referees[1].refereeId, response) as Referee);        
     }
     if (coaching.referees[2] && coaching.referees[2].refereeId) {
-        referees.push(await common.loadFromDb(ctx.db, common.collectionReferee, coaching.referees[2].refereeId, response) as Referee);        
+        referees.push(await common.loadFromDb(ctx.db, common.collectionUser, coaching.referees[2].refereeId, response) as Referee);        
     }
     const user: User = await common.loadFromDb(ctx.db, common.collectionUser, request.body.data.userId, response) as User;
     // console.log('user=' + JSON.stringify(user, null, 2));

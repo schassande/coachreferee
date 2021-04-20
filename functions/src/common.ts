@@ -6,8 +6,11 @@ export const collectionCoaching = 'coaching';
 export const collectionAssessment = 'assessment';
 export const collectionUser = 'user';
 export const collectionInvitation = 'invitation';
-export const collectionReferee = 'referee';
+// export const collectionReferee = 'referee';
 export const collectionSkillprofile = 'skillprofile';
+export const collectionCompetitionDayPanelVote = 'competitionDayPanelVote';
+export const collectionCompetitionDayRefereeCoachVote = 'competitionDayRefereeCoachVote';
+export const collectionUpgradeCriteria = 'upgradeCriteria';
 export const DATE_SEP = '-';
 
 export function toFileName(str: String): string {
@@ -16,7 +19,25 @@ export function toFileName(str: String): string {
 export function to2Digit(nb: number): string {
     return (nb < 10 ? '0' : '') + nb;
 }
-
+export function date2string(aDate: Date) {
+    if (!aDate) {
+      return 'error';
+    }
+    return aDate.getFullYear()
+      + DATE_SEP + to2Digit(aDate.getMonth() + 1)
+      + DATE_SEP + to2Digit(aDate.getDate());
+}
+export function string2date(dateStr: string, aDate: Date): Date {
+    const elements = dateStr.split(DATE_SEP);
+    let res = aDate;
+    if (!res) {
+        res = new Date();
+    }
+    res.setFullYear(Number.parseInt(elements[0], 0));
+    res.setMonth(Number.parseInt(elements[1], 0) - 1);
+    res.setDate(Number.parseInt(elements[2], 0));
+    return res;
+}
 export function loadFromDb(db:any, collection: string, id: string, response:any): Promise<PersistentData|null> {
     return db.collection(collection).doc(id).get()
         .then( (doc:DocumentSnapshot) => {
@@ -40,7 +61,10 @@ export async function loadUser(db:any, userId: string, response: any): Promise<U
     const user: User = await loadFromDb(db, collectionUser, userId, response) as User;
     return user;
 }
-export async function loadReferee(db:any, refereeId: string, response: any): Promise<Referee> {
-    const referee: Referee = await loadFromDb(db, collectionReferee, refereeId, response) as Referee;
-    return referee;
-}
+export function to00h00(day: Date): Date {
+    day.setUTCMinutes(0);
+    day.setUTCSeconds(0);
+    day.setUTCHours(0);
+    day.setUTCMilliseconds(0);
+    return day;
+  }
