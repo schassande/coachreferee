@@ -128,7 +128,7 @@ function coachingAsEmailBody(data: CoachingData): string {
         <tr>`;
         data.referees.forEach( (ref) => {
             body += `
-            <td style="width: 30%;"><strong>Referee:</strong> ${ref.firstName} ${ref.lastName} ${ref.shortName} ${ref.referee!.refereeLevel}</td>`;
+            <td style="width: 30%;"><strong>Referee:</strong> ${ref.firstName} ${ref.lastName} ${ref.shortName} ${ref.referee.refereeLevel}</td>`;
         })
         if (data.referees.length < 3) {
             body += `
@@ -158,12 +158,12 @@ function coachingAsEmailBody(data: CoachingData): string {
         const ref: Referee = data.referees[index];
         body += `
         <article>
-            <header><h1>Referee ${ref.firstName} ${ref.lastName} ${ref.shortName} ${ref.referee!.refereeLevel}</h1></header>
+            <header><h1>Referee ${ref.firstName} ${ref.lastName} ${ref.shortName} ${ref.referee.refereeLevel}</h1></header>
             <section>
                 <ul>`;
-        if (ref.referee!.nextRefereeLevel) {
+        if (ref.referee.nextRefereeLevel) {
             body += `
-                    <li>Upgrade ${ref.referee!.nextRefereeLevel}: ${referee.upgrade}</li>`;
+                    <li>Upgrade ${ref.referee.nextRefereeLevel}: ${referee.upgrade}</li>`;
         }
         body += `
                     <li>Rank: ${referee.rank === 0 ? 'Not ranked' : referee.rank}</li>
