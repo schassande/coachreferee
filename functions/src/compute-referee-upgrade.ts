@@ -89,13 +89,13 @@ export async function func(request:any, response:any, ctx:any):Promise<any> {
             persistUpgrade(ctx.db, ru, response).then((refUp) => {
                 console.log('AFTER persist: RefereeUpgrade=' + JSON.stringify(refUp));
                 response.send({ data: refUp, error: null}); 
-            });
+            }).catch(error => response.send({ data: null, error}));
         } else {
             console.log('BEFORE update: RefereeUpgrade=' + JSON.stringify(ru));
             updateUpgrade(ctx.db, ru, response).then((refUp) => {
                 console.log('AFTER update: RefereeUpgrade=' + JSON.stringify(refUp));
                 response.send({ data: refUp, error: null}); 
-            });
+            }).catch(error => response.send({ data: null, error}));
         }
     } catch (err) {
         console.log(err);
