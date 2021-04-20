@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import * as moment from 'moment';
 
 const DATE_SEP = '-';
 const TIME_SEP = ':';
@@ -46,5 +47,16 @@ export class DateService {
 
   public to2Digit(nb: number): string {
     return (nb < 10 ? '0' : '') + nb;
+  }
+  public nextDay(date: Date): Date {
+    return moment(date.getTime()).add(1, 'days').toDate();
+  }
+
+  public to00h00(day: Date): Date {
+    day.setUTCMinutes(0);
+    day.setUTCSeconds(0);
+    day.setUTCHours(0);
+    day.setUTCMilliseconds(0);
+    return day;
   }
 }

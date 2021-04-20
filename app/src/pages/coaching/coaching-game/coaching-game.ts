@@ -18,6 +18,7 @@ import { CoachingService } from '../../../app/service/CoachingService';
 import { BookmarkService, Bookmark } from '../../../app/service/BookmarkService';
 import { Referee, User } from '../../../app/model/user';
 import { Coaching, PositiveFeedback, Feedback } from '../../../app/model/coaching';
+import { DateService } from 'src/app/service/DateService';
 
 /**
  * Generated class for the CoachingGamePage page.
@@ -27,7 +28,7 @@ import { Coaching, PositiveFeedback, Feedback } from '../../../app/model/coachin
  */
 
 @Component({
-  selector: 'page-coaching-game',
+  selector: 'app-page-coaching-game',
   templateUrl: 'coaching-game.html',
   styleUrls: ['coaching-game.scss']
 })
@@ -49,17 +50,18 @@ export class CoachingGamePage implements OnInit {
   @ViewChild(IonSegment) segment: IonSegment;
 
   constructor(
-    private route: ActivatedRoute,
-    private assessmentService: AssessmentService,
-    private navController: NavController,
-    public coachingService: CoachingService,
-    private helpService: HelpService,
-    public userService: UserService,
-    public connectedUserService: ConnectedUserService,
-    public refereeService: RefereeService,
     public alertCtrl: AlertController,
+    private appSettingsService: AppSettingsService,
+    private assessmentService: AssessmentService,
     private bookmarkService: BookmarkService,
-    private appSettingsService: AppSettingsService) {
+    public coachingService: CoachingService,
+    public connectedUserService: ConnectedUserService,
+    public dateService: DateService,
+    private navController: NavController,
+    private helpService: HelpService,
+    public refereeService: RefereeService,
+    private route: ActivatedRoute,
+    public userService: UserService) {
       this.coaching = null;
   }
 

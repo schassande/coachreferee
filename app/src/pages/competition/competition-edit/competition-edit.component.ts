@@ -11,7 +11,7 @@ import { DateService } from './../../../app/service/DateService';
 import { RefereeService } from './../../../app/service/RefereeService';
 import { UserService } from './../../../app/service/UserService';
 
-import { Competition, GameAllocation } from './../../../app/model/competition';
+import { Competition, CompetitionCategories, GameAllocation } from './../../../app/model/competition';
 import { CONSTANTES, Referee, User } from './../../../app/model/user';
 import { mergeMap, map, catchError } from 'rxjs/operators';
 
@@ -30,6 +30,7 @@ export class CompetitionEditComponent implements OnInit {
   loading = false;
   regions = DATA_REGIONS;
   constantes = CONSTANTES;
+  categories = CompetitionCategories;
   errors: string[] = [];
   owner: string;
   readonly = true;
@@ -108,14 +109,17 @@ export class CompetitionEditComponent implements OnInit {
       dataStatus: 'NEW',
       name: '',
       date: new Date(),
+      days: [],
       ownerId: this.connectedUserService.getCurrentUser().id,
       year: new Date().getFullYear(),
       region : 'Others',
       country : '',
       referees: [],
       refereeCoaches: [],
-      allocations: []
+      allocations: [],
+      category: 'C1',
     };
+    this.competition.days.push(this.competition.date);
     this.readonly = false;
   }
 
@@ -137,6 +141,36 @@ export class CompetitionEditComponent implements OnInit {
   set date(dateStr: string) {
     this.competition.date = this.dateService.string2date(dateStr, this.competition.date);
     this.competition.year = this.competition.date.getFullYear();
+    this.computeDays();
+  }
+
+  private computeDays() {
+    // compute next days
+    let previousDate = this.competition.date;
+    this.competition.days = this.competition.days.map((d: Date, idx: number) => {
+      const nextDate = idx === 0 ? previousDate : this.dateService.nextDay(previousDate);
+      previousDate = nextDate;
+      return nextDate;
+    });
+  }
+
+  get nbDays(): number {
+    return this.competition.days.length;
+  }
+
+  set nbDays(val: number) {
+    if (val < 1 || val > 10) {
+      return;
+    }
+    const delta = val - this.competition.days.length;
+    if (delta > 0) {
+      while (this.competition.days.length < val) {
+        const nextDate = this.dateService.nextDay(this.competition.days[this.competition.days.length - 1]);
+        this.competition.days.push(nextDate);
+      }
+    } else if (delta < 0) {
+      this.competition.days.splice(val, -delta);
+    }
   }
 
   saveNback() {

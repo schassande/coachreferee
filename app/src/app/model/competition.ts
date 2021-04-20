@@ -2,12 +2,17 @@ import { GameLevel, GameCategory } from './game';
 import { PersistentData, DataRegion, HasId } from './common';
 import { User, Referee } from './user';
 
+export type CompetitionCategory = 'C1' | 'C2'| 'C3'| 'C4'| 'C5';
+export const CompetitionCategories: CompetitionCategory[] = ['C1', 'C2', 'C3', 'C4', 'C5'];
+
 export interface Competition extends PersistentData {
     name: string;
     date: Date;
     year: number;
+    days: Date[];
     region: DataRegion;
     country: string;
+    category: CompetitionCategory;
     ownerId: string;
     referees: RefereeRef[];
     refereeCoaches: CoachRef[];
@@ -46,7 +51,6 @@ export interface GameAllocation extends HasId {
         coachingId: string;
     }[];
 }
-
 
 export interface AnalysedImport<P extends HasId> extends HasId {
     /** Data to import */

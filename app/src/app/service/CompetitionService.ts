@@ -37,6 +37,15 @@ export class CompetitionService extends RemotePersistentDataService<Competition>
         item.allocations.forEach( (alloc) => {
             alloc.date = this.adjustDate(alloc.date, this.dateService);
         });
+        if (!item.days) {
+            item.days = [];
+        }
+        item.days = item.days
+            // .filter(d => d !== null && d !== undefined)
+            .map((day) => this.adjustDate(day, this.dateService));
+        if (item.days.length === 0 && item.date) {
+            item.days.push(item.date);
+        }
     }
     public searchCompetitions(text: string,
                               options: 'default' | 'server' | 'cache' = 'default'): Observable<ResponseWithData<Competition[]>> {

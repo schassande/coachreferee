@@ -27,6 +27,16 @@
                 <ion-datetime displayFormat="YYYY-MM-DD" pickerFormat="YYYY-MM-DD" [(ngModel)]="date" style="text-align: center;"></ion-datetime>
             </ion-item>
             <ion-item>
+                <ion-label position="fixed">Nb days:</ion-label>
+                <ion-input type="number" [(ngModel)]="nbDays" min="1" max="10" required="true"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label position="fixed">Days:</ion-label>
+                <ul>
+                    <li *ngFor="let day of competition.days">{{dateService.date2string(day)}}</li>
+                </ul>
+            </ion-item>
+            <ion-item>
                 <ion-label position="fixed">Region:</ion-label>
                 <ion-select *ngIf="!readonly" [(ngModel)]="competition.region" style="text-align: center;">
                     <ion-select-option *ngFor="let region of regions" value="{{region}}">{{region}}</ion-select-option>
@@ -36,6 +46,12 @@
                 <ion-label position="fixed">Country:</ion-label>
                 <ion-select [(ngModel)]="competition.country">
                     <ion-select-option *ngFor="let country of constantes.countries" value="{{country[0]}}">{{country[1]}}</ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-item>
+                <ion-label position="fixed">Category:</ion-label>
+                <ion-select *ngIf="!readonly" [(ngModel)]="competition.category" style="text-align: center;" interface="action-sheet">
+                    <ion-select-option *ngFor="let category of categories" value="{{category}}">{{category}}</ion-select-option>
                 </ion-select>
             </ion-item>
             <ion-item>

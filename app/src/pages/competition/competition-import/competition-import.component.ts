@@ -227,7 +227,9 @@ export class CompetitionImportComponent implements OnInit {
       creationDate: src.creationDate,
       version: src.version,
       lastUpdate: src.lastUpdate,
-      dataStatus: src.dataStatus
+      dataStatus: src.dataStatus,
+      category: 'C1',
+      days: [src.date]
     };
   }
 
@@ -266,7 +268,7 @@ export class CompetitionImportComponent implements OnInit {
   }
 
   private newCompetition(name): Competition {
-    return {
+    const c: Competition =  {
       id: null,
       version: 0,
       creationDate : new Date(),
@@ -280,8 +282,12 @@ export class CompetitionImportComponent implements OnInit {
       country : '',
       referees: [],
       refereeCoaches: [],
-      allocations: []
+      allocations: [],
+      category: 'C1',
+      days: []
     };
+    c.days.push(c.date);
+    return c;
   }
 
   private analyseReferee(refereeShortName: string, iag: AnalysedImport<GameAllocation>): Observable<any> {

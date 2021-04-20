@@ -44,8 +44,8 @@
                 <ion-label>{{referees.length}} Referee(s)</ion-label>
             </ion-item-divider>
             <ion-item *ngFor="let referee of referees">
-                <ion-icon slot="start" *ngIf="!referee.photo" name="person"></ion-icon>
-                <ion-avatar slot="start" *ngIf="referee.photo"><img src="img/my-avatar.png"></ion-avatar>
+                <ion-icon slot="start" *ngIf="!referee.photo || !referee.photo.url" name="person"></ion-icon>
+                <ion-avatar slot="start" *ngIf="referee.photo  && referee.photo.url"><img src="img/my-avatar.png"></ion-avatar>
                 <ion-label class="listItemButton">
                     {{referee.shortName}}<br> {{referee.firstName}} {{referee.lastName}}<br> {{referee.referee.refereeLevel}} ({{referee.referee.refereeCategory}})
                 </ion-label>
