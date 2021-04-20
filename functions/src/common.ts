@@ -1,6 +1,6 @@
 import { PersistentData } from './model/common';
 import { DocumentSnapshot } from 'firebase-functions/lib/providers/firestore';
-import { Referee, User }  from './model/user';
+import { User }  from './model/user';
 
 export const collectionCoaching = 'coaching';
 export const collectionAssessment = 'assessment';
