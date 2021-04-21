@@ -27,7 +27,7 @@ export function date2string(aDate: Date) {
       + DATE_SEP + to2Digit(aDate.getMonth() + 1)
       + DATE_SEP + to2Digit(aDate.getDate());
 }
-export function string2date(dateStr: string, aDate: Date): Date {
+export function string2date(dateStr: string, aDate: Date|null): Date {
     const elements = dateStr.split(DATE_SEP);
     let res = aDate;
     if (!res) {
@@ -67,4 +67,17 @@ export function to00h00(day: Date): Date {
     day.setUTCHours(0);
     day.setUTCMilliseconds(0);
     return day;
-  }
+}
+export function adjustDate(d: any): Date {
+    // console.log('adjustDate: type=' + (typeof d) + ', instanceof Date=' + (d instanceof Date) + ', value=' + JSON.stringify(d));
+    if (d && !(d instanceof Date) ) {
+        if (typeof d === 'string') {
+            return string2date(d, null);
+        } else {
+            return d.toDate();
+        }
+    } else {
+        return d as Date;
+    }
+}
+

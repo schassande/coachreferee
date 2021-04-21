@@ -12,6 +12,7 @@ import * as computeRefereeUpgradeLib    from './compute-referee-upgrade';
 
 
 admin.initializeApp(func.config().firebase);
+
 const ctx = { 
     db : admin.firestore(), 
     gmailEmail : func.config().gmail.email, 
@@ -38,8 +39,8 @@ export const computeRefereeUpgrade = func.https.onRequest(
 
 export async function requestWithCorsAndId(request:any, response:any, coreFunction:any): Promise<any> {
     console.log('Incoming request=' + request.method 
-        + ', \nheaders=' + JSON.stringify(request.headers, null, 2) 
-        + ', \nbody=' + JSON.stringify(request.body, null, 2));
+        + ', headers=' + JSON.stringify(request.headers) 
+        + ', body=' + JSON.stringify(request.body));
     const corsOptions: any = {
         origin: function (origin: string, callback: any) {
             callback(null, true);
@@ -57,7 +58,7 @@ export async function requestWithCorsAndId(request:any, response:any, coreFuncti
         //Verify token
         admin.auth().verifyIdToken(tokenId)
             .then((decoded: admin.auth.DecodedIdToken) => {
-                console.log('decoded: ' + decoded);
+                // console.log('decoded: ' + decoded);
                 return coreFunction(request, response, ctx)
                     .catch((err: any) => {
                         console.log(err);
