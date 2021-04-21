@@ -20,16 +20,13 @@ export async function func(request:any, response:any, ctx:any):Promise<any> {
     const day = common.string2date(request.body.data.day, new Date());
     const upgradeCriteria: UpgradeCriteria = await loadUpgradeCriteria(referee, day, ctx, response);
 
-    const ru: RefereeUpgrade = await computeRefereeUpgrade(day, referee, upgradeCriteria, ctx, response);
+    let ru: RefereeUpgrade = await compute(day, referee, upgradeCriteria, ctx, response);
 
-    return persistUpgrade(ctx.db, ru, response)
-    .then((refUp) => {
-        console.log('AFTER persist: RefereeUpgrade=' + JSON.stringify(refUp));
-        response.send({ data: refUp}); 
-    });
+    ru = await persistUpgrade(ctx.db, ru, response)
+    response.send({ data: ru}); 
 }
 
-async function computeRefereeUpgrade(day: Date, referee: User, upgradeCriteria: UpgradeCriteria, ctx: any, response:any): Promise<RefereeUpgrade> {
+async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteria, ctx: any, response:any): Promise<RefereeUpgrade> {
     const beginDate = moment(day.getTime()).subtract(upgradeCriteria.dayVoteDuration, 'months').toDate();
 
     const data: WorkingData = newWorkingData();
@@ -125,7 +122,6 @@ function newWorkingData(): WorkingData {
     }
 }
 
-
 async function loadCoach(request:any, response:any, ctx:any): Promise<User> {
     const coach: User = await common.loadUser(ctx.db, request.body.data.coachId, response);
     if (!coach) {
@@ -162,11 +158,12 @@ async function loadReferee(request:any, response:any, ctx:any): Promise<User> {
     return referee;
 }
 async function loadUpgradeCriteria(referee: User, day: Date, ctx:any, response:any): Promise<UpgradeCriteria> {
+    console.log('loadUpgradeCriteria(' + referee.referee.nextRefereeLevel + ', ' + common.date2string(day) + ')');
     const upgradeCriteria: UpgradeCriteria|null = await getUpgradeCriteria(ctx.db, referee.referee.nextRefereeLevel, day, response);
     if (!upgradeCriteria) {
         throw new Error('No UpgradeCriteria found for the level ' + referee.referee.nextRefereeLevel + ' at the date ' + common.date2string(day));
     }
-    console.log('upgradeCriteria=' + JSON.stringify(upgradeCriteria));
+    console.log('loadUpgradeCriteria(' + referee.referee.nextRefereeLevel + ', ' + common.date2string(day) + ') => ' + JSON.stringify(upgradeCriteria));
     return upgradeCriteria;
 }
 async function findPanelVotes(ctx:any, referee: User, beginDate: Date, endDate: Date, response:any): Promise<CompetitionDayPanelVote[]> {
@@ -208,11 +205,6 @@ async function getUpgradeCriteria(db:any, refereeLevel: RefereeLevel, applicatio
         if (item.beginDate.getTime() <= applicationDate.getTime()
             && (!item.endDate || applicationDate.getTime() <= item.endDate.getTime())) {
             docs.push(item);
-        // } else {
-            // console.log('UpgradeCriteria loaded but rejected=' + JSON.stringify(item) 
-            //     + ', applicationDate.getTime()=' + applicationDate.getTime()
-            //     + ', item.endDate.getTime()=' + item.endDate.getTime()
-            //    );
         }
     });
     return docs.length > 0 ? docs[0] : null;
@@ -285,10 +277,10 @@ async function persistUpgrade(db:any, item: RefereeUpgrade, response:any): Promi
     const update = item.id && item.id.length > 0;
     // console.log('BEFORE ' + (update?'update':'new') +': RefereeUpgrade=' + JSON.stringify(item));
     if (update) {
-        const doc = await db.collection(common.collectionUpgradeCriteria).document(item.id);
+        const doc = await db.collection(common.collectionRefereeUpgrade).document(item.id);
         await doc.update(item);
     } else {
-        const doc = await db.collection(common.collectionUpgradeCriteria).add(item);
+        const doc = await db.collection(common.collectionRefereeUpgrade).add(item);
         item.id = doc.id;
         // console.log('refereeUpgrade has now an id: ' + item.id);
         await doc.set(item);

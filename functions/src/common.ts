@@ -11,6 +11,7 @@ export const collectionSkillprofile = 'skillprofile';
 export const collectionCompetitionDayPanelVote = 'competitionDayPanelVote';
 export const collectionCompetitionDayRefereeCoachVote = 'competitionDayRefereeCoachVote';
 export const collectionUpgradeCriteria = 'upgradeCriteria';
+export const collectionRefereeUpgrade = 'refereeUpgrade';
 export const DATE_SEP = '-';
 
 export function toFileName(str: String): string {
@@ -44,7 +45,7 @@ export function loadFromDb(db:any, collection: string, id: string, response:any)
             if (doc.exists) {
                 const data = doc.data() as PersistentData;
                 data.id = id;
-                console.log('loadFromDb(' + collection +', ' + id + ') => ' + data);
+                console.log('loadFromDb(' + collection +', ' + id + ') => ' + JSON.stringify(data));
                 return data;
             } else {
                 console.log('loadFromDb(' + collection +', ' + id + ') => null');
