@@ -71,9 +71,9 @@ async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteri
         upagrdeStatusDate: common.to00h00(day),
         multiDayCompetitionRefs: data.multiDayCompetitionRefs,
         yesRefereeCoaches: data.yesCoach,
-        c3PanelVoteIds: data.c3dayVotes,
-        c4PanelVoteIds: data.c4dayVotes,
-        c5PanelVoteIds: data.c5dayVotes
+        c3PanelVotes: data.c3dayVotes,
+        c4PanelVotes: data.c4dayVotes,
+        c5PanelVotes: data.c5dayVotes
     };
     return ru;
 }

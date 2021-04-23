@@ -87,11 +87,11 @@ export interface RefereeUpgrade extends PersistentData {
     /** the reference to the referee coach already voting Yes */
     yesRefereeCoaches: CoachRef[];
     /** the list of the CompetitionPanelVote identifiers retained for the upragde decision in the category C3+ */
-    c3PanelVoteIds: CompetitionDayPanelVote[];
+    c3PanelVotes: CompetitionDayPanelVote[];
     /** the list of the CompetitionPanelVote identifiers retained for the upragde decision in the category C4+ */
-    c4PanelVoteIds: CompetitionDayPanelVote[];
+    c4PanelVotes: CompetitionDayPanelVote[];
     /** the list of the CompetitionPanelVote identifiers retained for the upragde decision in the category C5 */
-    c5PanelVoteIds: CompetitionDayPanelVote[];
+    c5PanelVotes: CompetitionDayPanelVote[];
 }
 
 /**
