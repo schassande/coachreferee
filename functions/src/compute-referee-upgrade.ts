@@ -1,5 +1,5 @@
 import * as common          from './common';
-import { CoachRef } from './model/competition';
+import { CoachRef, CompetitionRef } from './model/competition';
 import { CompetitionDayPanelVote, UpgradeCriteria, RefereeUpgrade,  } from './model/upgrade';
 import { RefereeLevel, User }  from './model/user';
 const moment = require('moment');
@@ -55,7 +55,7 @@ async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteri
             data.yesCoach.push(c);
         }
     })));
-    data.multiDayCompetitionIds = [...new Set(retainVotes.filter(v => v.isMultiDayCompetition).map(v => v.competitionId))];
+    data.multiDayCompetitionRefs = [...new Set(retainVotes.filter(v => v.isMultiDayCompetition).map(v => v.competitionRef))];
     console.log('workingData=' + JSON.stringify(data));
     let ru: RefereeUpgrade|null = await getRefereeUpgrade(ctx.db, referee.id, day, response);
     const id = ru ? ru.id : '';
@@ -69,11 +69,11 @@ async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteri
         upgradeLevel: upgradeCriteria.upgradeLevel,
         upgradeStatus: computeUpgradeStatus(data, upgradeCriteria) ? 'Yes' : 'No',
         upagrdeStatusDate: common.to00h00(day),
-        multiDayCompetitionIds: data.multiDayCompetitionIds,
+        multiDayCompetitionRefs: data.multiDayCompetitionRefs,
         yesRefereeCoaches: data.yesCoach,
-        c3PanelVoteIds: data.c3dayVotes.map(v => v.id),
-        c4PanelVoteIds: data.c4dayVotes.map(v => v.id),
-        c5PanelVoteIds: data.c5dayVotes.map(v => v.id)
+        c3PanelVoteIds: data.c3dayVotes,
+        c4PanelVoteIds: data.c4dayVotes,
+        c5PanelVoteIds: data.c5dayVotes
     };
     return ru;
 }
@@ -84,7 +84,7 @@ function computeUpgradeStatus(data: WorkingData, upgradeCriteria: UpgradeCriteri
         && data.windowSizeCheck // Check global window size
         && data.globalNbYes // Check global number of yes
         && data.yesCoach.length >= upgradeCriteria.yesRefereeCoachRequired // Check the number of different referee coaches
-        && data.multiDayCompetitionIds.length >= upgradeCriteria.multiDayCompetitionRequired // Check the multiday
+        && data.multiDayCompetitionRefs.length >= upgradeCriteria.multiDayCompetitionRequired // Check the multiday
         ;
 }
 interface WorkingData {
@@ -101,7 +101,7 @@ interface WorkingData {
     c4NbYes: boolean;
     c5NbYes: boolean;
     yesCoach: CoachRef[];
-    multiDayCompetitionIds: string[];
+    multiDayCompetitionRefs: CompetitionRef[];
 }
 function newWorkingData(): WorkingData {
      return {
@@ -118,7 +118,7 @@ function newWorkingData(): WorkingData {
         c4NbYes: false,
         c5NbYes: false,
         yesCoach: [],
-        multiDayCompetitionIds: []
+        multiDayCompetitionRefs: []
     }
 }
 

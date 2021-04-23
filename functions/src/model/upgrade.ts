@@ -1,6 +1,6 @@
 import { Upgradable } from './coaching';
 import { PersistentData } from './common';
-import { CoachRef, CompetitionCategory, RefereeRef } from './competition';
+import { CoachRef, CompetitionCategory, CompetitionRef, RefereeRef } from './competition';
 import { RefereeLevel } from './user';
 
 /**
@@ -40,13 +40,12 @@ export interface UpgradeVote {
 }
 /** A vote during a day of a competition */
 export interface CompetitionDayVote {
-    /** Identifier of the competition where the referee has been observed */
-    competitionId: string;
+    /** the competition where the referee has been observed */
+    competitionRef: CompetitionRef;
     /** Day of the competition */
     day: Date;
     /** is the competition is a multi day event */
     isMultiDayCompetition: boolean;
-    competitionCategory: CompetitionCategory;
     /** The evaluated referee */
     referee: RefereeRef;
     /** The level to upgrade */
@@ -71,6 +70,7 @@ export interface CompetitionDayPanelVote extends  CompetitionDayVote, Persistent
     coaches: CoachRef[];
     /** The Yes voting coach */
     yesCoaches: CoachRef[];
+    competitionCategory: CompetitionCategory;
 }
 
 export interface RefereeUpgrade extends PersistentData {
@@ -83,15 +83,15 @@ export interface RefereeUpgrade extends PersistentData {
     /** the date of the upgrade status */
     upagrdeStatusDate: Date;
     /** the ids of competition which is multi-day */
-    multiDayCompetitionIds: string[];
+    multiDayCompetitionRefs: CompetitionRef[];
     /** the reference to the referee coach already voting Yes */
     yesRefereeCoaches: CoachRef[];
     /** the list of the CompetitionPanelVote identifiers retained for the upragde decision in the category C3+ */
-    c3PanelVoteIds: string[];
+    c3PanelVoteIds: CompetitionDayPanelVote[];
     /** the list of the CompetitionPanelVote identifiers retained for the upragde decision in the category C4+ */
-    c4PanelVoteIds: string[];
+    c4PanelVoteIds: CompetitionDayPanelVote[];
     /** the list of the CompetitionPanelVote identifiers retained for the upragde decision in the category C5 */
-    c5PanelVoteIds: string[];
+    c5PanelVoteIds: CompetitionDayPanelVote[];
 }
 
 /**
