@@ -82,16 +82,18 @@ export interface RefereeUpgrade extends PersistentData {
     upgradeStatus: Upgradable;
     /** the date of the upgrade status */
     upagrdeStatusDate: Date;
-    /** the ids of competition which is multi-day */
+    /** the ompetition which are multi-day */
     multiDayCompetitionRefs: CompetitionRef[];
     /** the reference to the referee coach already voting Yes */
     yesRefereeCoaches: CoachRef[];
-    /** the list of the CompetitionPanelVote identifiers retained for the upragde decision in the category C3+ */
+    /** the list of the CompetitionPanelVote retained for the upragde decision in the category C3+ */
     c3PanelVotes: CompetitionDayPanelVote[];
-    /** the list of the CompetitionPanelVote identifiers retained for the upragde decision in the category C4+ */
+    /** the list of the CompetitionPanelVote retained for the upragde decision in the category C4+ */
     c4PanelVotes: CompetitionDayPanelVote[];
-    /** the list of the CompetitionPanelVote identifiers retained for the upragde decision in the category C5 */
+    /** the list of the CompetitionPanelVote retained for the upragde decision in the category C5 */
     c5PanelVotes: CompetitionDayPanelVote[];
+    /** the identifier of the UpgradeCriteria used for the evaluation */
+    upgradeCriteriaId: string;
 }
 
 /**

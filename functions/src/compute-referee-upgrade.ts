@@ -73,7 +73,8 @@ async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteri
         yesRefereeCoaches: data.yesCoach,
         c3PanelVotes: data.c3dayVotes,
         c4PanelVotes: data.c4dayVotes,
-        c5PanelVotes: data.c5dayVotes
+        c5PanelVotes: data.c5dayVotes,
+        upgradeCriteriaId: upgradeCriteria.id
     };
     return ru;
 }
