@@ -15,7 +15,6 @@ const moment = require('moment');
 8.Check the multiday
 */
 export async function func(request:any, response:any, ctx:any):Promise<any> {
-    await loadCoach(request, response, ctx);
     const referee: User = await loadReferee(request, response, ctx);
     const day = common.string2date(request.body.data.day, new Date());
     const upgradeCriteria: UpgradeCriteria = await loadUpgradeCriteria(referee, day, ctx, response);
@@ -123,25 +122,6 @@ function newWorkingData(): WorkingData {
     }
 }
 
-async function loadCoach(request:any, response:any, ctx:any): Promise<User> {
-    const coach: User = await common.loadUser(ctx.db, request.body.data.coachId, response);
-    if (!coach) {
-        throw new Error('Referee coach does not exist.');
-    }
-    if (coach.accountStatus !== 'ACTIVE') {
-        throw new Error('Referee coach has not an active account.');
-    }
-    if (!coach.refereeCoach) {
-        throw new Error('Referee coach has not complete refereeCoach data.');
-    }
-    if (!coach.refereeCoach.refereeCoachLevel) {
-        throw new Error('Referee coach has not referee coach level defined.');
-    }
-    if (coach.applications.filter(ar => ar.name === 'Upgrade' && ar.role === 'REFEREE_COACH').length === 0) {
-        throw new Error('Referee coach is not an allowed coach in the upgrade application.');
-    }
-    return coach;
-}
 async function loadReferee(request:any, response:any, ctx:any): Promise<User> {
     const referee: User = await common.loadFromDb(ctx.db, common.collectionUser, request.body.data.refereeId, response) as User;
     if (!referee) {
