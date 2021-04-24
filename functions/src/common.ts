@@ -37,7 +37,7 @@ export function string2date(dateStr: string, aDate: Date|null): Date {
     res.setFullYear(Number.parseInt(elements[0], 0));
     res.setMonth(Number.parseInt(elements[1], 0) - 1);
     res.setDate(Number.parseInt(elements[2], 0));
-    return res;
+    return to00h00(res);
 }
 export function loadFromDb(db:any, collection: string, id: string, response:any): Promise<PersistentData|null> {
     return db.collection(collection).doc(id).get()

@@ -31,6 +31,7 @@ async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteri
     const data: WorkingData = newWorkingData();
     data.restDayVotes = await findPanelVotes(ctx, referee, beginDate, day, response);
     console.log('panelVotes=' + JSON.stringify(data.restDayVotes));
+    const lastDay = data.restDayVotes.length > 0 ? data.restDayVotes[0].day : day;
 
     extractDays(upgradeCriteria, data);
     console.log('AFTER extractDays, workingData=' + JSON.stringify(data));
@@ -56,7 +57,7 @@ async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteri
     })));
     data.multiDayCompetitionRefs = [...new Set(retainVotes.filter(v => v.isMultiDayCompetition).map(v => v.competitionRef))];
     console.log('workingData=' + JSON.stringify(data));
-    let ru: RefereeUpgrade|null = await getRefereeUpgrade(ctx.db, referee.id, day, response);
+    let ru: RefereeUpgrade|null = await getRefereeUpgrade(ctx.db, referee.id, lastDay, response);
     const id = ru ? ru.id : '';
     ru = {
         id,
@@ -67,7 +68,7 @@ async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteri
         referee: { refereeId: referee.id, refereeShortName: referee.shortName },
         upgradeLevel: upgradeCriteria.upgradeLevel,
         upgradeStatus: computeUpgradeStatus(data, upgradeCriteria) ? 'Yes' : 'No',
-        upagrdeStatusDate: common.to00h00(day),
+        upagrdeStatusDate: common.to00h00(lastDay),
         multiDayCompetitionRefs: data.multiDayCompetitionRefs,
         yesRefereeCoaches: data.yesCoach,
         c3PanelVotes: data.c3dayVotes,
@@ -235,17 +236,20 @@ function extractDays(upgradeCriteria: UpgradeCriteria, data: WorkingData) {
     }
 }
 async function getRefereeUpgrade(db:any, refereeId: string, day: Date, response:any): Promise<RefereeUpgrade|null> {
-    const querySnapshot = await db.collection(common.collectionUpgradeCriteria)
+    console.log('getRefereeUpgrade(' + refereeId + ', '+ day + ')');
+    const querySnapshot = await db.collection(common.collectionRefereeUpgrade)
         .where('referee.refereeId', '==', refereeId)
         .where('upagrdeStatusDate', '==', day)
         .limit(1)
         .get();
     const docs: RefereeUpgrade[] = [];
+    // console.log('getRefereeUpgrade(' + refereeId + ', '+ day + ') examing result' + querySnapshot.empty);
     querySnapshot.forEach((doc:any) => {
         let item: RefereeUpgrade = doc.data() as RefereeUpgrade;
         item = adjustFieldOnLoadRefereeUpgrade(item);
         docs.push(item);
     });
+    //console.log('getRefereeUpgrade(' + refereeId + ', '+ day + ') nb result retain' + docs.length);
     return docs.length > 0 ? docs[0] : null;
 }
 function adjustFieldOnLoadRefereeUpgrade(item: RefereeUpgrade): RefereeUpgrade {
@@ -258,7 +262,7 @@ async function persistUpgrade(db:any, item: RefereeUpgrade, response:any): Promi
     const update = item.id && item.id.length > 0;
     // console.log('BEFORE ' + (update?'update':'new') +': RefereeUpgrade=' + JSON.stringify(item));
     if (update) {
-        const doc = await db.collection(common.collectionRefereeUpgrade).document(item.id);
+        const doc = await db.collection(common.collectionRefereeUpgrade).doc(item.id);
         await doc.update(item);
     } else {
         const doc = await db.collection(common.collectionRefereeUpgrade).add(item);
