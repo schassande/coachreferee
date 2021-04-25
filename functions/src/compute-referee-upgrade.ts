@@ -1,6 +1,6 @@
 import * as common          from './common';
 import { CoachRef, CompetitionRef } from './model/competition';
-import { CompetitionDayPanelVote, UpgradeCriteria, RefereeUpgrade,  } from './model/upgrade';
+import { CompetitionDayPanelVote, UpgradeCriteria, RefereeUpgrade, RefereeUpgradeStatus,  } from './model/upgrade';
 import { RefereeLevel, User }  from './model/user';
 const moment = require('moment');
 
@@ -32,6 +32,7 @@ async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteri
     data.restDayVotes = await findPanelVotes(ctx, referee, beginDate, day, response);
     console.log('panelVotes=' + JSON.stringify(data.restDayVotes));
     const lastDay = data.restDayVotes.length > 0 ? data.restDayVotes[0].day : day;
+    const competitionId: string = data.restDayVotes.length > 0 ? data.restDayVotes[0].competitionRef.competitionId : '';
 
     extractDays(upgradeCriteria, data);
     console.log('AFTER extractDays, workingData=' + JSON.stringify(data));
@@ -67,8 +68,10 @@ async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteri
         dataStatus: 'CLEAN',
         referee: { refereeId: referee.id, refereeShortName: referee.shortName },
         upgradeLevel: upgradeCriteria.upgradeLevel,
-        upgradeStatus: computeUpgradeStatus(data, upgradeCriteria) ? 'Yes' : 'No',
-        upagrdeStatusDate: common.to00h00(lastDay),
+        decision: computeUpgradeStatus(data, upgradeCriteria) ? 'Yes' : 'No',
+        decisionDate: common.to00h00(lastDay),
+        competitionId,
+        upgradeStatus: ru ? ru.upgradeStatus : 'DECIDED',
         multiDayCompetitionRefs: data.multiDayCompetitionRefs,
         yesRefereeCoaches: data.yesCoach,
         c3PanelVotes: data.c3dayVotes,
@@ -239,7 +242,7 @@ async function getRefereeUpgrade(db:any, refereeId: string, day: Date, response:
     console.log('getRefereeUpgrade(' + refereeId + ', '+ day + ')');
     const querySnapshot = await db.collection(common.collectionRefereeUpgrade)
         .where('referee.refereeId', '==', refereeId)
-        .where('upagrdeStatusDate', '==', day)
+        .where('decisionDate', '==', day)
         .limit(1)
         .get();
     const docs: RefereeUpgrade[] = [];
@@ -254,7 +257,7 @@ async function getRefereeUpgrade(db:any, refereeId: string, day: Date, response:
 }
 function adjustFieldOnLoadRefereeUpgrade(item: RefereeUpgrade): RefereeUpgrade {
     if (item) {
-        item.upagrdeStatusDate = common.adjustDate(item.upagrdeStatusDate);
+        item.decisionDate = common.adjustDate(item.decisionDate);
     }
     return item;
 }

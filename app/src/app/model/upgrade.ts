@@ -72,16 +72,20 @@ export interface CompetitionDayPanelVote extends  CompetitionDayVote, Persistent
     yesCoaches: CoachRef[];
     competitionCategory: CompetitionCategory;
 }
-
+export type RefereeUpgradeStatus = 'DECIDED' | 'PUBLISHED';
 export interface RefereeUpgrade extends PersistentData {
     /** The evaluated referee */
     referee: RefereeRef;
     /** The level to upgrade */
     upgradeLevel: RefereeLevel;
-    /** The status of the upgrade. Only 2 possible values: 'Yes' or 'No' */
-    upgradeStatus: Upgradable;
+    /** The decision of the upgrade. Only 2 possible values: 'Yes' or 'No' */
+    decision: Upgradable;
     /** the date of the upgrade status */
-    upagrdeStatusDate: Date;
+    decisionDate: Date;
+    /** Indicate the status of the upgrade */
+    upgradeStatus: RefereeUpgradeStatus;
+    /** The competition where occurs the decision */
+    competitionId: string;
     /** the ompetition which are multi-day */
     multiDayCompetitionRefs: CompetitionRef[];
     /** the reference to the referee coach already voting Yes */
