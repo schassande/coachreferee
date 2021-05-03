@@ -77,8 +77,8 @@ export class UserService  extends RemotePersistentDataService<User> {
                     if (ruser.data) {
                         console.log('User has been created on user database with the id: ', ruser.data.id);
                         // Send an email to admin with the account to validate
-                        this.sendNewAccountToAdmin(ruser.data.id);
-                        this.sendNewAccountToUser(ruser.data.id);
+                        this.sendNewAccountToAdmin(ruser.data.id).subscribe();
+                        this.sendNewAccountToUser(ruser.data.id).subscribe();
                         this.appSettingsService.setLastUser(user.email, password);
                         if (ruser.data.accountStatus === 'ACTIVE') {
                             return this.autoLogin();
