@@ -1,6 +1,6 @@
 import * as common          from './common';
 import { CoachRef, CompetitionRef } from './model/competition';
-import { CompetitionDayPanelVote, UpgradeCriteria, RefereeUpgrade, RefereeUpgradeStatus,  } from './model/upgrade';
+import { CompetitionDayPanelVote, UpgradeCriteria, RefereeUpgrade } from './model/upgrade';
 import { RefereeLevel, User }  from './model/user';
 const moment = require('moment');
 
