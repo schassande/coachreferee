@@ -61,8 +61,18 @@
                         <ion-input type="password" [(ngModel)]="user.password" max="15" tabindex="5"></ion-input>
                     </ion-item>
                     <ion-item>
+                        <ion-label>Region</ion-label>
+                        <ion-select [(ngModel)]="user.region" interface="action-sheet" required="true">
+                            <ion-select-option value="Europe">Europe</ion-select-option>
+                            <ion-select-option value="Australia">Australia</ion-select-option>
+                            <ion-select-option value="New Zealand">New Zealand</ion-select-option>
+                            <ion-select-option value="Others">Others</ion-select-option>
+                            <ion-select-option value="Test">Test</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-item>
                         <ion-label>Country</ion-label>
-                        <ion-select [(ngModel)]="user.country">
+                        <ion-select [(ngModel)]="user.country" interface="action-sheet" required="true">
                             <ion-select-option *ngFor="let country of constantes.countries" value="{{country[0]}}">{{country[1]}}</ion-select-option>
                         </ion-select>
                     </ion-item>
@@ -79,7 +89,7 @@
                     </ion-item>
                     <ion-item>
                         <ion-label>Speaking languages</ion-label>
-                        <ion-select [(ngModel)]="user.speakingLanguages" multiple="true">
+                        <ion-select [(ngModel)]="user.speakingLanguages" multiple="true" interface="action-sheet">
                             <ion-select-option *ngFor="let lang of constantes.languages" value="{{lang[0]}}">{{lang[1]}}</ion-select-option>
                         </ion-select>
                     </ion-item>

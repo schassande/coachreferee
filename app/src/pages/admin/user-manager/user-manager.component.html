@@ -13,33 +13,87 @@
 </ion-header>
 <ion-content (swipe)="onSwipe($event)">
     <ion-list>
-        <ion-item>
-            <ion-label style="width: 50%">Active: {{stats.nbActive}}/{{stats.total}}</ion-label>
-            <ion-label style="width: 50%">Pending: {{stats.nbValidationRequired}}/{{stats.total}}</ion-label>
-        </ion-item>
-        <ion-item>
-            <ion-label style="width: 50%">locked: {{stats.nbLocked}}/{{stats.total}}</ion-label>
-            <ion-label style="width: 50%">Deleted: {{stats.nbDeleted}}/{{stats.total}}</ion-label>
-        </ion-item>
-        <ion-item *ngFor="let user of users">
-            <ion-icon slot="start" *ngIf="user.photo && !user.photo.url" name="person"></ion-icon>
-            <ion-avatar slot="start" *ngIf="user.photo && user.photo.url"><img src="{{user.photo.url}}"></ion-avatar>
-            <ion-label>
-                <span (click)="userSelected(user)">
+        <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;">
+            <ion-item-divider color="light" style="text-align: center; font-size: 1.2em; padding: 10px;">
+                <ion-label>Account status statistics</ion-label>
+            </ion-item-divider>
+            <div class="stat-group">
+                <div class="stat-item">Total: {{stats.total}}</div>
+                <div class="stat-item">No Account: {{stats.noAccount}}</div>
+                <div class="stat-item">Active: {{stats.nbActive}}</div>
+                <div class="stat-item">Pending: {{stats.nbValidationRequired}}</div>
+                <div class="stat-item">locked: {{stats.nbLocked}}</div>
+                <div class="stat-item">Deleted: {{stats.nbDeleted}}</div>
+            </div>
+        </ion-item-group>
+        <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;">
+            <ion-item-divider color="light" style="text-align: center; font-size: 1.2em; padding: 10px;">
+                <ion-label>Role statistics</ion-label>
+            </ion-item-divider>
+            <div class="stat-group">
+                <div class="stat-item">Coach: {{stats.coach}}</div>
+                <div class="stat-item">Referee: {{stats.referee}}</div>
+                <div class="stat-item">Admin: {{stats.admin}}</div>
+            </div>
+        </ion-item-group>
+        <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;">
+            <ion-item-divider color="light" style="text-align: center; font-size: 1.2em; padding: 10px;">
+                <ion-label>Region statistics</ion-label>
+            </ion-item-divider>
+            <div class="stat-group">
+                <div class="stat-item" *ngFor="let rs of stats.perRegion">{{rs.region}}: {{rs.total}}</div>
+            </div>
+        </ion-item-group>
+        <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;">
+            <ion-item-divider color="light" style="text-align: center; font-size: 1.2em; padding: 10px;">
+                <ion-label>List of users</ion-label>
+            </ion-item-divider>
+            <ion-item>
+                <ion-label>Status</ion-label>
+                <ion-select slot="end" (ionChange)="onStatusChange()" [(ngModel)]="status" interface="action-sheet">
+                    <ion-select-option value="">All</ion-select-option>
+                    <ion-select-option value="ACTIVE">ACTIVE</ion-select-option>
+                    <ion-select-option value="LOCKED">LOCKED</ion-select-option>
+                    <ion-select-option value="VALIDATION_REQUIRED">VALIDATION_REQUIRED</ion-select-option>
+                    <ion-select-option value="NO_ACCOUNT">NO_ACCOUNT</ion-select-option>
+                    <ion-select-option value="DELETED">DELETED</ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-item>
+                <ion-label>Region</ion-label>
+                <ion-select slot="end" (ionChange)="onRegionChange()" [(ngModel)]="region" interface="action-sheet">
+                    <ion-select-option value="">All</ion-select-option>
+                    <ion-select-option value="Europe">Europe</ion-select-option>
+                    <ion-select-option value="Australia">Australia</ion-select-option>
+                    <ion-select-option value="New Zealand">New Zealand</ion-select-option>
+                    <ion-select-option value="Others">Others</ion-select-option>
+                </ion-select>
+            </ion-item>
+            <div style="margin: 20px; text-align: right;" *ngIf="filteredUsers">{{filteredUsers.length}} user(s) found.</div>
+            <ion-item *ngFor="let user of filteredUsers">
+                <ion-icon slot="start" *ngIf="user.photo && !user.photo.url" name="person"></ion-icon>
+                <ion-avatar slot="start" *ngIf="user.photo && user.photo.url"><img src="{{user.photo.url}}"></ion-avatar>
+                <ion-label>
+                    <span (click)="userSelected(user)">
                     <span style="font-weight: bold; font-size: 1.2em;">{{user.firstName}} {{user.lastName}} ({{user.shortName}})</span>
-                <br>{{user.email}}
-                <br>{{user.id}}
-                </span>
-                <div *ngIf="user.accountStatus !== 'ACTIVE'">Status: <span style="font-weight: bold; font-size: 1.2em; color: red;">{{user.accountStatus}}</span></div>
-                <div style="margin: 10px 0; text-align: center; font-size: 0.8em;">
-                    <ion-button *ngIf="user.accountStatus === 'ACTIVE'" color="warning" name="lock" shape="round" (click)="lock(user)">Lock</ion-button>
-                    <ion-button *ngIf="user.accountStatus === 'LOCKED'" color="warning" name="unlock" shape="round" (click)="unlock(user)">UnlocK</ion-button>
-                    <ion-button *ngIf="user.accountStatus === 'VALIDATION_REQUIRED'" color="success" name="checkmark" shape="round" (click)="validate(user)">validate</ion-button>
-                    <ion-button *ngIf="user.accountStatus === 'VALIDATION_REQUIRED'" color="danger" name="close" shape="round" (click)="unvalidate(user)">Reject</ion-button>
-                    <ion-button name="trash" color="danger" shape="round" (click)="delete(user)">Delete</ion-button>
-                    <ion-button name="resetPassword" shape="round" (click)="resetPassword(user)">Reset Pwd</ion-button>
-                </div>
-            </ion-label>
-        </ion-item>
+                    <br>{{user.email}}
+                    <br>{{user.country}} / {{user.region}}
+                    <br>id: {{user.id}}
+                    <br>Roles: <span *ngFor="let ar of filterApplicationRoles(user.applications)">{{ar.role}}&nbsp;</span>
+                    <span *ngIf="user.demandingApplications.length"><br>Demanding roles: <span *ngFor="let ar of filterApplicationRoles(user.demandingApplications)">{{ar.role}}&nbsp;</span></span>
+                    </span>
+                    <div *ngIf="user.accountStatus !== 'ACTIVE'">Status: <span style="font-weight: bold; font-size: 1.2em; color: red;">{{user.accountStatus}}</span></div>
+                    <div style="margin: 10px 0; text-align: center; font-size: 0.8em;">
+                        <ion-button *ngIf="user.accountStatus === 'ACTIVE'" color="warning" name="lock" shape="round" (click)="lock(user)">Lock</ion-button>
+                        <ion-button *ngIf="user.accountStatus === 'LOCKED'" color="warning" name="unlock" shape="round" (click)="unlock(user)">UnlocK</ion-button>
+                        <ion-button *ngIf="user.accountStatus === 'VALIDATION_REQUIRED'" color="success" name="checkmark" shape="round" (click)="validate(user)">validate</ion-button>
+                        <ion-button *ngIf="user.accountStatus === 'VALIDATION_REQUIRED'" color="danger" name="close" shape="round" (click)="unvalidate(user)">Reject</ion-button>
+                        <ion-button name="trash" color="danger" shape="round" (click)="delete(user)">Delete</ion-button>
+                        <ion-button name="resetPassword" shape="round" (click)="resetPassword(user)">Reset Pwd</ion-button>
+                        <ion-button name="edit" shape="round" routerLink="/user/edit/{{user.id}}">Edit</ion-button>
+                    </div>
+                </ion-label>
+            </ion-item>
+        </ion-item-group>
     </ion-list>
 </ion-content>

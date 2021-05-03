@@ -1,10 +1,12 @@
 import { AlertController, NavController } from '@ionic/angular';
 import { Component, OnInit } from '@angular/core';
 
-import { User, AccountStatus } from './../../../app/model/user';
+import { User, AccountStatus, AppRole, CurrentApplicationName, ApplicationRole } from './../../../app/model/user';
 import { ResponseWithData } from './../../../app/service/response';
 import { UserService } from './../../../app/service/UserService';
 import { mergeMap, map } from 'rxjs/operators';
+import { DataRegion } from 'src/app/model/common';
+import { ToolService } from 'src/app/service/ToolService';
 
 @Component({
   selector: 'app-user-manager',
@@ -13,32 +15,55 @@ import { mergeMap, map } from 'rxjs/operators';
 })
 export class UserManagerComponent implements OnInit {
   users: User[];
+  filteredUsers: User[];
   error;
   stats = {
     total: 0,
     nbActive: 0,
     nbValidationRequired: 0,
     nbDeleted: 0,
-    nbLocked: 0
+    nbLocked: 0,
+    noAccount: 0,
+    referee: 0,
+    activeReferee: 0,
+    coach: 0,
+    ndr: 0,
+    admin: 0,
+    perRegion : []
   };
+  status: AccountStatus = 'ACTIVE';
+  role: AppRole;
+  region: DataRegion;
 
   constructor(
     private alertCtrl: AlertController,
     private navController: NavController,
+    private toolService: ToolService,
     private userService: UserService
   ) { }
 
   ngOnInit() {
     console.log('UserManagerComponent.ngOnInit');
     this.userService.all().subscribe((response: ResponseWithData<User[]>) => {
-      this.users = this.sort(response.data).filter(u =>
-        u.applications.filter(ar => ar.name === 'RefereeCoach').length > 0
-        || u.demandingApplications.filter(ar => ar.name === 'RefereeCoach').length > 0);
+      this.users = this.sort(response.data.filter(u =>
+        u.applications.filter(ar => ar.name === CurrentApplicationName).length > 0
+        || u.demandingApplications.filter(ar => ar.name === CurrentApplicationName).length > 0)
+        );
       this.error = response.error;
       if (this.users) {
         this.computeStats();
+        this.filterUsers();
       }
     });
+  }
+  onStatusChange() {
+    this.filterUsers();
+  }
+  onRoleChange() {
+    this.filterUsers();
+  }
+  onRegionChange() {
+    this.filterUsers();
   }
 
   sort(users: User[]): User[] {
@@ -63,10 +88,23 @@ export class UserManagerComponent implements OnInit {
       nbActive: 0,
       nbValidationRequired: 0,
       nbDeleted: 0,
-      nbLocked: 0
+      nbLocked: 0,
+      noAccount: 0,
+      referee: 0,
+      activeReferee: 0,
+      coach: 0,
+      ndr: 0,
+      admin: 0,
+      perRegion: []
     };
     this.users.forEach( (user) => {
       stats.total++;
+      let regionStat = stats.perRegion.find(rs => rs.region === user.region);
+      if (!regionStat) {
+        regionStat = { region: user.region, total: 0, referee: 0, activeReferee: 0 };
+        stats.perRegion.push(regionStat);
+      }
+      regionStat.total++;
       switch (user.accountStatus) {
       case 'ACTIVE':
         stats.nbActive++;
@@ -80,9 +118,54 @@ export class UserManagerComponent implements OnInit {
       case 'LOCKED':
         stats.nbLocked++;
         break;
+      case 'NO_ACCOUNT':
+        stats.noAccount++;
+        break;
+      }
+      if (user.applications.find(ar => ar.name === CurrentApplicationName && ar.role === 'REFEREE')) {
+        stats.referee++;
+        regionStat.referee++;
+        if (user.accountStatus === 'ACTIVE') {
+          stats.activeReferee++;
+          regionStat.activeReferee++;
+        }
+      }
+      if (user.applications.find(ar => ar.name === CurrentApplicationName && ar.role === 'REFEREE_COACH')) {
+        stats.coach++;
+      }
+      if (user.applications.find(ar => ar.name === CurrentApplicationName && ar.role === 'NDR')) {
+        stats.ndr++;
+      }
+      if (user.applications.find(ar => ar.name === CurrentApplicationName && ar.role === 'ADMIN')) {
+        stats.admin++;
       }
     });
     this.stats = stats;
+    console.log(this.stats);
+  }
+  filterUsers() {
+    if (this.users && (this.toolService.isValidString(this.status)
+                      || this.toolService.isValidString(this.role)
+                      || this.toolService.isValidString(this.region)
+                      )) {
+      this.filteredUsers = this.users.filter(u => {
+        let keep = true;
+        if (keep && this.toolService.isValidString(this.status)) {
+          keep = u.accountStatus === this.status;
+        }
+        if (keep && this.toolService.isValidString(this.role)) {
+          keep = u.applications.filter(ar => ar.name === CurrentApplicationName && ar.role === this.role).length > 0;
+        }
+        if (keep && this.toolService.isValidString(this.region)) {
+          keep = u.region === this.region;
+        }
+        return keep;
+      });
+      console.log('filterUsers(): ' + this.users.length + ' => ' + this.filteredUsers.length);
+    } else {
+      this.filteredUsers = this.users;
+      console.log('filterUsers(): no filtering');
+    }
   }
   lock(user: User) {
     user.accountStatus = 'LOCKED';
@@ -153,5 +236,8 @@ export class UserManagerComponent implements OnInit {
     if (event.direction === 4) {
       this.back();
     }
+  }
+  filterApplicationRoles(roles: ApplicationRole[]) {
+    return roles.filter(ar => ar.name === CurrentApplicationName);
   }
 }

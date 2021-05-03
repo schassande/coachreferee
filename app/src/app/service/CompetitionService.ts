@@ -8,6 +8,7 @@ import { ResponseWithData } from './response';
 import { Injectable } from '@angular/core';
 import { RemotePersistentDataService } from './RemotePersistentDataService';
 import { ToastController } from '@ionic/angular';
+import { ToolService } from './ToolService';
 
 @Injectable()
 export class CompetitionService extends RemotePersistentDataService<Competition> {
@@ -17,7 +18,8 @@ export class CompetitionService extends RemotePersistentDataService<Competition>
         db: AngularFirestore,
         private connectedUserService: ConnectedUserService,
         private dateService: DateService,
-        toastController: ToastController
+        toastController: ToastController,
+        private toolService: ToolService
     ) {
         super(appSettingsService, db, toastController);
     }
@@ -49,12 +51,19 @@ export class CompetitionService extends RemotePersistentDataService<Competition>
     }
     public searchCompetitions(text: string,
                               options: 'default' | 'server' | 'cache' = 'default'): Observable<ResponseWithData<Competition[]>> {
-        const str = text !== null && text && text.trim().length > 0 ? text.trim() : null;
-        return str ?
-            super.filter(this.allO(options), (item: Competition) => {
-                return this.stringContains(str, item.name);
-            })
-            : this.allO(options);
+        let q: Query<Competition> = this.getCollectionRef();
+        if (!this.connectedUserService.isAdmin()) {
+            const region = this.connectedUserService.getCurrentUser().region;
+            console.log('searchCompetitions(' + text + ',' + options + ') filter by the region of the user: \'' + region + '\'');
+            q = q.where('region', '==', region);
+        }
+        let res = this.query(q, options);
+        const str = this.toolService.isValidString(text) ? text.trim() : null;
+        if (str) {
+            console.log('searchCompetitions(' + text + ',' + options + ') filter by the competition name.');
+            res = super.filter(res, (item: Competition) => this.stringContains(str, item.name));
+        }
+        return res;
     }
 
     public filterCompetitionsByCoach(competitions: Competition[], coachId: string): Competition[] {
