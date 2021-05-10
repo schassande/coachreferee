@@ -5,7 +5,10 @@ import { AlertController, ModalController, NavController } from '@ionic/angular'
 import { RefereeEditPage } from '../referee-edit/referee-edit';
 import { RefereeService } from '../../../app/service/RefereeService';
 import { ResponseWithData } from '../../../app/service/response';
-import { Referee } from '../../../app/model/user';
+import { CONSTANTES, Referee, RefereeLevel, User } from '../../../app/model/user';
+import { DataRegion } from 'src/app/model/common';
+import { UserSearchCriteria, UserService } from 'src/app/service/UserService';
+import { ConnectedUserService } from 'src/app/service/ConnectedUserService';
 
 /**
  * Generated class for the RefereeListPage page.
@@ -24,28 +27,44 @@ export class RefereeListPage implements OnInit {
   error: any;
   searchInput: string;
   sortBy: string;
+  region: DataRegion = null;
+  country: string = null;
+  refereeLevel: RefereeLevel = null;
+  constantes = CONSTANTES;
+  loading = false;
 
   constructor(
     private alertCtrl: AlertController,
+    private connectedUserService: ConnectedUserService,
     private dateService: DateService,
     private helpService: HelpService,
     public modalController: ModalController,
     private navController: NavController,
-    public refereeService: RefereeService
+    public refereeService: RefereeService,
+    private userService: UserService
     ) {
   }
 
   ngOnInit() {
     this.helpService.setHelp('referee-list');
+    this.region = this.connectedUserService.getCurrentUser().region;
     this.searchReferee();
   }
 
-  private searchReferee() {
+  public searchReferee() {
     console.log('searchReferee()');
-    this.refereeService.searchReferees(this.searchInput).subscribe((response: ResponseWithData<Referee[]>) => {
-      console.log('searchReferee()=>' + response.data.length);
+    const criteria: UserSearchCriteria = {
+      role : 'REFEREE',
+      region : this.region,
+      country : this.country,
+      text : this.searchInput,
+      refereeLevel : this.refereeLevel
+    };
+    this.loading = true;
+    this.userService.searchUsers(criteria).subscribe((response: ResponseWithData<User[]>) => {
       this.referees = this.sortReferees(response.data);
       this.error = response.error;
+      this.loading = false;
     });
   }
   private sortReferees(referees: Referee[]): Referee[] {
@@ -76,10 +95,6 @@ export class RefereeListPage implements OnInit {
     const modal = await this.modalController.create({ component: RefereeEditPage});
     modal.onDidDismiss().then( (data) => this.searchReferee());
     return await modal.present();
-  }
-
-  public onSearchBarInput() {
-    this.searchReferee();
   }
 
   public deleteReferee(referee: Referee) {
