@@ -11,7 +11,7 @@ export interface CompetitionInfo {
 }
 
 @Component({
-    selector: 'competition-selector',
+    selector: 'app-competition-selector',
     template: `
 <ion-header>
     <ion-toolbar>

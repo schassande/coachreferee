@@ -21,7 +21,16 @@ import { Component, Input, ViewEncapsulation } from '@angular/core';
             </div>
         <ion-content>`,
     encapsulation: ViewEncapsulation.None,
-    styleUrls: [ 'help-widget-component.scss' ]
+    styles: [`
+        h1 {
+            text-align: center;
+        }
+
+        p {
+            text-align: justify;
+            margin: 10px 5px;
+        }
+    `]
 })
 export class HelpWidgetComponent {
 

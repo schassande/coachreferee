@@ -3,7 +3,7 @@ import { Component, Input, forwardRef } from '@angular/core';
 import { Sharing } from '../../app/model/privacy';
 
 @Component({
-    selector: 'sharing-comp',
+    selector: 'app-sharing-comp',
     template: ` <div class="sharingSegment" *ngIf="!readonly">
                     <span class="sharingButton sharingYes" [ngClass]="{'sharingYesActivated': value == 'YES'}"
                         (click)="changeValue('YES')">
@@ -62,12 +62,10 @@ import { Sharing } from '../../app/model/privacy';
   })
 export class SharingComponent implements ControlValueAccessor {
 
-    @Input()
-    public name: string;
-    @Input('value')
-    public val: Sharing;
-    @Input()
-    public readonly = false;
+    @Input() public name: string;
+    // tslint:disable-next-line:no-input-rename
+    @Input('value') public val: Sharing;
+    @Input() public readonly = false;
 
     // Both onChange and onTouched are functions. Set default function doing NOP
     private onChange: any = () => { };

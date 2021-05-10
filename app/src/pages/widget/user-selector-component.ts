@@ -1,17 +1,16 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 
 import { ConnectedUserService } from '../../app/service/ConnectedUserService';
 import { UserSearchCriteria, UserService } from '../../app/service/UserService';
 import { ResponseWithData } from '../../app/service/response';
 
-import { DataRegion, SharedWith } from './../../app/model/common';
+import { DataRegion } from './../../app/model/common';
 import { AppRole, CONSTANTES, RefereeCoachLevel, RefereeLevel, User } from './../../app/model/user';
 import { forkJoin, Observable, of } from 'rxjs';
 import { CompetitionService } from 'src/app/service/CompetitionService';
 import { map, mergeMap } from 'rxjs/operators';
 import { ToolService } from 'src/app/service/ToolService';
-import { RefereeEditPage } from '../referee/referee-edit/referee-edit';
 
 @Component({
     selector: 'app-user-selector',

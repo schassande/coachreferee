@@ -52,7 +52,6 @@ import { CompetitionSelectorComponent } from './../pages/widget/competition-sele
 import { CompetitionUpgradesPage } from './../pages/competition/competition-upgrades/competition-upgrades.page';
 import { CompetencyComponent } from '../pages/assessment/assess-referee/competency-component';
 import { HomePage } from '../pages/home/home';
-import { PeriodSelectorComponent } from '../pages/widget/period-selector-component';
 import { ProEditPage } from '../pages/pro/pro-edit/pro-edit';
 import { ProListPage } from '../pages/pro/pro-list/pro-list';
 import { RefereeEditPage } from '../pages/referee/referee-edit/referee-edit';
@@ -103,7 +102,6 @@ import { UserService } from './service/UserService';
 import { UserGroupService } from './service/UserGroupService';
 import { VersionService } from './service/VersionService';
 import { XpService } from './service/XpService';
-import { CompetitionRefereeSelectorComponent } from 'src/pages/widget/competition-referee-selector-component';
 import { RefereeSelectorService } from 'src/pages/referee/referee-selector-service';
 
 
@@ -115,7 +113,7 @@ import { RefereeSelectorService } from 'src/pages/referee/referee-selector-servi
     CompetitionImportComponent, CompetitionListPage, CompetitionEditComponent,
     CompetitionCoachesPage, CompetitionHomePage, CompetitionRankingPage, CompetitionUpgradesPage, CompetitionRefereesPage,
     CompetitionRankingPage, CompetitionRankingBestOf2Page, CompetitionGamesPage, CompetitionRankingListComponent,
-    CompetitionRankingNewComponent, CompetitionRefereeSelectorComponent,
+    CompetitionRankingNewComponent,
     HomePage, HelpWidgetComponent,
     ProEditPage, ProListPage,
     RefereeListPage, RefereeViewPage, RefereeSelectPage, RefereeEditPage, RefereeSeasonUpgradeComponent,
@@ -123,9 +121,9 @@ import { RefereeSelectorService } from 'src/pages/referee/referee-selector-servi
     SkillEditPage, SkillProfileEditPage, SkillProfileListPage, SkillSetEditPage,
     UserEditPage, UserLoginComponent, UserWaitingValidationPage,
     XpListComponent, XpEditComponent,
-    SharingComponent, CompetencyComponent, CompetencyPointsComponent, PeriodSelectorComponent, CompetitionSelectorComponent,
+    SharingComponent, CompetencyComponent, CompetencyPointsComponent, CompetitionSelectorComponent,
     CameraIconComponent, UserSelectorComponent],
-  entryComponents: [AppComponent, HomePage, RefereeSelectPage, CompetitionRefereeSelectorComponent,
+  entryComponents: [AppComponent, HomePage, RefereeSelectPage,
     RefereeEditPage, UserSelectorComponent, CompetitionSelectorComponent, HelpWidgetComponent, CompetitionRankingNewComponent],
   imports: [
     AppRoutingModule,

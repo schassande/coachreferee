@@ -108,31 +108,31 @@
                 <form #form="ngForm" style="margin-bottom: 50px;">
                     <ion-item>
                         <ion-label style="white-space: normal; margin: 0;">Sharing of my personal (fields above) data to the application users</ion-label>
-                        <sharing-comp name="personnalInfoSharing" [(ngModel)]="user.dataSharingAgreement.personnalInfoSharing"></sharing-comp>
+                        <app-sharing-comp name="personnalInfoSharing" [(ngModel)]="user.dataSharingAgreement.personnalInfoSharing"></app-sharing-comp>
                     </ion-item>
                     <ion-item>
                         <ion-label style="white-space: normal; margin: 0;">Sharing of my photo to the application users</ion-label>
-                        <sharing-comp name="photoSharing" [(ngModel)]="user.dataSharingAgreement.photoSharing"></sharing-comp>
+                        <app-sharing-comp name="photoSharing" [(ngModel)]="user.dataSharingAgreement.photoSharing"></app-sharing-comp>
                     </ion-item>
                     <ion-item>
                         <ion-label style="white-space: normal; margin: 0;">Sharing of my assessments as referee to all coaches</ion-label>
-                        <sharing-comp name="refereeAssessmentSharing" [(ngModel)]="user.dataSharingAgreement.refereeAssessmentSharing"></sharing-comp>
+                        <app-sharing-comp name="refereeAssessmentSharing" [(ngModel)]="user.dataSharingAgreement.refereeAssessmentSharing"></app-sharing-comp>
                     </ion-item>
                     <ion-item>
                         <ion-label style="white-space: normal; margin: 0;">Sharing of my coachings as referee to all coaches</ion-label>
-                        <sharing-comp name="refereeCoachingInfoSharing" [(ngModel)]="user.dataSharingAgreement.refereeCoachingInfoSharing"></sharing-comp>
+                        <app-sharing-comp name="refereeCoachingInfoSharing" [(ngModel)]="user.dataSharingAgreement.refereeCoachingInfoSharing"></app-sharing-comp>
                     </ion-item>
                     <ion-item>
                         <ion-label style="white-space: normal; margin: 0;">Sharing of my assessments as coach to the others coaches</ion-label>
-                        <sharing-comp name="coachAssessmentSharing" [(ngModel)]="user.dataSharingAgreement.coachAssessmentSharing"></sharing-comp>
+                        <app-sharing-comp name="coachAssessmentSharing" [(ngModel)]="user.dataSharingAgreement.coachAssessmentSharing"></app-sharing-comp>
                     </ion-item>
                     <ion-item>
                         <ion-label style="white-space: normal; margin: 0;">Sharing of my coaching as coach to others coaches</ion-label>
-                        <sharing-comp name="coachCoachingInfoSharing" [(ngModel)]="user.dataSharingAgreement.coachCoachingInfoSharing"></sharing-comp>
+                        <app-sharing-comp name="coachCoachingInfoSharing" [(ngModel)]="user.dataSharingAgreement.coachCoachingInfoSharing"></app-sharing-comp>
                     </ion-item>
                     <ion-item>
                         <ion-label style="white-space: normal; margin: 0;">Sharing of assessment done by me to others coaches</ion-label>
-                        <sharing-comp name="coachProSharing" [(ngModel)]="user.dataSharingAgreement.coachProSharing"></sharing-comp>
+                        <app-sharing-comp name="coachProSharing" [(ngModel)]="user.dataSharingAgreement.coachProSharing"></app-sharing-comp>
                     </ion-item>
                 </form>
             </ion-item-group>
