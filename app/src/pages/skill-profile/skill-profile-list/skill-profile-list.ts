@@ -13,7 +13,7 @@ import { ActivatedRoute, Params } from '@angular/router';
  * on Ionic pages and navigation.
  */
 @Component({
-  selector: 'page-skill-profile-list',
+  selector: 'app-page-skill-profile-list',
   templateUrl: 'skill-profile-list.html',
 })
 export class SkillProfileListPage implements OnInit {

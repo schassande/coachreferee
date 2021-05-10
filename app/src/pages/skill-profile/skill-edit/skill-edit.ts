@@ -18,7 +18,7 @@ import { Skill, SkillProfile } from '../../../app/model/skill';
  */
 
 @Component({
-  selector: 'page-skill-edit',
+  selector: 'app-page-skill-edit',
   templateUrl: 'skill-edit.html',
 })
 export class SkillEditPage implements OnInit {

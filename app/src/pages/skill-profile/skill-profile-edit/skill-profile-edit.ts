@@ -17,7 +17,7 @@ import { ConnectedUserService } from '../../../app/service/ConnectedUserService'
  */
 
 @Component({
-  selector: 'page-skill-profile-edit',
+  selector: 'app-page-skill-profile-edit',
   templateUrl: 'skill-profile-edit.html',
 })
 export class SkillProfileEditPage implements OnInit {

@@ -27,7 +27,7 @@ import { ToolService } from '../../../app/service/ToolService';
  */
 
 @Component({
-  selector: 'page-referee-view',
+  selector: 'app-page-referee-view',
   templateUrl: 'referee-view.html',
   styleUrls: ['referee-view.scss']
 })
