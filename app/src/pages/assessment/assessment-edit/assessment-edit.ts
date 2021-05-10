@@ -16,7 +16,6 @@ import { SkillProfileService } from '../../../app/service/SkillProfileService';
 import { Referee, User } from '../../../app/model/user';
 import { Assessment, SkillSetEvaluation } from '../../../app/model/assessment';
 
-import { RefereeSelectPage } from '../../referee/referee-select/referee-select';
 import { mergeMap, map, catchError } from 'rxjs/operators';
 import { RefereeSelectorService } from 'src/pages/referee/referee-selector-service';
 

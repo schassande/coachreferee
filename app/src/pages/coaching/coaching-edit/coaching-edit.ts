@@ -19,7 +19,6 @@ import { ConnectedUserService } from '../../../app/service/ConnectedUserService'
 import { Coaching } from '../../../app/model/coaching';
 import { User, Referee } from '../../../app/model/user';
 import { SharedWith } from 'src/app/model/common';
-import { RefereeEditPage } from 'src/pages/referee/referee-edit/referee-edit';
 import { RefereeSelectorService } from 'src/pages/referee/referee-selector-service';
 
 /**

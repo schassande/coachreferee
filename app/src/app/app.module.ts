@@ -57,7 +57,6 @@ import { ProListPage } from '../pages/pro/pro-list/pro-list';
 import { RefereeEditPage } from '../pages/referee/referee-edit/referee-edit';
 import { RefereeImportComponent } from '../pages/referee/referee-import/referee-import.component';
 import { RefereeListPage } from '../pages/referee/referee-list/referee-list';
-import { RefereeSeasonUpgradeComponent } from '../pages/referee/referee-season-upgrade/referee-season-upgrade.component';
 import { RefereeSelectPage } from '../pages/referee/referee-select/referee-select';
 import { RefereeViewPage } from '../pages/referee/referee-view/referee-view';
 import { SettingsPage } from '../pages/settings/settings';
@@ -116,7 +115,7 @@ import { RefereeSelectorService } from 'src/pages/referee/referee-selector-servi
     CompetitionRankingNewComponent,
     HomePage, HelpWidgetComponent,
     ProEditPage, ProListPage,
-    RefereeListPage, RefereeViewPage, RefereeSelectPage, RefereeEditPage, RefereeSeasonUpgradeComponent,
+    RefereeListPage, RefereeViewPage, RefereeSelectPage, RefereeEditPage,
     SettingsPage,
     SkillEditPage, SkillProfileEditPage, SkillProfileListPage, SkillSetEditPage,
     UserEditPage, UserLoginComponent, UserWaitingValidationPage,

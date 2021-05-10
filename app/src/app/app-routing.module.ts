@@ -30,7 +30,6 @@ import { ProListPage } from 'src/pages/pro/pro-list/pro-list';
 import { RefereeListPage } from 'src/pages/referee/referee-list/referee-list';
 import { RefereeViewPage } from 'src/pages/referee/referee-view/referee-view';
 import { RefereeImportComponent } from 'src/pages/referee/referee-import/referee-import.component';
-import { RefereeSeasonUpgradeComponent } from 'src/pages/referee/referee-season-upgrade/referee-season-upgrade.component';
 import { SettingsPage } from 'src/pages/settings/settings';
 import { SkillProfileListPage } from 'src/pages/skill-profile/skill-profile-list/skill-profile-list';
 import { SkillProfileEditPage } from 'src/pages/skill-profile/skill-profile-edit/skill-profile-edit';
@@ -80,8 +79,6 @@ const routes: Routes = [
   { path: 'referee/list', component: RefereeListPage, canActivate: [AuthGuard] },
   { path: 'referee/view/:id', component: RefereeViewPage, canActivate: [AuthGuard] },
   { path: 'referee/import', component: RefereeImportComponent, canActivate: [AuthGuard] },
-  { path: 'referee/upgrades', component: RefereeSeasonUpgradeComponent, canActivate: [AuthGuard] },
-  // MODAL { path: 'referee/select', component: RefereeSelectPage, canActivate: [AuthGuard] },
   // MODAL { path: 'referee/edit/:id', component: RefereeEditPage, canActivate: [AuthGuard] },
 
   { path: 'settings', component: SettingsPage, canActivate: [AuthGuard]},
