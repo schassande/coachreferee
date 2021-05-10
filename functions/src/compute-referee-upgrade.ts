@@ -56,7 +56,11 @@ async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteri
             data.yesCoach.push(c);
         }
     })));
-    data.multiDayCompetitionRefs = [...new Set(retainVotes.filter(v => v.isMultiDayCompetition).map(v => v.competitionRef))];
+
+    data.multiDayCompetitionRefs = [];
+    retainVotes.filter(v => v.isMultiDayCompetition).map(v => v.competitionRef)
+        .forEach(cr => common.addToSetById(data.multiDayCompetitionRefs, cr, 'competitionId'));
+
     console.log('workingData=' + JSON.stringify(data));
     let ru: RefereeUpgrade|null = await getRefereeUpgrade(ctx.db, referee.id, lastDay, response);
     const id = ru ? ru.id : '';

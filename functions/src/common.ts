@@ -82,3 +82,10 @@ export function adjustDate(d: any): Date {
     }
 }
 
+export function addToSetById(arrays: any[], itemToAdd: any, idFieldName: string = 'id') {
+    const idx = arrays.findIndex( (item) => itemToAdd[idFieldName] === item[idFieldName]);
+    if (idx < 0) {
+        arrays.push(itemToAdd);
+    }
+}
+
