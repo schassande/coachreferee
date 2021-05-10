@@ -103,27 +103,51 @@ export class UserService  extends RemotePersistentDataService<User> {
         if (this.connectedUserService.getCurrentUser().id !== id && !this.connectedUserService.isAdmin()) {
             return of({error: {error: 'Not current user', errorCode: 1}});
         }
-        // First delete user from database
-        let obs = super.delete(id);
-        if (this.connectedUserService.getCurrentUser().id === id) {
-            obs = obs.pipe(
-                mergeMap(() => from(this.angularFireAuth.currentUser)),
-                mergeMap((user) => from(user.delete())),
-                map(() => {
-                    return {error: null};
-                }),
-                catchError((err) => {
-                    console.error(err);
-                    return of({error: err});
-                })
-            );
-        }
-        return obs.pipe(map((res) => {
-            if (!res.error) {
-                console.log('User ' + id + ' deleted.');
-            }
-            return res;
-        }));
+        // First get the user from database
+        return super.get(id).pipe(
+            mergeMap(ruser => {
+                if (!ruser.data) {
+                    console.log('User ' + id + ' does not exist.');
+                    return of({error: null});
+                }
+                const user: User = ruser.data;
+                // remove the roles from this application
+                user.applications = user.applications.filter(an => an.name !== CurrentApplicationName);
+                user.demandingApplications = user.demandingApplications.filter(an => an.name !== CurrentApplicationName);
+                if (user.accountStatus === 'NO_ACCOUNT' || (user.applications.length === 0 && user.demandingApplications.length === 0)) {
+                    // The user has no other roles from the other applications => delete him/her really
+                    let obs = super.delete(id);
+                    if (this.connectedUserService.getCurrentUser().id === id) {
+                        obs = obs.pipe(
+                            mergeMap(() => from(this.angularFireAuth.currentUser)),
+                            mergeMap((fireBaseUser) => from(fireBaseUser.delete())),
+                            map(() => {
+                                return {error: null};
+                            }),
+                            catchError((err) => {
+                                console.error(err);
+                                return of({error: err});
+                            })
+                        );
+                    }
+                    return obs.pipe(map((res) => {
+                        if (!res.error) {
+                            console.log('User ' + id + ' deleted.');
+                        }
+                        return res;
+                    }));
+
+                } else {
+                    // save the user with the reduced list of roles
+                    return this.save(ruser.data).pipe(map((res) => {
+                        if (!res.error) {
+                            console.log('User ' + id + ' removed from the application ' + CurrentApplicationName);
+                        }
+                        return res;
+                    }));
+                }
+            })
+        );
     }
 
 
