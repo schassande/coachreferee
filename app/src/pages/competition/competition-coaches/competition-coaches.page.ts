@@ -117,10 +117,11 @@ export class CompetitionCoachesPage implements OnInit {
   }
 
   async addRefereeCoach() {
-    const modal = await this.modalController.create({ component: UserSelectorComponent});
+    const modal = await this.modalController.create({ component: UserSelectorComponent,
+      componentProps: { role: 'REFEREE_COACH', region: this.connectedUserService.getCurrentUser().region}});
     modal.onDidDismiss().then( (data) => {
       const selection: SharedWith = data.data as SharedWith;
-      if (selection) {
+      if (selection && selection.users && selection.users.length) {
         selection.users.forEach((user) => {
           console.log({ coachShortName: user.shortName, coachId: user.id});
           this.toolService.addToSetById(this.competition.refereeCoaches,

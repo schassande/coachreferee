@@ -1,6 +1,5 @@
 import { ConnectedUserService } from './../../../app/service/ConnectedUserService';
 import { Referee } from './../../../app/model/user';
-import { RefereeSelectPage } from './../../referee/referee-select/referee-select';
 import { ToolService } from './../../../app/service/ToolService';
 import { ResponseWithData } from './../../../app/service/response';
 import { mergeMap, map, catchError } from 'rxjs/operators';
@@ -13,6 +12,8 @@ import { CompetitionService } from './../../../app/service/CompetitionService';
 import { Competition } from './../../../app/model/competition';
 import { Component, OnInit } from '@angular/core';
 import { RefereeService } from 'src/app/service/RefereeService';
+import { UserSelectorComponent } from 'src/pages/widget/user-selector-component';
+import { SharedWith } from 'src/app/model/common';
 
 @Component({
   selector: 'app-competition-referees',
@@ -112,18 +113,21 @@ export class CompetitionRefereesPage implements OnInit {
   }
 
   async addReferee() {
-    const modal = await this.modalController.create({ component: RefereeSelectPage});
+    const modal = await this.modalController.create({ component: UserSelectorComponent,
+      componentProps: { role: 'REFEREE', region: this.connectedUserService.getCurrentUser().region}});
     modal.onDidDismiss().then( (data) => {
-      const referee = this.refereeService.lastSelectedReferee.referee;
-      if (referee) {
-        const idx = this.referees.findIndex((ref) => ref.id === referee.id);
-        if (idx >= 0) {
-          // the referee is already in the list
-          return;
-        }
-        this.referees.push(referee);
-        this.competition.referees.push({ refereeShortName: referee.shortName, refereeId: referee.id});
-        this.competitionService.save(this.competition).subscribe();
+      const selection: SharedWith = data.data as SharedWith;
+      if (selection) {
+        selection.users.forEach((referee) => {
+          const idx = this.referees.findIndex((ref) => ref.id === referee.id);
+          if (idx >= 0) {
+            // the referee is already in the list
+            return;
+          }
+          this.referees.push(referee);
+          this.competition.referees.push({ refereeShortName: referee.shortName, refereeId: referee.id});
+          this.competitionService.save(this.competition).subscribe();
+        });
       }
     });
     return await modal.present();

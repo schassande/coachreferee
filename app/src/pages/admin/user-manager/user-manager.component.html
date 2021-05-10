@@ -79,6 +79,7 @@
                     <br>{{user.email}}
                     <br>{{user.country}} / {{user.region}}
                     <br>id: {{user.id}}
+                    <br>Referee Coach Level: {{user.refereeCoach.refereeCoachLevel}}
                     <br>Roles: <span *ngFor="let ar of filterApplicationRoles(user.applications)">{{ar.role}}&nbsp;</span>
                     <span *ngIf="user.demandingApplications.length"><br>Demanding roles: <span *ngFor="let ar of filterApplicationRoles(user.demandingApplications)">{{ar.role}}&nbsp;</span></span>
                     </span>

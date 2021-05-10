@@ -1,7 +1,7 @@
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { Response, ResponseWithData } from './response';
 import { Injectable } from '@angular/core';
-import { Referee, User } from './../model/user';
+import { ApplicationName, ApplicationNames, Referee, User } from './../model/user';
 import { PersistentDataFilter } from './PersistentDataFonctions';
 import { UserService } from './UserService';
 import { ConnectedUserService } from './ConnectedUserService';
@@ -29,19 +29,12 @@ export class RefereeService {
             user.defaultCompetition = '-';
             user.defaultCompetitionId = '-';
             user.defaultGameCatory = 'OPEN';
-            user.dataSharingAgreement = {
-              personnalInfoSharing: 'YES',
-              photoSharing: 'YES',
-              refereeAssessmentSharing: 'YES',
-              refereeCoachingInfoSharing: 'YES',
-              coachAssessmentSharing: 'YES',
-              coachCoachingInfoSharing: 'YES',
-              coachProSharing: 'YES'
-            };
+            user.dataSharingAgreement.coachAssessmentSharing = 'YES';
+            user.dataSharingAgreement.coachCoachingInfoSharing = 'YES';
+            user.dataSharingAgreement.coachProSharing = 'YES';
             user.region = this.connectedUserService.getCurrentUser().region;
-            user.applications = [
-                {name: 'RefereeCoach', role: 'REFEREE'},
-                {name: 'Upgrade', role: 'REFEREE'}];
+            user.applications = ApplicationNames.map((an: ApplicationName) => {
+                return { name: an, role: 'REFEREE'}; });
             user.demandingApplications = [];
             user.groupIds = [];
             user.authProvider = 'EMAIL';

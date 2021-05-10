@@ -13,13 +13,14 @@ import { mergeMap, map, catchError } from 'rxjs/operators';
 import { RefereeService } from '../../../app/service/RefereeService';
 import { ResponseWithData } from '../../../app/service/response';
 import { CoachingService } from '../../../app/service/CoachingService';
-import { RefereeSelectPage } from '../../referee/referee-select/referee-select';
 import { UserService } from '../../../app/service/UserService';
 import { AppSettingsService } from '../../../app/service/AppSettingsService';
 import { ConnectedUserService } from '../../../app/service/ConnectedUserService';
 import { Coaching } from '../../../app/model/coaching';
 import { User, Referee } from '../../../app/model/user';
 import { SharedWith } from 'src/app/model/common';
+import { RefereeEditPage } from 'src/pages/referee/referee-edit/referee-edit';
+import { RefereeSelectorService } from 'src/pages/referee/referee-selector-service';
 
 /**
  * Generated class for the CoachingNewPage page.
@@ -29,7 +30,7 @@ import { SharedWith } from 'src/app/model/common';
  */
 
 @Component({
-  selector: 'page-coaching-edit',
+  selector: 'app-page-coaching-edit',
   templateUrl: 'coaching-edit.html',
   styleUrls: ['coaching-edit.scss']
 })
@@ -62,6 +63,7 @@ export class CoachingEditPage implements OnInit {
     public coachingService: CoachingService,
     private competitionService: CompetitionService,
     public appSettingsService: AppSettingsService,
+    private refereeSelectorService: RefereeSelectorService,
     public toastController: ToastController) {
   }
 
@@ -251,14 +253,9 @@ export class CoachingEditPage implements OnInit {
   set date(dateStr: string) {
     this.coachingService.setStringDate(this.coaching, dateStr);
   }
-
-  async searchReferee(idx: number) {
-    const modal = await this.modalController.create({
-      component: RefereeSelectPage,
-      componentProps: { competitionId: this.coaching.competitionId }});
-    modal.onDidDismiss().then( (data) => {
-      const referee = this.refereeService.lastSelectedReferee.referee;
-      if (referee) {
+  searchReferee(idx: number) {
+    this.refereeSelectorService.searchReferee(this.appCoach.region, this.coaching.competitionId)
+      .subscribe(referee => {
         let coachRef;
         if (idx < this.coaching.referees.length) {
           coachRef = this.coaching.referees[idx];
@@ -270,9 +267,7 @@ export class CoachingEditPage implements OnInit {
         coachRef.refereeShortName = referee.shortName;
         this.coaching.refereeIds = this.coaching.referees.map((ref) => ref.refereeId);
         this.id2referee.set(referee.id, referee);
-      }
-    });
-    return await modal.present();
+      });
   }
 
   computeTimeSlot(ts: Date): string {

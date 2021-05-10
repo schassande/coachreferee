@@ -77,6 +77,12 @@
                         </ion-select>
                     </ion-item>
                     <ion-item>
+                        <ion-label>Referee coach Level</ion-label>
+                        <ion-select [(ngModel)]="user.refereeCoach.refereeCoachLevel" interface="action-sheet">
+                            <ion-select-option *ngFor="let l of constantes.refereeCoachLevels" value="{{l}}">{{l}}</ion-select-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-item>
                         <ion-label>Gender</ion-label>
                         <ion-select [(ngModel)]="user.gender">
                             <ion-select-option value="F">Female</ion-select-option>

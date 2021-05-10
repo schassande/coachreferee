@@ -103,6 +103,8 @@ import { UserService } from './service/UserService';
 import { UserGroupService } from './service/UserGroupService';
 import { VersionService } from './service/VersionService';
 import { XpService } from './service/XpService';
+import { CompetitionRefereeSelectorComponent } from 'src/pages/widget/competition-referee-selector-component';
+import { RefereeSelectorService } from 'src/pages/referee/referee-selector-service';
 
 
 @NgModule({
@@ -113,7 +115,7 @@ import { XpService } from './service/XpService';
     CompetitionImportComponent, CompetitionListPage, CompetitionEditComponent,
     CompetitionCoachesPage, CompetitionHomePage, CompetitionRankingPage, CompetitionUpgradesPage, CompetitionRefereesPage,
     CompetitionRankingPage, CompetitionRankingBestOf2Page, CompetitionGamesPage, CompetitionRankingListComponent,
-    CompetitionRankingNewComponent,
+    CompetitionRankingNewComponent, CompetitionRefereeSelectorComponent,
     HomePage, HelpWidgetComponent,
     ProEditPage, ProListPage,
     RefereeListPage, RefereeViewPage, RefereeSelectPage, RefereeEditPage, RefereeSeasonUpgradeComponent,
@@ -123,7 +125,7 @@ import { XpService } from './service/XpService';
     XpListComponent, XpEditComponent,
     SharingComponent, CompetencyComponent, CompetencyPointsComponent, PeriodSelectorComponent, CompetitionSelectorComponent,
     CameraIconComponent, UserSelectorComponent],
-  entryComponents: [AppComponent, HomePage, RefereeSelectPage,
+  entryComponents: [AppComponent, HomePage, RefereeSelectPage, CompetitionRefereeSelectorComponent,
     RefereeEditPage, UserSelectorComponent, CompetitionSelectorComponent, HelpWidgetComponent, CompetitionRankingNewComponent],
   imports: [
     AppRoutingModule,
@@ -158,6 +160,7 @@ import { XpService } from './service/XpService';
     OfflinesService,
     PROService,
     RefereeService,
+    RefereeSelectorService,
     SkillProfileService,
     ToolService,
     UserService,

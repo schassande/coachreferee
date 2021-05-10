@@ -18,9 +18,10 @@ import { Assessment, SkillSetEvaluation } from '../../../app/model/assessment';
 
 import { RefereeSelectPage } from '../../referee/referee-select/referee-select';
 import { mergeMap, map, catchError } from 'rxjs/operators';
+import { RefereeSelectorService } from 'src/pages/referee/referee-selector-service';
 
 @Component({
-  selector: 'page-assessment-edit',
+  selector: 'app-page-assessment-edit',
   templateUrl: 'assessment-edit.html',
   styleUrls: ['assessment-edit.scss']
 })
@@ -53,6 +54,7 @@ export class AssessmentEditPage implements OnInit {
     public assessmentService: AssessmentService,
     public skillProfileService: SkillProfileService,
     public appSettingsService: AppSettingsService,
+    private refereeSelectorService: RefereeSelectorService,
     public toastController: ToastController) {
   }
 
@@ -251,15 +253,8 @@ export class AssessmentEditPage implements OnInit {
   }
 
   async searchReferee(idx: number) {
-    const modal = await this.modalController.create({
-      component: RefereeSelectPage,
-      componentProps: { competitionId: this.assessment.competitionId }});
-    modal.onDidDismiss().then( (data) => {
-        const referee: Referee = this.refereeService.lastSelectedReferee.referee;
-        this.refereeService.lastSelectedReferee.referee = null; // clean
-        this.setReferee(referee);
-      });
-    return await modal.present();
+    this.refereeSelectorService.searchReferee(this.appCoach.region, this.assessment.competitionId)
+      .subscribe(referee => this.setReferee(referee));
   }
   private setRefereeId(refereeId: string) {
     console.log('setRefereeId(' + refereeId + ')');

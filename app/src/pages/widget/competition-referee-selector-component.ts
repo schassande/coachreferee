@@ -2,48 +2,65 @@ import { Component, OnInit, Input } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { mergeMap, map } from 'rxjs/operators';
 import { Observable, forkJoin, of } from 'rxjs';
-
-import { CompetitionService } from './../../../app/service/CompetitionService';
-import { DataRegion } from './../../../app/model/common';
-import { RefereeEditPage } from '../referee-edit/referee-edit';
-import { ResponseWithData } from './../../../app/service/response';
-import { RefereeService } from './../../../app/service/RefereeService';
-import { Referee } from '../../../app/model/user';
-import { PersistentDataFilter } from './../../../app/service/PersistentDataFonctions';
-
-/**
- * Generated class for the RefereeSelectPage page.
- *
- * See http://ionicframework.com/docs/components/#navigation for more info
- * on Ionic pages and navigation.
- */
+import { User } from 'src/app/model/user';
+import { UserService } from 'src/app/service/UserService';
+import { CompetitionService } from 'src/app/service/CompetitionService';
+import { ResponseWithData } from 'src/app/service/response';
+import { PersistentDataFilter } from 'src/app/service/PersistentDataFonctions';
+import { RefereeEditPage } from '../referee/referee-edit/referee-edit';
 
 @Component({
   selector: 'app-page-referee-select',
-  templateUrl: 'referee-select.html',
+  template: `
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-button (click)="cancel()" detail>
+                <ion-icon name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title>Select a referee</ion-title>
+    </ion-toolbar>
+</ion-header>
+<ion-content padding>
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button (click)="newReferee()">
+            <ion-icon name="add"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+    <ion-searchbar [(ngModel)]="searchInput" [showCancelButton]="false" (ionChange)="onSearchBarInput()"></ion-searchbar>
+    <ion-list>
+        <ion-item *ngFor="let referee of referees">
+            <ion-icon slot="start" *ngIf="!referee.photo" name="person" (click)="refereeSelected(referee)"></ion-icon>
+            <ion-avatar slot="start" *ngIf="referee.photo"><img src="img/my-avatar.png" (click)="refereeSelected(referee)"></ion-avatar>
+            <ion-label (click)="refereeSelected(referee)" class="listItemButton">
+                {{referee.shortName}}<br> {{referee.firstName}} {{referee.lastName}}<br> {{referee.referee.refereeLevel}} ({{referee.referee.refereeCategory}})
+            </ion-label>
+        </ion-item>
+    </ion-list>
+</ion-content>`
 })
-export class RefereeSelectPage implements OnInit {
+export class CompetitionRefereeSelectorComponent implements OnInit {
 
   @Input() competitionId: string;
-  @Input() region: DataRegion;
-  referees: Referee[];
+
+  referees: User[];
   error: any;
   searchInput: string;
-  refereesDatabase: Referee[] = null;
+  refereesDatabase: User[] = null;
 
   constructor(
-    public refereeService: RefereeService,
+    public userService: UserService,
     public competitionService: CompetitionService,
     public modalCtrl: ModalController,
     public alertCtrl: AlertController) {
   }
 
   ngOnInit() {
-    this.refereeService.lastSelectedReferee.referee = null;
     setTimeout(() => this.searchReferee(), 500);
   }
 
-  private getRefereesDatabase(): Observable<Referee[]> {
+  private getRefereesDatabase(): Observable<User[]> {
     // console.log('RefereeSelectPage.getRefereesDatabase(): competitionId=', this.competitionId);
     if (this.competitionId && this.competitionId.length > 0 && this.refereesDatabase == null) {
       // console.log('RefereeSelectPage.getRefereesDatabase(): load competition');
@@ -53,9 +70,9 @@ export class RefereeSelectPage implements OnInit {
           // console.log('RefereeSelectPage.getRefereesDatabase(): competition=', rcomp.data);
           this.refereesDatabase = [];
           if (rcomp.data) {
-            const obss: Observable<ResponseWithData<Referee>>[] = [];
+            const obss: Observable<ResponseWithData<User>>[] = [];
             rcomp.data.referees.forEach((ref) => {
-              obss.push(this.refereeService.get(ref.refereeId).pipe(
+              obss.push(this.userService.get(ref.refereeId).pipe(
                 map( (rref) => {
                   if (rref.data) {
                     this.refereesDatabase.push(rref.data);
@@ -78,14 +95,14 @@ export class RefereeSelectPage implements OnInit {
 
   private searchReferee() {
     this.getRefereesDatabase().pipe(
-      mergeMap( (refDb: Referee[]) => {
+      mergeMap( (refDb: User[]) => {
         if (!refDb || refDb.length === 0) {
           // search in the global database of referees through the service
-          return this.refereeService.searchReferees(this.searchInput);
+          return this.userService.searchReferees(this.searchInput);
         } else {
           // search in the sub set of referes
           // get the filter from search word
-          const filter: PersistentDataFilter<Referee> = this.refereeService.getFilterByText(this.searchInput);
+          const filter: PersistentDataFilter<User> = this.userService.getFilterByText(this.searchInput);
           if (filter === null) { // no filter then return the ref db
             return of({data: refDb, error: null});
           } else { // use the filter to filter the ref db
@@ -93,47 +110,34 @@ export class RefereeSelectPage implements OnInit {
           }
         }
       })
-    ).subscribe((response: ResponseWithData<Referee[]>) => {
+    ).subscribe((response: ResponseWithData<User[]>) => {
       this.referees = response.data;
       this.error = response.error;
     });
   }
 
-  public refereeSelected(referee: Referee): void {
+  public refereeSelected(referee: User): void {
     // console.log('refereeSelected', referee);
-    this.refereeService.lastSelectedReferee.referee = referee;
     this.modalCtrl.dismiss( { referee});
   }
 
   public cancel() {
-    this.refereeService.lastSelectedReferee.referee = null;
     this.modalCtrl.dismiss( { referee: null});
   }
 
   public newReferee(): void {
     this.modalCtrl.create({ component: RefereeEditPage })
-      .then( (modal) => modal.present() );
+      .then( (modal) => modal.present().then((data: any) => {
+        if (data.referee) {
+          this.refereeSelected(data.referee);
+        }
+      }) );
   }
 
   public onSearchBarInput() {
     this.searchReferee();
   }
 
-  public deleteReferee(referee: Referee) {
-    this.alertCtrl.create({
-      // title: 'Confirm Deletion',
-      message: 'Do you reaaly want to delete the referee ' + referee.firstName + ' ' + referee.lastName +  '?',
-      buttons: [
-        { text: 'Cancel', role: 'cancel'},
-        {
-          text: 'Delete',
-          handler: () => {
-            this.refereeService.delete(referee.id).subscribe(() => this.searchReferee());
-          }
-        }
-      ]
-    }).then((alert) => alert.present());
-  }
   onSwipe(event) {
     if (event.direction === 4) {
       this.cancel();

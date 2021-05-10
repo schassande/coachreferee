@@ -8,7 +8,7 @@ import { map } from 'rxjs/operators';
 import { ConnectedUserService } from './../../../app/service/ConnectedUserService';
 import { ResponseWithData } from './../../../app/service/response';
 import { RefereeService } from './../../../app/service/RefereeService';
-import { Referee, CONSTANTES } from './../../../app/model/user';
+import { Referee, CONSTANTES, User } from './../../../app/model/user';
 
 /**
  * Generated class for the RefereeNewPage page.
@@ -17,7 +17,7 @@ import { Referee, CONSTANTES } from './../../../app/model/user';
  * on Ionic pages and navigation.
  */
 @Component({
-  selector: 'page-referee-edit',
+  selector: 'app-page-referee-edit',
   templateUrl: 'referee-edit.html',
 })
 export class RefereeEditPage implements OnInit {
@@ -26,13 +26,13 @@ export class RefereeEditPage implements OnInit {
   constantes = CONSTANTES;
   imageUrl: string = null;
 
-  constructor(public modalController: ModalController,
-              private route: ActivatedRoute,
-              private helpService: HelpService,
-              public refereeService: RefereeService,
-              public connectedUserService: ConnectedUserService,
-              private afStorage: AngularFireStorage,
-              public loadingCtrl: LoadingController
+  constructor(
+    public connectedUserService: ConnectedUserService,
+    private helpService: HelpService,
+    public loadingCtrl: LoadingController,
+    public modalController: ModalController,
+    public refereeService: RefereeService,
+    private route: ActivatedRoute
     ) {
   }
 
@@ -151,7 +151,7 @@ export class RefereeEditPage implements OnInit {
     return ref;
   }
 
-  public save() {
+  public async save() {
     if (this.isValid()) {
         this.refereeService.save(this.referee).subscribe((response: ResponseWithData<Referee>) => {
         if (response.error) {
@@ -159,7 +159,11 @@ export class RefereeEditPage implements OnInit {
         } else {
           this.referee = response.data;
           this.refereeService.lastSelectedReferee.referee = this.referee;
-          this.modalController.dismiss({ referee: this.referee});
+          this.modalController.getTop().then((panel) => {
+            if (panel) {
+              panel.dismiss({referee: this.referee});
+            }
+          });
         }
       });
     }
