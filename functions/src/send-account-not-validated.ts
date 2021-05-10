@@ -4,7 +4,7 @@ import * as mailer          from './mailer';
 import { User }  from './model/user';
 
 export function func(request:any, response:any, ctx:any):Promise<any> {
-    return common.loadUser(ctx.db, request, response)
+    return common.loadUser(ctx.db, request.body.data.userId, response)
     .then( (user: User) => {
         //Build email
         const subject = `[CoachReferee.com] Account not validated`;
