@@ -12,8 +12,32 @@
     </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="dataReady">
-    <canvas baseChart chartType="bar" [datasets]="[{ data: nbCoachings, label: 'Nb Coaching'}]" [labels]="labels" [options]="{ responsive: true, scales: { yAxes: [{ display: true, ticks: { beginAtZero: true } }] } }"></canvas>
-    <canvas baseChart chartType="bar" [datasets]="[{ data: nbUsers, label: 'Nb active users'}]" [labels]="labels" [options]="{ scales: { yAxes: [{ display: true, ticks: { beginAtZero: true, stepSize: 1 } }] } }"></canvas>
-    <canvas baseChart chartType="bar" [datasets]="[{ data: coachingByUsers, label: 'Coaching by users'}]" [labels]="users"></canvas>
+<ion-content>
+    <ion-list>
+        <ion-item>
+            <ion-label position="stacked">Begin:</ion-label>
+            <ion-datetime displayFormat="YYYY-MM-DD" pickerFormat="YYYY-MM-DD" [(ngModel)]="beginD" style="text-align: center;" (ionChange)="loadData()"></ion-datetime>
+        </ion-item>
+        <ion-item>
+            <ion-label position="stacked">End:</ion-label>
+            <ion-datetime displayFormat="YYYY-MM-DD" pickerFormat="YYYY-MM-DD" [(ngModel)]="endD" style="text-align: center;" (ionChange)="loadData()"></ion-datetime>
+        </ion-item>
+        <!-- 
+        <ion-item>
+            <ion-label>Region</ion-label>
+            <ion-select [(ngModel)]="region" interface="action-sheet">
+                <ion-select-option value="Europe">Europe</ion-select-option>
+                <ion-select-option value="Australia">Australia</ion-select-option>
+                <ion-select-option value="New Zealand">New Zealand</ion-select-option>
+                <ion-select-option value="Others">Others</ion-select-option>
+                <ion-select-option value="Test">Test</ion-select-option>
+            </ion-select>
+        </ion-item>
+        -->
+    </ion-list>
+    <div *ngIf="dataReady">
+        <canvas baseChart chartType="bar" [datasets]="[{ data: nbCoachings, label: 'Nb Coaching'}]" [labels]="labels" [options]="{ responsive: true, scales: { yAxes: [{ display: true, ticks: { beginAtZero: true } }] } }"></canvas>
+        <canvas baseChart chartType="bar" [datasets]="[{ data: nbUsers, label: 'Nb active users'}]" [labels]="labels" [options]="{ scales: { yAxes: [{ display: true, ticks: { beginAtZero: true, stepSize: 1 } }] } }"></canvas>
+        <canvas baseChart chartType="bar" [datasets]="[{ data: coachingByUsers, label: 'Coaching by users'}]" [labels]="users"></canvas>
+    </div>
 </ion-content>

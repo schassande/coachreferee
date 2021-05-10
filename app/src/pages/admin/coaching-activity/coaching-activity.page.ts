@@ -5,6 +5,7 @@ import { CoachingService } from './../../../app/service/CoachingService';
 import { Component, OnInit } from '@angular/core';
 import { map, mergeMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
+import { DataRegion } from 'src/app/model/common';
 
 @Component({
   selector: 'app-coaching-activity',
@@ -12,6 +13,10 @@ import { Observable, of } from 'rxjs';
   styleUrls: ['./coaching-activity.page.scss'],
 })
 export class CoachingActivityPage implements OnInit {
+
+  beginDate: Date = null;
+  endDate: Date = null;
+  region: DataRegion = null;
 
   labels: string[] = null;
   nbCoachings: number[] = null;
@@ -27,7 +32,29 @@ export class CoachingActivityPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.coachingService.allFromAllUsers().subscribe((rcoaching) => {
+    const b = new Date();
+    b.setMonth(0);
+    b.setDate(1);
+    b.setFullYear(b.getFullYear() - 1);
+    this.beginDate = b;
+    this.endDate = new Date();
+    this.loadData();
+  }
+  get beginD() {
+    return this.dateService.date2string(this.beginDate);
+  }
+  set beginD(dateStr: string) {
+    this.beginDate = this.dateService.string2date(dateStr, this.beginDate);
+  }
+  get endD() {
+    return this.dateService.date2string(this.endDate);
+  }
+  set endD(dateStr: string) {
+    this.endDate = this.dateService.string2date(dateStr, this.endDate);
+  }
+
+  public loadData() {
+    this.coachingService.allFromAllUsers(this.beginDate, this.endDate, this.region).subscribe((rcoaching) => {
       if (rcoaching.data) {
         this.computeChartData(rcoaching.data);
       }

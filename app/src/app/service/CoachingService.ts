@@ -12,6 +12,8 @@ import { RemotePersistentDataService } from './RemotePersistentDataService';
 import { Coaching } from './../model/coaching';
 import { ToastController } from '@ionic/angular';
 import { AngularFireFunctions } from '@angular/fire/functions';
+import { DataRegion } from '../model/common';
+import { ToolService } from './ToolService';
 
 const TIME_SLOT_SEP = ':';
 const DATE_SEP = '-';
@@ -26,7 +28,8 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
       private connectedUserService: ConnectedUserService,
       private angularFireFunctions: AngularFireFunctions,
       private dateService: DateService,
-      toastController: ToastController
+      toastController: ToastController,
+      private toolService: ToolService
     ) {
         super(appSettingsService, db, toastController);
     }
@@ -93,8 +96,18 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
       );
     }
 
-    public allFromAllUsers() {
-      return this.query(this.getCollectionRef(), 'server');
+    public allFromAllUsers(beginDate: Date,  endDate: Date, region: DataRegion): Observable<ResponseWithData<Coaching[]>> {
+      let q: Query<Coaching> = this.getCollectionRef();
+      if (beginDate) {
+        q = q.where('date', '>=', this.dateService.to00h00(this.adjustDate(beginDate, this.dateService)));
+      }
+      if (endDate) {
+        q = q.where('date', '<=', this.dateService.to00h00(this.adjustDate(endDate, this.dateService)));
+      }
+      if (this.toolService.isValidString(region)) {
+        q = q.where('region', '==', region);
+      }
+      return this.query(q, 'server');
     }
 
     /** Query basis for coaching limiting access to the coachings of the user */
