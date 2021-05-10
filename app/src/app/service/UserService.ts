@@ -100,30 +100,30 @@ export class UserService  extends RemotePersistentDataService<User> {
 
     public delete(id: string): Observable<Response> {
         // check the user to delete is the current user.
-        if (this.connectedUserService.getCurrentUser().id !== id) {
+        if (this.connectedUserService.getCurrentUser().id !== id && !this.connectedUserService.isAdmin()) {
             return of({error: {error: 'Not current user', errorCode: 1}});
         }
         // First delete user from database
-        return super.delete(id).pipe(
-            mergeMap( (res) => {
-                if (res.error != null) {
-                    console.log('Error on delete', res.error);
-                    return of (res);
-                } else {
-                    // then delete the user from firestore user auth database
-                    return from(this.angularFireAuth.currentUser).pipe(
-                        mergeMap((user) => from(user.delete())),
-                        map(() => {
-                            return {error: null};
-                        }),
-                        catchError((err) => {
-                            console.error(err);
-                            return of({error: err});
-                        })
-                    );
-                }
-            })
-        );
+        let obs = super.delete(id);
+        if (this.connectedUserService.getCurrentUser().id === id) {
+            obs = obs.pipe(
+                mergeMap(() => from(this.angularFireAuth.currentUser)),
+                mergeMap((user) => from(user.delete())),
+                map(() => {
+                    return {error: null};
+                }),
+                catchError((err) => {
+                    console.error(err);
+                    return of({error: err});
+                })
+            );
+        }
+        return obs.pipe(map((res) => {
+            if (!res.error) {
+                console.log('User ' + id + ' deleted.');
+            }
+            return res;
+        }));
     }
 
 
