@@ -30,7 +30,9 @@ async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteri
 
     const data: WorkingData = newWorkingData();
     data.restDayVotes = await findPanelVotes(ctx, referee, beginDate, day, response);
-    console.log('panelVotes=' + JSON.stringify(data.restDayVotes));
+    const allDays: CompetitionDayPanelVote[] = data.restDayVotes.map(e=> e);
+
+    console.log('panelVotes=' + JSON.stringify(allDays));
     const lastDay = data.restDayVotes.length > 0 ? data.restDayVotes[0].day : day;
     const competitionId: string = data.restDayVotes.length > 0 ? data.restDayVotes[0].competitionRef.competitionId : '';
 
@@ -81,7 +83,8 @@ async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteri
         c3PanelVotes: data.c3dayVotes,
         c4PanelVotes: data.c4dayVotes,
         c5PanelVotes: data.c5dayVotes,
-        upgradeCriteriaId: upgradeCriteria.id
+        upgradeCriteriaId: upgradeCriteria.id,
+        allPanelVotes: allDays
     };
     return ru;
 }

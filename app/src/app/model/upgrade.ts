@@ -98,6 +98,8 @@ export interface RefereeUpgrade extends PersistentData {
     c5PanelVotes: CompetitionDayPanelVote[];
     /** the identifier of the UpgradeCriteria used for the evaluation */
     upgradeCriteriaId: string;
+    /** The list of all panel votes that could be used (between the begin of the period and the decision date) */
+    allPanelVotes: CompetitionDayPanelVote[];
 }
 
 /**
