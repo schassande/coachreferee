@@ -24,7 +24,7 @@ export function func(request:any, response:any, ctx:any):Promise<any> {
         }
         if (pendingRights.length > 0) {
             msg = msg + '<p>The following rights are still not validated:<ul>';
-            msg = msg + rights.map(r => '<li>' + r + '</li>\n');
+            msg = msg + pendingRights.map(r => '<li>' + r + '</li>\n');
             msg = msg + '</ul></p>';
         }
         msg = msg + `<p><br>
