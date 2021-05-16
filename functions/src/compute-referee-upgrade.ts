@@ -53,11 +53,8 @@ async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteri
     data.c5Nb = data.c5dayVotes.length >= upgradeCriteria.c5DaysRequired;
 
     const retainVotes = data.c3dayVotes.concat(data.c4dayVotes).concat(data.c5dayVotes);
-    retainVotes.filter(v => v.vote === 'Yes').forEach((v => v.coaches.forEach(c => {
-        if (data.yesCoach.findIndex(c2 => c.coachId === c2.coachId) < 0) {
-            data.yesCoach.push(c);
-        }
-    })));
+    retainVotes.filter(v => v.vote === 'Yes')
+        .forEach((v => v.yesCoaches.forEach(c => common.addToSetById(data.yesCoach, c, 'coachId'))));
 
     data.multiDayCompetitionRefs = [];
     retainVotes.filter(v => v.isMultiDayCompetition).map(v => v.competitionRef)
@@ -97,6 +94,10 @@ function computeUpgradeStatus(data: WorkingData, upgradeCriteria: UpgradeCriteri
         && data.yesCoach.length >= upgradeCriteria.yesRefereeCoachRequired // Check the number of different referee coaches
         && data.multiDayCompetitionRefs.length >= upgradeCriteria.multiDayCompetitionRequired // Check the multiday
         ;
+}
+
+function addCoachRefToSet(coach: CoachRef, coachRefSet: CoachRef[]) {
+    common.addToSetById(coachRefSet, coach, 'coachId')
 }
 interface WorkingData {
     restDayVotes : CompetitionDayPanelVote[];
