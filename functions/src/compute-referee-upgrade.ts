@@ -96,9 +96,6 @@ function computeUpgradeStatus(data: WorkingData, upgradeCriteria: UpgradeCriteri
         ;
 }
 
-function addCoachRefToSet(coach: CoachRef, coachRefSet: CoachRef[]) {
-    common.addToSetById(coachRefSet, coach, 'coachId')
-}
 interface WorkingData {
     restDayVotes : CompetitionDayPanelVote[];
     c3dayVotes: CompetitionDayPanelVote[];
