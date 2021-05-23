@@ -244,21 +244,21 @@ function extractDays(upgradeCriteria: UpgradeCriteria, data: WorkingData) {
     }
 }
 async function getRefereeUpgrade(db:any, refereeId: string, day: Date, response:any): Promise<RefereeUpgrade|null> {
-    console.log('getRefereeUpgrade(' + refereeId + ', '+ day + ')');
+    console.log('getRefereeUpgrade(' + refereeId + ', ' + day + '): ' + day.getTime());
     const querySnapshot = await db.collection(common.collectionRefereeUpgrade)
         .where('referee.refereeId', '==', refereeId)
         .where('decisionDate', '==', day)
         .limit(1)
         .get();
     const docs: RefereeUpgrade[] = [];
-    // console.log('getRefereeUpgrade(' + refereeId + ', '+ day + ') examing result' + querySnapshot.empty);
     querySnapshot.forEach((doc:any) => {
         let item: RefereeUpgrade = doc.data() as RefereeUpgrade;
         item = adjustFieldOnLoadRefereeUpgrade(item);
         docs.push(item);
     });
-    //console.log('getRefereeUpgrade(' + refereeId + ', '+ day + ') nb result retain' + docs.length);
-    return docs.length > 0 ? docs[0] : null;
+    const result = docs.length > 0 ? docs[0] : null;
+    console.log('getRefereeUpgrade(' + refereeId + ', '+ day + ') => ' + (result ? result.id : null));
+    return result;
 }
 function adjustFieldOnLoadRefereeUpgrade(item: RefereeUpgrade): RefereeUpgrade {
     if (item) {
@@ -268,16 +268,16 @@ function adjustFieldOnLoadRefereeUpgrade(item: RefereeUpgrade): RefereeUpgrade {
 }
 async function persistUpgrade(db:any, item: RefereeUpgrade, response:any): Promise<RefereeUpgrade> {
     const update = item.id && item.id.length > 0;
-    // console.log('BEFORE ' + (update?'update':'new') +': RefereeUpgrade=' + JSON.stringify(item));
+    console.log('BEFORE ' + (update?'update':'new') +': RefereeUpgrade=' + JSON.stringify(item));
     if (update) {
         const doc = await db.collection(common.collectionRefereeUpgrade).doc(item.id);
         await doc.update(item);
     } else {
         const doc = await db.collection(common.collectionRefereeUpgrade).add(item);
         item.id = doc.id;
-        // console.log('refereeUpgrade has now an id: ' + item.id);
+        console.log('refereeUpgrade has now an id: ' + item.id);
         await doc.set(item);
     }    
-    // console.log('AFTER ' + (update?'update':'new') +': RefereeUpgrade=' + JSON.stringify(item));
+    console.log('AFTER ' + (update?'update':'new') +': RefereeUpgrade=' + JSON.stringify(item));
     return item;
 }
