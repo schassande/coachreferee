@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Referee Level 3 Certificate</title>
+    <style>
+        .panel-bkg {
+            position: absolute;
+            z-index: 1;
+            left: 10px;
+        }
+        
+        .content {
+            text-align: center;
+            margin: 0 auto;
+            font-size: 1.3em;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            position: relative;
+        }
+        
+        .main-panel {
+            position: absolute;
+            top: 0;
+            z-index: 2;
+            margin: 350px auto 0 140px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin: 0 auto;
+        }
+        /* ============================ */
+        
+        .text-panel {
+            margin: 0 auto 35px auto;
+        }
+        
+        .course-name,
+        .exam {
+            font-weight: bold;
+        }
+        
+        .text-learner {
+            font-weight: bold;
+            color: #1676BD;
+            /* #1676BD, #023D78, #001A54, */
+            margin: 10px auto;
+            font-size: 1.6em;
+        }
+        /* ============================ */
+        
+        .date-panel,
+        .award-panel {
+            width: 400px;
+        }
+    </style>
+</head>
+
+<body class="content">
+    <div class="panel-bkg">
+        <img src="https://upgrade.coachreferee.com/assets/imgs/certificates/certificate_referee_EURO_3.png" height="780px">
+    </div>
+    <div class="main-panel">
+        <div class="text-panel">
+            <div class="text-certificate">This certifies</div>
+            <div class="text-learner">${learner}</div>
+            <div class="text-passing">has passed the <span class="course-name">Touch Europe Referee Level 3</span>.</div>
+        </div>
+        <table class="footer">
+            <tr>
+                <td class="award-panel">
+                    <div class="award-title">Award by</div>
+                    <div class="award-teacher">European Referee Director</div>
+                </td>
+                <td class="date-panel">
+                    <div class="date-title">Date awarded</div>
+                    <div class="date-value">${awardDate}</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>
