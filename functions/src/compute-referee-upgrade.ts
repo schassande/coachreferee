@@ -29,7 +29,7 @@ async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteri
     const beginDate = moment(day.getTime()).subtract(upgradeCriteria.dayVoteDuration, 'months').toDate();
 
     const data: WorkingData = newWorkingData();
-    data.restDayVotes = await findPanelVotes(ctx, referee, beginDate, day, referee.referee.refereeLevel);
+    data.restDayVotes = await findPanelVotes(ctx, referee, beginDate, day, referee.referee.nextRefereeLevel);
     const allDays: CompetitionDayPanelVote[] = data.restDayVotes.map(e=> e);
 
     console.log('panelVotes=' + JSON.stringify(allDays));
@@ -166,7 +166,7 @@ async function findPanelVotes(ctx:any, referee: User, beginDate: Date, endDate: 
 }
 
 async function loadPanelVotesByRefereeFromDB(db:any, refereeId: string, beginDate: Date, endDate: Date, upgradeLevel: RefereeLevel): Promise<CompetitionDayPanelVote[]> {
-    console.log('loadPanelVotesByRefereeFromDB(' + refereeId + ',' + common.date2string(beginDate) + ',' + common.date2string(endDate) + ')');
+    console.log('loadPanelVotesByRefereeFromDB(' + refereeId + ',' + common.date2string(beginDate) + ',' + common.date2string(endDate) + ', ' + upgradeLevel + ')');
     const querySnapshot = await  db.collection(common.collectionCompetitionDayPanelVote)
         .where('referee.refereeId', '==', refereeId)
         .where('upgradeLevel', '==', upgradeLevel)
