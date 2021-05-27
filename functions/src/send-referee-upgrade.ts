@@ -40,6 +40,7 @@ export async function func(request:any, response:any, ctx:any):Promise<any> {
 
 async function loadRefereeUpgrade(request:any, response:any, ctx:any): Promise<RefereeUpgrade> {
     const refereeUpgrade: RefereeUpgrade = await common.loadFromDb(ctx.db, common.collectionRefereeUpgrade, request.body.data.upgradeId, response) as RefereeUpgrade;
+    adjustFieldOnLoadRefereeUpgrade(refereeUpgrade);
     if (!refereeUpgrade) {
         throw new Error('RefereeUpgrade does not exist.');
     }
@@ -51,9 +52,15 @@ async function loadRefereeUpgrade(request:any, response:any, ctx:any): Promise<R
     }
     return refereeUpgrade;
 }
+function adjustFieldOnLoadRefereeUpgrade(item: RefereeUpgrade): RefereeUpgrade {
+    if (item) {
+        item.decisionDate = common.adjustDate(item.decisionDate);
+    }
+    return item;
+}
 
 async function loadReferee(refereeId: string, response: any, ctx:any): Promise<User> {
-    const referee: User = await common.loadFromDb(ctx.db, common.collectionUser, refereeId, response) as User;
+    const referee: User = await common.loadUser(ctx.db, refereeId, response) as User;
     if (!referee) {
         throw new Error('Referee does not exist.');
     }
