@@ -60,7 +60,7 @@ function adjustFieldOnLoadRefereeUpgrade(item: RefereeUpgrade): RefereeUpgrade {
 }
 
 async function loadReferee(refereeId: string, response: any, ctx:any): Promise<User> {
-    const referee: User = await common.loadUser(ctx.db, refereeId, response) as User;
+    const referee: User = await common.loadUser(ctx.db, refereeId, response);
     if (!referee) {
         throw new Error('Referee does not exist.');
     }
