@@ -18,7 +18,7 @@ export function func(request:any, response:any, ctx:any):Promise<any> {
                     <br>The application is a tool for the touch referee coaches.
                     <br>
                     <br>To test the application, please go on web site and create an account:
-                    <br> <a href="https://app.coachreferee.com">https://app.coachreferee.com</a>
+                    <br> <a href="https://coach.coachreferee.com">https://coach.coachreferee.com</a>
                     <br>
                     <br>Best regard
                     <br>Coach Referee App`

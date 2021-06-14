@@ -15,7 +15,7 @@ export function func(request:any, response:any, ctx:any):Promise<any> {
             html: `Hi Admin, 
                     <br>${user.firstName} ${user.lastName} has created an account.`
                     + (user.accountStatus === 'VALIDATION_REQUIRED' ? `A validation from an admin is required.` : '')
-                    + `<br><a href="https://app.coachreferee.com/admin/users">https://app.coachreferee.com/admin/users</a>
+                    + `<br><a href="https://coach.coachreferee.com/admin/users">https://coach.coachreferee.com/admin/users</a>
                     <br>
                     <br>Best regard
                     <br>Coach Referee App`

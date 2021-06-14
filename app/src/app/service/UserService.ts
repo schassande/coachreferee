@@ -10,7 +10,7 @@ import { ResponseWithData, Response } from './response';
 import { Observable, of, from, Subject } from 'rxjs';
 import { ConnectedUserService } from './ConnectedUserService';
 import { Injectable } from '@angular/core';
-import { User, CONSTANTES, AuthProvider, CurrentApplicationName, AppRole, RefereeLevel, RefereeCoachLevel } from './../model/user';
+import { User, CONSTANTES, AuthProvider, CurrentApplicationName, AppRole, RefereeLevel, RefereeCoachLevel, AccountStatus } from './../model/user';
 import { RemotePersistentDataService } from './RemotePersistentDataService';
 import { mergeMap, map, catchError } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
@@ -158,7 +158,7 @@ export class UserService  extends RemotePersistentDataService<User> {
             mergeMap( (cred: UserCredential) => {
                 credential = cred;
                 // console.log('login: cred=', JSON.stringify(cred, null, 2));
-                return this.getByEmail(email);
+                return this.getByEmail(email, 'NO_ACCOUNT');
             }),
             catchError((err) => {
                 console.log('UserService.login(' + email + ', ' + password + ') error=', err);
@@ -297,7 +297,7 @@ export class UserService  extends RemotePersistentDataService<User> {
             mergeMap((appSettings) => {
                 if (email === appSettings.lastUserEmail && (password == null || password === appSettings.lastUserPassword)) {
                     console.log('UserService.connectByEmail(' + email + ',' + password + '): password is valid => get user');
-                    return this.getByEmail(email);
+                    return this.getByEmail(email, 'NO_ACCOUNT');
                 } else {
                     console.log('UserService.connectByEmail(' + email + ',' + password + '): wrong password.');
                     return of({ error: null, data: null });
@@ -318,8 +318,12 @@ export class UserService  extends RemotePersistentDataService<User> {
         return '?id=' + id;
     }
 
-    public getByEmail(email: string): Observable<ResponseWithData<User>> {
-        return this.queryOne(this.getCollectionRef().where('email', '==', email), 'default').pipe(
+    public getByEmail(email: string, excludedAccountStatus: AccountStatus = null): Observable<ResponseWithData<User>> {
+        let query: Query<User> = this.getCollectionRef().where('email', '==', email);
+        if (excludedAccountStatus !== null) {
+            query = query.where('accountStatus', '!=', excludedAccountStatus);
+        }
+        return this.queryOne(query, 'default').pipe(
             map((ruser => {
                 // console.log('UserService.getByEmail(' + email + ')=', ruser.data);
                 return ruser;
@@ -347,7 +351,7 @@ export class UserService  extends RemotePersistentDataService<User> {
             mergeMap( (cred: UserCredential) => {
                 credential = cred;
                 console.log('authWith: cred=', JSON.stringify(cred, null, 2));
-                return this.getByEmail(cred.user.email);
+                return this.getByEmail(cred.user.email, 'NO_ACCOUNT');
             }),
             catchError((err) => {
                 // console.log('authWith error: ', err);
