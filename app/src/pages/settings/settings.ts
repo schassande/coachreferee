@@ -1,7 +1,7 @@
 import { ConnectedUserService } from './../../app/service/ConnectedUserService';
 import { COACH_LEVELS_EURO } from './coachLevelEuropean';
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { map } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { AlertController, ToastController, NavController } from '@ionic/angular';
 import { Observable, of, concat, forkJoin } from 'rxjs';
 import { UserService } from '../../app/service/UserService';
@@ -324,7 +324,11 @@ export class SettingsPage implements OnInit {
     this.settings.nbPeriod = Math.min(4, Math.max(this.settings.nbPeriod, 1));
     this.saveSettings(false);
   }
-
+  runScript() {
+    this.coachingService.getCoachingByCompetition('XAOsU2ZC5bgRKG2aFLmV').pipe(
+      mergeMap((rcs) => forkJoin(rcs.data.map(c => this.coachingService.delete(c.id))))
+    ).subscribe();
+  }
   addToHome() {
     // hide our user interface that shows our button
     // Show the prompt

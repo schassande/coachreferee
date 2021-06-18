@@ -79,7 +79,8 @@ export class CompetitionUpgradesPage implements OnInit {
         if (!this.competition) {
           // the competition has not been found => back to list of competition
           this.navController.navigateRoot('/competition/list');
-        } else if (!this.competitionService.authorized(this.competition, this.connectedUserService.getCurrentUser().id)) {
+        } else if (!this.connectedUserService.isAdmin()
+            && !this.competitionService.authorized(this.competition, this.connectedUserService.getCurrentUser().id)) {
           // the coach is not allowed to access to this competition
           this.navController.navigateRoot('/competition/list');
         }
@@ -254,7 +255,7 @@ export class CompetitionUpgradesPage implements OnInit {
 
   setDecision() {
     this.competitionRefereeUpgradeService.setDecision(
-      this.competitionRefereeUpgrade.id, 
+      this.competitionRefereeUpgrade.id,
       this.competitionRefereeUpgrade.finalDecision).subscribe();
   }
 
@@ -264,9 +265,13 @@ export class CompetitionUpgradesPage implements OnInit {
   }
 
   computeVoteStats() {
+    // tslint:disable-next-line:no-string-literal
     this.voteStats['Yes'] = 0;
+    // tslint:disable-next-line:no-string-literal
     this.voteStats['Possible'] = 0;
+    // tslint:disable-next-line:no-string-literal
     this.voteStats['No'] = 0;
+    // tslint:disable-next-line:no-string-literal
     this.voteStats['DNS'] = 0;
     this.competition.refereeCoaches.forEach(coach => {
       const vote: Upgradable = this.competitionRefereeUpgrade.votes[this.toCoachId(coach)].vote;

@@ -39,7 +39,7 @@
             <ion-item>
                 <ion-label position="fixed">Region:</ion-label>
                 <ion-select *ngIf="!readonly" [(ngModel)]="competition.region" style="text-align: center;">
-                    <ion-select-option *ngFor="let region of regions" value="{{region}}">{{region}}</ion-select-option>
+                    <ion-select-option *ngFor="let region of constantes.regions" value="{{region}}">{{region}}</ion-select-option>
                 </ion-select>
             </ion-item>
             <ion-item>

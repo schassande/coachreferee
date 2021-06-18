@@ -51,6 +51,9 @@
     <div style="text-align: center; margin-top: 10px;" *ngIf="!env.production">
         <ion-button shape="round" (click)="importCoachLevelsEuro()">Import Euro Coach Levels</ion-button>
     </div>
+    <div style="text-align: center; margin-top: 10px;" *ngIf="!env.production">
+        <ion-button shape="round" (click)="runScript()">Run Script</ion-button>
+    </div>
 
     <p *ngFor="let m of msg" class="message">{{m}}</p>
     <div color="light" style="text-align: center; font-size: 0.8em; margin-top: 10px;">

@@ -10,7 +10,7 @@ This feature is very useful in a tournament because after your allocation of the
 
 The CSV file must use comma as separator of columns. An header is expected with the name of columns. The columns of the CSV file are the following:
 
-* gameId: The identifier of the game. It must be unique over the competition. It is highly recommended to provide a value. It helps to recognize on second import.
+* gameId: The identifier of the game. It must be unique over the competition. It is highly recommended to provide the value, for helping to recognize on second import.
 * competition: The name of the competition. All lines of the file MUST have the same competition name.
 * date: The date of the first competition day. The date format is YYYY-MM-DD  (YYYY is the year over 4 digits, MM is the month number over 2 digits from 1 to 12, DD is the day number from 1 to 31)
 * timeSlot: The time slot of the game. the format is HH:mm (HH is the hour from 0 to 24, mm is the minute from 0 to 59)

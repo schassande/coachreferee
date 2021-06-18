@@ -6,6 +6,7 @@ import { NavController, AlertController } from '@ionic/angular';
 import { CompetitionService } from './../../../app/service/CompetitionService';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { DateService } from 'src/app/service/DateService';
+import { DataRegion } from 'src/app/model/common';
 
 /**
  * Generated class for the CompetitionListPage page.
@@ -15,7 +16,7 @@ import { DateService } from 'src/app/service/DateService';
  */
 
 @Component({
-  selector: 'page-competition-list',
+  selector: 'app-competition-list',
   templateUrl: 'competition-list.html',
 })
 export class CompetitionListPage implements OnInit {
@@ -24,6 +25,9 @@ export class CompetitionListPage implements OnInit {
   error;
   searchInput: string;
   loading = false;
+  region: DataRegion;
+  withMe = true;
+  isAdmin = false;
 
   constructor(
     private alertCtrl: AlertController,
@@ -38,6 +42,8 @@ export class CompetitionListPage implements OnInit {
 
   ngOnInit() {
     this.helpService.setHelp('competition-list');
+    this.isAdmin = this.connectedUserService.isAdmin();
+    this.region = this.connectedUserService.getCurrentUser().region;
     setTimeout(() => {
       this.doRefresh(null);
     }, 200);
@@ -53,11 +59,15 @@ export class CompetitionListPage implements OnInit {
 
   private searchCompetition(forceServer: boolean = false, event: any = null) {
     this.loading = true;
+    this.competitions = [];
     // console.log('searchCompetition(' + this.searchInput + ')');
     this.competitionService.searchCompetitions(this.searchInput, forceServer ? 'server' : 'default')
       .subscribe((response: ResponseWithData<Competition[]>) => {
-        this.competitions = this.competitionService.sortCompetitions(
-          this.competitionService.filterCompetitionsByCoach(response.data, this.connectedUserService.getCurrentUser().id), true);
+        let cs = response.data;
+        if (this.withMe || !this.isAdmin) {
+          cs = this.competitionService.filterCompetitionsByCoach(cs, this.connectedUserService.getCurrentUser().id);
+        }
+        this.competitions = this.competitionService.sortCompetitions(cs, true);
         this.loading = false;
         if (event) {
           event.target.complete();

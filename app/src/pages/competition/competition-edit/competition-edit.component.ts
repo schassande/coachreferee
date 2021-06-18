@@ -65,8 +65,10 @@ export class CompetitionEditComponent implements OnInit {
         if (!this.competition) {
           // the competition has not been found => create it
           this.createCompetition();
-        } else if (!this.competitionService.authorized(this.competition, this.connectedUserService.getCurrentUser().id)) {
+        } else if (!this.connectedUserService.isAdmin()
+            && !this.competitionService.authorized(this.competition, this.connectedUserService.getCurrentUser().id)) {
           // the coach is not allowed to access to this competition
+          console.log('the coach is not allowed to access to this competition');
           this.navController.navigateRoot('/competition/list');
         }
 
@@ -112,7 +114,7 @@ export class CompetitionEditComponent implements OnInit {
       days: [],
       ownerId: this.connectedUserService.getCurrentUser().id,
       year: new Date().getFullYear(),
-      region : 'Others',
+      region : this.connectedUserService.getCurrentUser().region,
       country : '',
       referees: [],
       refereeCoaches: [],

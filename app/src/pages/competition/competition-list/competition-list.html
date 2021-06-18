@@ -22,6 +22,21 @@
 <ion-content (swipe)="onSwipe($event)">
     <div slot="fixed" style="width: 100%;     background: white;">
         <ion-searchbar [(ngModel)]="searchInput" [showCancelButton]="false" (ionChange)="onSearchBarInput()"></ion-searchbar>
+        <ion-item>
+            <ion-label>Region</ion-label>
+            <ion-select [(ngModel)]="region" interface="action-sheet" (ionChange)="onSearchBarInput()">
+                <ion-select-option value="Europe">Europe</ion-select-option>
+                <ion-select-option value="Australia">Australia</ion-select-option>
+                <ion-select-option value="New Zealand">New Zealand</ion-select-option>
+                <ion-select-option value="Others">Others</ion-select-option>
+                <ion-select-option value="">All</ion-select-option>
+                <ion-select-option value="Test">Test</ion-select-option>
+            </ion-select>
+        </ion-item>
+        <ion-item *ngIf="isAdmin">
+            <ion-label>With me</ion-label>
+            <ion-toggle slot="end" [(ngModel)]="withMe" (ionChange)="onSearchBarInput()"></ion-toggle>
+        </ion-item>
         <div *ngIf="loading" style="margin: 20px auto; text-align: center;">
             <ion-spinner></ion-spinner>
         </div>
@@ -29,7 +44,7 @@
     <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" closeDuration="700ms">
         <ion-refresher-content></ion-refresher-content>
     </ion-refresher>
-    <ion-list style="margin: 60px 0 60px 0;" *ngIf="competitions && competitions.length">
+    <ion-list style="margin: 150px 0 60px 0;" *ngIf="competitions && competitions.length">
         <ion-item *ngFor="let competition of competitions">
             <ion-label style="border: none;" class="listItemButton" (click)="competitionSelected(competition)">{{competition.name}}
                 <br>{{dateService.date2string(competition.date)}}, {{competition.country}}</ion-label>

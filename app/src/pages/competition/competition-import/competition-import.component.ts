@@ -103,6 +103,9 @@ export class CompetitionImportComponent implements OnInit {
               }
             }
           }
+          if (this.importedDatas.dataToImport.allocations.length === 0) {
+            this.importedDatas.errors.push('no game to import');
+          }
           this.nbError = this.getNbError();
           this.showImportButton = this.nbError === 0;
           this.analysisStatus = 'ANALYSED';
@@ -114,9 +117,14 @@ export class CompetitionImportComponent implements OnInit {
 
   private getNbError(): number {
     return this.importedDatas.errors.length
-      + this.importedDatas.refereeAnalysis.filter( (a) => a.errors.length > 0).length
+      + (this.importedDatas.refereeAnalysis.length > 0
+          ? this.importedDatas.refereeAnalysis.map((a) => a.errors.length).reduce((a, b) => a + b)
+          : 0)
       // Do not count coach error
-      + this.importedDatas.gameAnalysis.filter( (a) => a.errors.length > 0).length;
+      + (this.importedDatas.gameAnalysis.length > 0
+          ? this.importedDatas.gameAnalysis.map((a) => a.errors.length).reduce((a, b) => a + b)
+          : 0)
+      ;
   }
 
 
@@ -139,19 +147,20 @@ export class CompetitionImportComponent implements OnInit {
         }
         if (iag.id) {
           // the game has an id, try to find if it matches an existing game
-          const dbAllocIdx = this.importedDatas.dataFromDB.allocations.findIndex( (alloc) => alloc.id === iag.id);
-          if (dbAllocIdx >= 0) {
-            iag.dataFromDB =  this.importedDatas.dataToImport.allocations[dbAllocIdx];
-          }
-          const impAllocIdx = this.importedDatas.dataToImport.allocations.findIndex( (alloc) => alloc.id === iag.id);
-          if (this.updateExisting && impAllocIdx >= 0) {
+          iag.dataFromDB = this.importedDatas.dataFromDB.allocations.find((alloc) => alloc.id === iag.id);
+          const impAlloc = this.importedDatas.dataToImport.allocations.find((alloc) => alloc.id === iag.id);
+          if (this.updateExisting && impAlloc) {
             // share the same GameAllocation with the imported competition object
-            iag.dataToImport = this.importedDatas.dataToImport.allocations[impAllocIdx];
+            iag.dataToImport = impAlloc;
+            console.log('Game with Id ' + iag.id + ' already exists.');
           } else {
+            console.log('Game with Id ' + iag.id + ' is new.');
             // Create a new GameAllocation
             iag.dataToImport = this.newGameAllocation(iag.id);
+            this.importedDatas.dataToImport.allocations.push(iag.dataToImport);
           }
         } else {
+          console.log('Game of the line ' + iag.lineNumber + ' is new.');
           iag.dataToImport = this.newGameAllocation();
           this.importedDatas.dataToImport.allocations.push(iag.dataToImport);
         }
@@ -211,10 +220,13 @@ export class CompetitionImportComponent implements OnInit {
       allocations: src.allocations.map((item: GameAllocation) => this.cloneGameAllocation(item)),
       name: src.name,
       date: src.date,
+      category: src.category,
+      days: src.days.filter(d => true),
       year: src.year,
       region: src.region,
       country: src.region,
       ownerId: src.ownerId,
+      refereePanelDirectorId: src.refereePanelDirectorId ? src.refereePanelDirectorId : null,
       referees: src.referees.map((item) =>  {
         return {  refereeId: item.refereeId, refereeShortName: item.refereeShortName };
       }),
@@ -227,9 +239,7 @@ export class CompetitionImportComponent implements OnInit {
       creationDate: src.creationDate,
       version: src.version,
       lastUpdate: src.lastUpdate,
-      dataStatus: src.dataStatus,
-      category: 'C1',
-      days: [src.date]
+      dataStatus: src.dataStatus
     };
   }
 
@@ -278,7 +288,7 @@ export class CompetitionImportComponent implements OnInit {
       ownerId: this.connectedUserService.getCurrentUser().id,
       date: new Date(),
       year: new Date().getFullYear(),
-      region : 'Others',
+      region : this.connectedUserService.getCurrentUser().region,
       country : '',
       referees: [],
       refereeCoaches: [],
@@ -498,7 +508,7 @@ export class CompetitionImportComponent implements OnInit {
     obs = obs.pipe(mergeMap(() => this.competitionService.save(this.importedDatas.dataToImport)));
     obs.subscribe((rcomp) => {
       if (rcomp.data) {
-        this.navController.navigateRoot(`/competition/edit/${rcomp.data.id}`);
+        this.navController.navigateRoot(`/competition/${rcomp.data.id}/home`);
       } else {
         // TODO show import error
       }

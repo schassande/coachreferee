@@ -82,6 +82,9 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
        map((list) => this.mergeObservables(list, true))
      );
     }
+    public getCoachingByCompetition(competitionId: string): Observable<ResponseWithData<Coaching[]>> {
+      return this.query( this.getCollectionRef().where('competitionId', '==', competitionId), 'default');
+    }
 
     /**
      * Overide to restrict to the coachings of the user.
