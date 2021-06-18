@@ -64,6 +64,33 @@ export class CompetitionGamesPage implements OnInit {
       })
     );
   }
+  downloadGames() {
+    const SEP = ',';
+    const headers = '"gameId", "competition", "date", "timeSlot", "field", "category", "referee1", "referee2", "referee3", "refereeCoach1", "refereeCoach2", "refereeCoach3"\r\n';
+    const content = headers + this.competition.allocations.map(ga => {
+      return '"' + ga.id + '"'
+        + SEP + '"' + this.competition.name + '"'
+        + SEP + '"' + this.dateService.date2string(ga.date) + '"'
+        + SEP + '"' + ga.timeSlot + '"'
+        + SEP + '"' + ga.field + '"'
+        + SEP + '"' + ga.gameCategory + '"'
+        + SEP + '"' + (ga.referees.length > 0 ? ga.referees[0].refereeShortName : '') + '"'
+        + SEP + '"' + (ga.referees.length > 1 ? ga.referees[1].refereeShortName : '') + '"'
+        + SEP + '"' + (ga.referees.length > 2 ? ga.referees[2].refereeShortName : '') + '"'
+        + SEP + '"' + (ga.refereeCoaches.length > 0 ? ga.refereeCoaches[0].coachShortName : '') + '"'
+        + SEP + '"' + (ga.refereeCoaches.length > 1 ? ga.refereeCoaches[1].coachShortName : '') + '"'
+        + SEP + '"' + (ga.refereeCoaches.length > 2 ? ga.refereeCoaches[2].coachShortName : '') + '"'
+        ;
+    }).join('\r\n');
+    const oMyBlob = new Blob([content], {type : 'text/csv'});
+    const url = URL.createObjectURL(oMyBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `CoachReferee_export_games_${this.competition.name}_${this.dateService.date2string(new Date())}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
+  }
   back() {
     if (this.competition.id) {
       this.navController.navigateRoot(`/competition/${this.competition.id}/home`);
