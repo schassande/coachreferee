@@ -90,7 +90,9 @@ export class CompetitionImportComponent implements OnInit {
             await this.analyseGame(json, lineNumber).toPromise();
           }
           if (this.updateExisting && this.removeUnreferenced
-              && this.importedDatas.dataFromDB && this.importedDatas.dataFromDB.allocations) {
+              && this.importedDatas.dataFromDB
+              && this.importedDatas.dataFromDB.allocations
+              && this.importedDatas.dataFromDB.allocations.length) {
             for (let idx = 0; idx < this.importedDatas.dataToImport.allocations.length;) {
               const alloc = this.importedDatas.dataFromDB.allocations[idx];
               if (this.importedDatas.gameAnalysis.findIndex(ana => ana.id === alloc.id) >= 0) {
@@ -183,7 +185,7 @@ export class CompetitionImportComponent implements OnInit {
 
   private newGameAllocation(id: string = null): GameAllocation {
     return {
-      id: null,
+      id,
       date: new Date(),
       field: '1',
       timeSlot: '00:00',
