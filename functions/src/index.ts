@@ -10,6 +10,7 @@ import * as sendNewAccountToAdminLib   from './send-new-account-to-admin';
 import * as sendNewAccountToUserLib    from './send-new-account-to-user';
 import * as computeRefereeUpgradeLib   from './compute-referee-upgrade';
 import * as sendRefereeUpgradeLib      from './send-referee-upgrade';
+import * as sendValidationRequiredLib      from './send-validation-required';
 
 
 admin.initializeApp(func.config().firebase);
@@ -38,7 +39,9 @@ export const computeRefereeUpgrade = func.https.onRequest(
     (request, response) => requestWithCorsAndId(request, response, computeRefereeUpgradeLib.func));
 export const sendRefereeUpgrade = func.https.onRequest(
     (request, response) => requestWithCorsAndId(request, response, sendRefereeUpgradeLib.func));
-    
+export const sendValidationRequired = func.https.onRequest(
+    (request, response) => requestWithCorsAndId(request, response, sendValidationRequiredLib.func));
+        
 
 export async function requestWithCorsAndId(request:any, response:any, coreFunction:any): Promise<any> {
     console.log('Incoming request=' + request.method 
