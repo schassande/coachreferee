@@ -1,6 +1,6 @@
 import { AppSettingsService } from './AppSettingsService';
 import { DateService } from './DateService';
-import { Competition } from './../model/competition';
+import { Competition, CompetitionCategory } from './../model/competition';
 import { ConnectedUserService } from './ConnectedUserService';
 import { AngularFirestore, Query } from '@angular/fire/firestore';
 import { Observable, forkJoin, of } from 'rxjs';
@@ -9,6 +9,7 @@ import { Injectable } from '@angular/core';
 import { RemotePersistentDataService } from './RemotePersistentDataService';
 import { ToastController } from '@ionic/angular';
 import { ToolService } from './ToolService';
+import { Referee } from '../model/user';
 
 @Injectable()
 export class CompetitionService extends RemotePersistentDataService<Competition> {
@@ -47,6 +48,9 @@ export class CompetitionService extends RemotePersistentDataService<Competition>
             .map((day) => this.adjustDate(day, this.dateService));
         if (item.days.length === 0 && item.date) {
             item.days.push(item.date);
+        }
+        if (!item.categorySenior) {
+            item.categorySenior = item.category;
         }
     }
     public searchCompetitions(text: string,
@@ -104,5 +108,12 @@ export class CompetitionService extends RemotePersistentDataService<Competition>
             return of({data: null, error: null});
         }
         return this.queryOne(this.getCollectionRef().where('name', '==', name), 'default');
+    }
+    public getCompetitionCategory(competition: Competition, referee: Referee): CompetitionCategory {
+        if (referee.referee.refereeCategory === 'SENIOR' && competition.categorySenior) {
+          return competition.categorySenior;
+        } else {
+          return competition.category;
+        }
     }
 }

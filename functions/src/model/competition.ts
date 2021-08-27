@@ -13,6 +13,7 @@ export interface Competition extends PersistentData {
     region: DataRegion;
     country: string;
     category: CompetitionCategory;
+    categorySenior: CompetitionCategory;
     ownerId: string;
     referees: RefereeRef[];
     refereeCoaches: CoachRef[];
