@@ -237,7 +237,9 @@ export class CompetitionRefereesPage implements OnInit {
       ]
     }).then( (alert) => alert.present() );
   }
-
+  viewReferee(referee: Referee) {
+    this.navController.navigateRoot(`/referee/view/${referee.id}`);
+  }
   back() {
     if (this.competition.id) {
       this.navController.navigateRoot(`/competition/${this.competition.id}/home`);

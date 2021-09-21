@@ -38,19 +38,25 @@
             </ion-item>
             <ion-item>
                 <ion-label position="fixed">Region:</ion-label>
-                <ion-select *ngIf="!readonly" [(ngModel)]="competition.region" style="text-align: center;">
+                <ion-select *ngIf="!readonly" [(ngModel)]="competition.region" style="text-align: center;" interface="action-sheet">
                     <ion-select-option *ngFor="let region of constantes.regions" value="{{region}}">{{region}}</ion-select-option>
                 </ion-select>
             </ion-item>
             <ion-item>
                 <ion-label position="fixed">Country:</ion-label>
-                <ion-select [(ngModel)]="competition.country">
+                <ion-select [(ngModel)]="competition.country" interface="action-sheet">
                     <ion-select-option *ngFor="let country of constantes.countries" value="{{country[0]}}">{{country[1]}}</ion-select-option>
                 </ion-select>
             </ion-item>
             <ion-item>
                 <ion-label position="fixed">Category:</ion-label>
                 <ion-select *ngIf="!readonly" [(ngModel)]="competition.category" style="text-align: center;" interface="action-sheet">
+                    <ion-select-option *ngFor="let category of categories" value="{{category}}">{{category}}</ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-item>
+                <ion-label position="fixed">Category Senior:</ion-label>
+                <ion-select *ngIf="!readonly" [(ngModel)]="competition.categorySenior" style="text-align: center;" interface="action-sheet">
                     <ion-select-option *ngFor="let category of categories" value="{{category}}">{{category}}</ion-select-option>
                 </ion-select>
             </ion-item>

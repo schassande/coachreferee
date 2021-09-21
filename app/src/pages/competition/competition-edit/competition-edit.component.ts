@@ -120,6 +120,7 @@ export class CompetitionEditComponent implements OnInit {
       refereeCoaches: [],
       allocations: [],
       category: 'C1',
+      categorySenior: 'C1'
     };
     this.competition.days.push(this.competition.date);
     this.readonly = false;

@@ -140,7 +140,7 @@ export class UserSelectorComponent implements OnInit {
 
     loadUser() {
       this.loading = true;
-      if (this.competitionId) {
+      if (this.competitionId && this.role === 'REFEREE') {
         this.getCompetitionReferees().subscribe((us) => {
           this.users = this.userService.sortUsers(us.filter(user => {
             if (this.toolService.isValidString(this.region) && user.region !== this.region) {
@@ -156,6 +156,10 @@ export class UserSelectorComponent implements OnInit {
             if (this.role === 'REFEREE_COACH' && this.toolService.isValidString(this.refereeCoachLevel)
               && user.refereeCoach && user.refereeCoach.refereeCoachLevel !== this.refereeCoachLevel) {
               return false;
+            }
+            if (this.toolService.isValidString(this.searchInput)
+              && !this.userService.getFilterByText(this.searchInput)(user)) {
+                return false;
             }
             return true;
           }));

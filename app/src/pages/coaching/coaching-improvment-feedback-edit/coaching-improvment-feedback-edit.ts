@@ -22,7 +22,7 @@ import { of, Observable } from 'rxjs';
  */
 
 @Component({
-  selector: 'page-coaching-improvment-feedback-edit',
+  selector: 'app-page-coaching-improvment-feedback-edit',
   templateUrl: 'coaching-improvment-feedback-edit.html',
 })
 export class CoachingImprovmentFeedbackEditPage implements OnInit {
@@ -91,14 +91,16 @@ export class CoachingImprovmentFeedbackEditPage implements OnInit {
 
   saveNback() {
     console.log('Save and Back');
-    this.save().subscribe(() => {
-      console.log('saved');
-      this.navController.navigateRoot(`/coaching/coach/${this.coaching.id}?refereeIdx=${this.refereeIndex}`);
+    this.save().subscribe((success) => {
+      if (success) {
+        console.log('saved');
+        this.navController.navigateRoot(`/coaching/coach/${this.coaching.id}?refereeIdx=${this.refereeIndex}`);
+      }
     });
   }
 
-  private save(): Observable<any> {
-    if (this.readonly) { return of(''); }
+  private save(): Observable<boolean> {
+    if (this.readonly) { return of(true); }
     if (this.isFeedbackValid()) {
       // make sure fields are not enmpty
       this.feedback.skillName = this.makeNotEmpty(this.feedback.skillName, '-');
@@ -113,7 +115,8 @@ export class CoachingImprovmentFeedbackEditPage implements OnInit {
         console.log('Update improvment feedback \'', this.feedback.problemShortDesc, '\/', this.feedbackIndex,
           ' of the referee ', this.coaching.referees[this.refereeIndex].refereeShortName);
       }
-      return this.coachingService.save(this.coaching);
+      return this.coachingService.saveWithRetry(this.coaching, this.alertCtrl, 'Error during saving of the improvement feedback')
+        .pipe(map(res => res.data !== null));
 
     }  else if (this.feedbackIndex >= 0) {
       console.log('Remove feedback \'', this.feedback.problemShortDesc, '\'/', this.feedbackIndex,
@@ -121,10 +124,11 @@ export class CoachingImprovmentFeedbackEditPage implements OnInit {
       // remove it
       this.coaching.referees[this.refereeIndex].feedbacks.splice(this.feedbackIndex, 1);
       // save the coaching
-      return this.coachingService.save(this.coaching);
+      return this.coachingService.saveWithRetry(this.coaching, this.alertCtrl, 'Error during removing of the improvement feedback')
+        .pipe(map(res => res.data !== null));
     } else {
       // the feedback was new => nothing to do, just forget it
-      return of('');
+      return of(true);
     }
   }
 

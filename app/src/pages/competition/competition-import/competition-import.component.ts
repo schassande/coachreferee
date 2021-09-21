@@ -223,6 +223,7 @@ export class CompetitionImportComponent implements OnInit {
       name: src.name,
       date: src.date,
       category: src.category,
+      categorySenior: src.categorySenior,
       days: src.days.filter(d => true),
       year: src.year,
       region: src.region,
@@ -296,6 +297,7 @@ export class CompetitionImportComponent implements OnInit {
       refereeCoaches: [],
       allocations: [],
       category: 'C1',
+      categorySenior: 'C1',
       days: []
     };
     c.days.push(c.date);

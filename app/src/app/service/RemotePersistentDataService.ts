@@ -13,7 +13,7 @@ import { AngularFirestore,
     QueryDocumentSnapshot,
     Query,
     AngularFirestoreDocument} from '@angular/fire/firestore';
-import { ToastController } from '@ionic/angular';
+import { AlertController, ToastController } from '@ionic/angular';
 import { DateService } from './DateService';
 
 export abstract class RemotePersistentDataService<D extends PersistentData> implements Crud<D> {
@@ -76,6 +76,21 @@ export abstract class RemotePersistentDataService<D extends PersistentData> impl
 
     public createId(): string {
         return this.db.createId();
+    }
+    public saveWithRetry(data: D, alertCtrl: AlertController, msg: string, nbRetry: number = 3): Observable<ResponseWithData<D>> {
+        return this.save(data).pipe(
+            mergeMap((res) => {
+              if (!res.data) {
+                if (nbRetry > 0) {
+                    return this.saveWithRetry(data, alertCtrl, msg, nbRetry - 1);
+                } else {
+                    alertCtrl.create({message: msg + ': ' + res.error})
+                        .then( (alert) => alert.present());
+                }
+              }
+              return of(res);
+            })
+          );
     }
     public save(data: D): Observable<ResponseWithData<D>> {
         if (data.dataStatus === 'REMOVED') {
