@@ -14,6 +14,7 @@ import { Component, OnInit } from '@angular/core';
 import { RefereeService } from 'src/app/service/RefereeService';
 import { UserSelectorComponent } from 'src/pages/widget/user-selector-component';
 import { SharedWith } from 'src/app/model/common';
+import { RefereeEditPage } from 'src/pages/referee/referee-edit/referee-edit';
 
 @Component({
   selector: 'app-competition-referees',
@@ -116,9 +117,13 @@ export class CompetitionRefereesPage implements OnInit {
   async addReferee() {
     const modal = await this.modalController.create({ component: UserSelectorComponent,
       componentProps: { role: 'REFEREE', region: this.connectedUserService.getCurrentUser().region}});
-    modal.onDidDismiss().then( (data) => {
+    console.log('addReferee modal=', modal);
+    modal.onDidDismiss().then( (data: any) => {
+      console.log('addReferee onDidDismiss data=', data);
       const selection: SharedWith = data.data as SharedWith;
-      if (selection) {
+      if (data.data.create) {
+        this.newReferee();
+      } else if (selection) {
         selection.users.forEach((referee) => {
           const idx = this.referees.findIndex((ref) => ref.id === referee.id);
           if (idx >= 0) {
@@ -131,7 +136,21 @@ export class CompetitionRefereesPage implements OnInit {
         });
       }
     });
-    return await modal.present();
+    modal.present();
+  }
+
+  async newReferee() {
+    const modal = await this.modalController.create({ component: RefereeEditPage});
+    modal.onDidDismiss().then( (data: any) => {
+      console.log('newReferee data=', data);
+      if (data.data && data.data.referee && data.data.referee.id) {
+        const referee: Referee = data.data.referee;
+        this.referees.push(referee);
+        this.competition.referees.push({ refereeShortName: referee.shortName, refereeId: referee.id});
+        this.competitionService.save(this.competition).subscribe();
+      }
+    });
+    modal.present();
   }
 
   onDeleteAll() {
