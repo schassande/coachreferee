@@ -57,86 +57,105 @@ async function loadAssessmentData(request:any, response: any, ctx: any): Promise
 }
 
 function assessmentAsEmailBody(assessment: Assessment, profile: SkillProfile, coach: User, referee: Referee): string {
+    const nbLines = assessment.skillSetEvaluation
+        .map((sse) => sse.skillEvaluations.length + 1)
+        .reduce((prev, cur) => prev + cur);
+    const zoom = nbLines > 40 ? '62%' : '80%';
     let body = `<!DOCTYPE html>
-    <html lang="en" dir="ltr">
-    <head>
-        <style>
-            body { margin: 0 20px;}
-            table { width: 100%; }
-            table, th, td {
-                border: 1px solid black;
-                border-collapse: collapse;
+<html lang="en" dir="ltr">
+<head>
+    <style>
+        body {
+            margin: 0 auto;
+            width: 1024px;
+        }
+        @media print {
+            body { 
+                page-break-before: avoid;
+                padding: 0.8cm;
+                zoom: ${zoom};
             }
-            td {
-                padding: 5px;
-            }
-            .title {
-                text-align: center; 
-                background-color:${profile.backgroundColor}; 
-                color:${profile.color}; 
-                width: 100%;
-            }
-            .assessment-header {}
-            .assessment-main {}
-            .section-name, .global-title {
-                background-color: #cccccc;
-                font-size: 1.1em;
-                font-weight: bold;
-                padding: 5px;
-            }
-            .section-competency, .skill-competency{
-                padding: 5px 15px;
-                text-align: center;
-            }
-            .section-competency {
-                font-weight: bold;
-            }
-            .skill-name {
-                padding: 5px;
-            }
-            .assessment-global {}
-            .global-main{
-                padding-top: 10px;
-                padding-bottom: 30px;
-            }
-        </style>
-    </head>
-    <body>    
+        }
+        table { width: 100%; }
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        td {
+            padding: 5px;
+        }
+        .title {
+            text-align: center; 
+            background-color:${profile.backgroundColor}; 
+            color:${profile.color}; 
+            width: 100%;
+        }
+        .assessment-header {}
+        .assessment-main {}
+        .section-name, .global-title {
+            background-color: #cccccc;
+            font-weight: bold;
+            padding: 5px;
+        }
+        .section-competency, .skill-competency{
+            padding: 5px 15px;
+            text-align: center;
+        }
+        .section-competency{
+            background-color: #eeeeee;
+            font-variant-caps: all-small-caps;
+        }
+        .section-name, .global-title, .section-competency{
+            font-size: 1.2em;
+        }
+        .skill-name {
+            padding: 5px;
+        }
+        .assessment-global { margin-bottom: 20px; }
+        .global-main{
+            padding-top: 10px;
+            padding-bottom: 30px;
+        }
+        .competent { color: green; font-weight: bold;}
+        .notCompetent { color: red;}
+    </style>
+</head>
+<body>    
     <table class="assessment-header">
-      <tr><td colspan="3" class="title"><h1>${assessment.profileName} Referee Assessment</h1></td></tr>
-      <tr><td colspan="2"><strong>Referee:</strong> ${referee.firstName} ${referee.lastName} ${assessment.refereeShortName}</td><td><strong>Referee NTA:</strong> ${referee.country}</td></tr>
-      <tr><td colspan="2"><strong>Competition:</strong> ${assessment.competition}</td><td><strong>Date:</strong> ${getAssessmentDateAsString(assessment)}</td></tr>
-      <tr><td><strong>Game category:</strong> ${assessment.gameCategory}</td><td><strong>Game speed:</strong> ${assessment.gameSpeed}</td><td><strong>Game skill:</strong> ${assessment.gameSkill}</td></tr>
-    </table>`;
+        <tr><td colspan="3" class="title"><h1>${assessment.profileName} Referee Assessment</h1></td></tr>
+        <tr><td colspan="2"><strong>Referee:</strong> ${referee.firstName} ${referee.lastName} ${assessment.refereeShortName}</td><td><strong>Referee NTA:</strong> ${referee.country}</td></tr>
+        <tr><td colspan="2"><strong>Competition:</strong> ${assessment.competition}</td><td><strong>Date:</strong> ${getAssessmentDateAsString(assessment)}</td></tr>
+        <tr><td><strong>Game category:</strong> ${assessment.gameCategory}</td><td><strong>Game speed:</strong> ${assessment.gameSpeed}</td><td><strong>Game skill:</strong> ${assessment.gameSkill}</td></tr>
+    </table>\n`;
 
-    body += `<table class="assessment-main">`;
+    body += `\t<table class="assessment-main">\n`;
     assessment.skillSetEvaluation.forEach( (skillSetEval) => {
-        body += `<tr class="assessment-section">`;
-        body += `<th class="section-name">${skillSetEval.skillSetName}`;
+        body += `\n\t\t<tr class="assessment-section">\n`;
+        body += `\t\t\t<th class="section-name">${skillSetEval.skillSetName}`;
         if (skillSetEval.comment && skillSetEval.comment !== '-') {
             body += `<br>Comment: ${skillSetEval.comment}`;
         }
-        body += `</th>`;
-        body += `<td class="section-competency">${competency2str(skillSetEval.competency)}</td>`;
-        body += `</tr>\n`;
+        body += `</th>\n`;
+        body += `\t\t\t<td class="section-competency ${competency2class(skillSetEval.competency)}">${competency2str(skillSetEval.competency)}</td>\n`;
+        body += `\t\t</tr>\n`;
         skillSetEval.skillEvaluations.forEach( (skillEval) => {
-            body += `\t<tr><td class="skill-name">${skillEval.skillName}`
+            body += `\t\t<tr>\n\t\t\t<td class="skill-name">${skillEval.skillName}`
             if (skillEval.comment && skillEval.comment !== '-') {
                 body += `<br>Comment: ${skillEval.comment}`;
             }
-            body += `</td><td class="skill-competency">${competency2str(skillEval.competency)}</td></tr>\n`;
+            body += `</td>\n\t\t\t<td class="skill-competency ${competency2class(skillEval.competency)}">${competency2str(skillEval.competency)}</td>\n\t\t</tr>\n`;
         });
     });
-    body += `</table>\n`;
-    body += `<table class="assessment-global">`;
-    body += `<tr><th class="global-title">Conclusion</th>\n`;
-    body += `<tr><td class="global-main">The referee coach ${coach.firstName} ${coach.lastName} declares the referee is ${assessment.competency === 'YES' ? '' : '<strong>NOT</strong> '}competent for the level ${assessment.profileName}.`
+    body += `\t</table>\n`;
+    body += `\t<table class="assessment-global">\n`;
+    body += `\t\t<tr><th class="global-title">Conclusion</th>\n`;
+    body += `\t\t<tr><td class="global-main">The referee coach ${coach.firstName} ${coach.lastName} declares the referee is ${assessment.competency === 'YES' ? '' : '<strong>NOT</strong> '}competent for the level ${assessment.profileName}.`
     if (assessment.comment && assessment.comment !== '-') {
         body += `<br>Comment: ${assessment.comment}`;
     }
     body += `</td></th>\n`;
-    body += `</table>`;
-    body += `</body></html>`;
+    body += `\t</table>`;
+    body += `</body>\n</html>`;
 
     return body;
 }
@@ -146,6 +165,15 @@ function competency2str(comp: Competency): string {
         return 'Yes';
     } else if (comp === 'NO') {
         return 'No';
+    } else {
+        return ''
+    }
+}
+function competency2class(comp: Competency): string {
+    if (comp === 'YES') {
+        return 'competent';
+    } else if (comp === 'NO') {
+        return 'notCompetent';
     } else {
         return ''
     }
