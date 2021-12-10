@@ -10,7 +10,7 @@ export function func(request:any, response:any, ctx:any):Promise<any> {
         const subject = `[CoachReferee.com] Account validation required: ${user.firstName} ${user.lastName}`;
         const email = {
             from: ctx.gmailEmail,
-            to: ctx.gmailEmail + ', chassande@gmail.com',
+            to: ctx.gmailEmail,
             subject,
             html: `Hi Admin, 
                     <br>${user.firstName} ${user.lastName} has created an account.`
