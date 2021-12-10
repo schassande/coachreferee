@@ -3,6 +3,7 @@ import { DocumentSnapshot } from 'firebase-functions/lib/providers/firestore';
 import { User }  from './model/user';
 
 export const collectionCoaching = 'coaching';
+export const collectionCompetition = 'competition';
 export const collectionAssessment = 'assessment';
 export const collectionUser = 'user';
 export const collectionInvitation = 'invitation';
