@@ -16,13 +16,17 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-export function sendMail(email: any, response: any) { 
+export function sendMail(email: any, response?: any) { 
     transporter.sendMail(email, 
         (erro: any) => {
-            if(erro){
-                return response.send(erro.toString());
-            } else {
-                return response.send({ data: 'ok', error: null});
+            if (response) {
+                if(erro){
+                    return response.send(erro.toString());
+                } else {
+                    return response.send({ data: 'ok', error: null});
+                }
+            } else if (erro){
+                console.error(erro.toString());
             }
         });
 }

@@ -12,6 +12,7 @@ import * as computeRefereeUpgradeLib   from './compute-referee-upgrade';
 import * as sendRefereeUpgradeLib      from './send-referee-upgrade';
 import * as sendValidationRequiredLib  from './send-validation-required';
 import * as sendRefereeUpgradeStatusLib  from './send-referee-upgrade-status';
+import * as voteAndUpgradeReminderLib  from './vote-and-upgrade-reminder';
 
 
 admin.initializeApp(func.config().firebase);
@@ -21,7 +22,18 @@ const ctx = {
     gmailEmail : func.config().gmail.email, 
     gmailPassword : func.config().gmail.password
 };
+// ===================================================================
+// Scheduled functions
+exports.voteAndUpgradeReminder = func.pubsub.schedule('4 00 * * 1')
+    .timeZone('Europe/London')
+    .onRun(async (context) => {
+        console.log('voteAndUpgradeReminder BEGIN ' + context.timestamp);
+        await voteAndUpgradeReminderLib.func(ctx);
+        console.log('voteAndUpgradeReminder END ' + context.timestamp);
+    });
 
+// ===================================================================
+// Functions exposed over HTTPS
 export const sendCoaching = func.https.onRequest(
     (request, response) => requestWithCorsAndId(request, response, sendCoachingLib.func));
 export const sendAssessment = func.https.onRequest(

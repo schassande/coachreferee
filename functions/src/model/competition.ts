@@ -19,6 +19,7 @@ export interface Competition extends PersistentData {
     refereeCoaches: CoachRef[];
     allocations: GameAllocation[];
     refereePanelDirectorId?: string;
+    completed?: boolean;
 }
 export interface CompetitionRef {
     competitionId: string;

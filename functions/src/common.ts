@@ -40,7 +40,7 @@ export function string2date(dateStr: string, aDate: Date|null): Date {
     res.setDate(Number.parseInt(elements[2], 0));
     return to00h00(res);
 }
-export function loadFromDb(db:any, collection: string, id: string, response:any): Promise<PersistentData|null> {
+export function loadFromDb(db:any, collection: string, id: string, response?:any): Promise<PersistentData|null> {
     return db.collection(collection).doc(id).get()
         .then( (doc:DocumentSnapshot) => {
             if (doc.exists) {
@@ -53,7 +53,9 @@ export function loadFromDb(db:any, collection: string, id: string, response:any)
                 return null;
             }
         }).catch((reason:any) => {
-            response.send(reason);
+            if (response) {
+                response.send(reason);
+            }
             console.log('loadFromDb(' + collection +', ' + id + ') => ERROR:' + reason);
             return null;
         });
@@ -90,3 +92,6 @@ export function addToSetById(arrays: any[], itemToAdd: any, idFieldName: string 
     }
 }
 
+export function valueIn(value: string, ...list: string[]): boolean {
+    return list.filter(e => e === value).length > 0;
+}
