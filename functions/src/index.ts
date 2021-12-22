@@ -15,6 +15,7 @@ import * as sendRefereeUpgradeStatusLib  from './send-referee-upgrade-status';
 import * as voteAndUpgradeReminderLib  from './vote-and-upgrade-reminder';
 import * as newCompetitionEventLib  from './new-competition-event';
 import { Competition } from './model/competition';
+import { collectionCompetition } from './common';
 
 
 admin.initializeApp(func.config().firebase);
@@ -38,7 +39,7 @@ exports.voteAndUpgradeReminder = func.pubsub.schedule('4 00 * * 1')
 // Triggered functions
 
 // On competition created from the database
-exports.newCompetitionEvent = func.firestore.document('Competition/{cid}').onCreate(async (snap, context) => {
+exports.newCompetitionEvent = func.firestore.document(collectionCompetition + '/{cid}').onCreate(async (snap, context) => {
      await newCompetitionEventLib.func(snap.data() as Competition, context, ctx);
 });
 
