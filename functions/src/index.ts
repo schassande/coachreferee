@@ -13,6 +13,8 @@ import * as sendRefereeUpgradeLib      from './send-referee-upgrade';
 import * as sendValidationRequiredLib  from './send-validation-required';
 import * as sendRefereeUpgradeStatusLib  from './send-referee-upgrade-status';
 import * as voteAndUpgradeReminderLib  from './vote-and-upgrade-reminder';
+import * as newCompetitionEventLib  from './new-competition-event';
+import { Competition } from './model/competition';
 
 
 admin.initializeApp(func.config().firebase);
@@ -31,6 +33,14 @@ exports.voteAndUpgradeReminder = func.pubsub.schedule('4 00 * * 1')
         await voteAndUpgradeReminderLib.func(ctx);
         console.log('voteAndUpgradeReminder END ' + context.timestamp);
     });
+
+// ===================================================================
+// Triggered functions
+
+// On competition created from the database
+exports.newCompetitionEvent = func.firestore.document('Competition/{cid}').onCreate(async (snap, context) => {
+     await newCompetitionEventLib.func(snap.data() as Competition, context, ctx);
+});
 
 // ===================================================================
 // Functions exposed over HTTPS
