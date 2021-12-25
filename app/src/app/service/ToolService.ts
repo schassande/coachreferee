@@ -14,10 +14,13 @@ export class ToolService {
         return result.length === 0 ? null : result.map((line) => line[1]);
     }
 
-    addToSetById(arrays: any[], itemToAdd: any, idFieldName: string = 'id') {
+    addToSetById(arrays: any[], itemToAdd: any, idFieldName: string = 'id'): boolean {
         const idx = arrays.findIndex( (item) => itemToAdd[idFieldName] === item[idFieldName]);
         if (idx < 0) {
             arrays.push(itemToAdd);
+            return true;
+        } else {
+            return false;
         }
     }
 

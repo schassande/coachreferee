@@ -61,7 +61,7 @@ export class CompetitionListPage implements OnInit {
     this.loading = true;
     this.competitions = [];
     // console.log('searchCompetition(' + this.searchInput + ')');
-    this.competitionService.searchCompetitions(this.searchInput, forceServer ? 'server' : 'default')
+    this.competitionService.searchCompetitions(this.searchInput, forceServer ? 'server' : 'default', this.region)
       .subscribe((response: ResponseWithData<Competition[]>) => {
         let cs = response.data;
         if (this.withMe || !this.isAdmin) {

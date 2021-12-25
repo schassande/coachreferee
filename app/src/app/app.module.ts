@@ -102,6 +102,7 @@ import { UserGroupService } from './service/UserGroupService';
 import { VersionService } from './service/VersionService';
 import { XpService } from './service/XpService';
 import { RefereeSelectorService } from 'src/pages/referee/referee-selector-service';
+import { NotificationService } from './service/NotificationService';
 
 
 @NgModule({
@@ -154,6 +155,7 @@ import { RefereeSelectorService } from 'src/pages/referee/referee-selector-servi
     HelpService,
     InvitationService,
     LocalDatabaseService,
+    NotificationService,
     OfflinesService,
     PROService,
     RefereeService,

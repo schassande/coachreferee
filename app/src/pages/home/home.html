@@ -37,10 +37,31 @@
             <ion-label class="menu-entry">Install on device</ion-label>
         </ion-item>
     </ion-list>
-    <div color="light" style="text-align: center; font-size: 0.8em; margin-top: 10px;">Connected as {{getShortName()}}.</div>
-    <div style="text-align: center; margin-top: 30px;">
-        <a (click)="inviteCoach()">Invite a coach to use the app?</a>
-        <br>
-        <br>Make sure you trust the people you invite. You answer for him/her.
+    <div *ngIf="notifications && notifications.length > 0">
+        <div style="float: right; margin: 5px 10px;">
+            <a (click)="closeAllNotifications()">Clear All notifications</a>
+        </div>
+        <div style="clear: both;"></div>
+        <ion-card *ngFor="let not of notifications; let idx=index">
+            <ion-card-header color="light">
+                <ion-card-title style="font-size: 1.2em;">
+                    <div style="float: right;">
+                        <ion-icon name="close" (click)="closeNotification(idx)"></ion-icon>
+                    </div>
+                    <div>{{dateService.datetime2string(not.eventDate)}}</div>
+                    <div style="clear: both;"></div>
+                </ion-card-title>
+            </ion-card-header>
+            <ion-card-content style="margin: 5px;" *ngIf="not.sourceShortName">
+                <div>{{not.eventMessage}}</div>
+                <div style="float: right;">By {{not.sourceShortName}}</div>
+                <div style="clear: both;"></div>
+            </ion-card-content>
+        </ion-card>
     </div>
+    <div style="text-align: center; margin-top: 20px;">
+        <div style="margin-bottom: 3px;"><a (click)="inviteCoach()">Invite a coach to use the app?</a></div>
+        <div>Make sure you trust the people you invite.<br>You answer for him/her.</div>
+    </div>
+    <div color="light" style="text-align: center; font-size: 0.8em; margin-top: 20px;">Connected as {{getShortName()}}.</div>
 </ion-content>

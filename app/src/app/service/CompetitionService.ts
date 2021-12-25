@@ -10,6 +10,7 @@ import { RemotePersistentDataService } from './RemotePersistentDataService';
 import { ToastController } from '@ionic/angular';
 import { ToolService } from './ToolService';
 import { Referee } from '../model/user';
+import { DataRegion } from '../model/common';
 
 @Injectable()
 export class CompetitionService extends RemotePersistentDataService<Competition> {
@@ -54,13 +55,12 @@ export class CompetitionService extends RemotePersistentDataService<Competition>
         }
     }
     public searchCompetitions(text: string,
-                              options: 'default' | 'server' | 'cache' = 'default'): Observable<ResponseWithData<Competition[]>> {
+                              options: 'default' | 'server' | 'cache' = 'default',
+                              regionP: DataRegion = null): Observable<ResponseWithData<Competition[]>> {
         let q: Query<Competition> = this.getCollectionRef();
-        if (!this.connectedUserService.isAdmin()) {
-            const region = this.connectedUserService.getCurrentUser().region;
-            console.log('searchCompetitions(' + text + ',' + options + ') filter by the region of the user: \'' + region + '\'');
-            q = q.where('region', '==', region);
-        }
+        const region = regionP ? regionP : this.connectedUserService.getCurrentUser().region;
+        console.log('searchCompetitions(' + text + ',' + options + ') filter by the region of the user: \'' + region + '\'');
+        q = q.where('region', '==', region);
         let res = this.query(q, options);
         const str = this.toolService.isValidString(text) ? text.trim() : null;
         if (str) {

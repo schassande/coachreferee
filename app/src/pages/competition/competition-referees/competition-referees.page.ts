@@ -15,6 +15,8 @@ import { RefereeService } from 'src/app/service/RefereeService';
 import { UserSelectorComponent } from 'src/pages/widget/user-selector-component';
 import { SharedWith } from 'src/app/model/common';
 import { RefereeEditPage } from 'src/pages/referee/referee-edit/referee-edit';
+import { Notification } from 'src/app/model/notification';
+import { NotificationService } from 'src/app/service/NotificationService';
 
 @Component({
   selector: 'app-competition-referees',
@@ -36,6 +38,7 @@ export class CompetitionRefereesPage implements OnInit {
     public dateService: DateService,
     private helpService: HelpService,
     private navController: NavController,
+    private notificationService: NotificationService,
     private refereeService: RefereeService,
     private route: ActivatedRoute,
     private toolService: ToolService
@@ -132,12 +135,15 @@ export class CompetitionRefereesPage implements OnInit {
           }
           this.referees.push(referee);
           this.competition.referees.push({ refereeShortName: referee.shortName, refereeId: referee.id});
-          this.competitionService.save(this.competition).subscribe();
+          this.competitionService.save(this.competition)
+            .pipe(map(() => this.notificationService.refereeAddedToCompetition(referee, this.competition)))
+            .subscribe();
         });
       }
     });
     modal.present();
   }
+
 
   async newReferee() {
     const modal = await this.modalController.create({ component: RefereeEditPage});
@@ -147,7 +153,9 @@ export class CompetitionRefereesPage implements OnInit {
         const referee: Referee = data.data.referee;
         this.referees.push(referee);
         this.competition.referees.push({ refereeShortName: referee.shortName, refereeId: referee.id});
-        this.competitionService.save(this.competition).subscribe();
+        this.competitionService.save(this.competition)
+          .pipe(map(() => this.notificationService.refereeAddedToCompetition(referee, this.competition)))
+          .subscribe();
       }
     });
     modal.present();
@@ -161,9 +169,11 @@ export class CompetitionRefereesPage implements OnInit {
         {
           text: 'Delete All',
           handler: () => {
+            const obs = [this.competitionService.save(this.competition)];
+            this.referees.forEach(ref => obs.push(this.notificationService.refereeRemovedFromCompetition(ref, this.competition)));
             this.referees = [];
             this.competition.referees = [];
-            this.competitionService.save(this.competition).subscribe();
+            forkJoin(obs).subscribe();
           }
         }
       ]
@@ -191,6 +201,7 @@ export class CompetitionRefereesPage implements OnInit {
     let addedRefereeNumber = 0;
     const unknownShortNames: string[] = [];
     let alreadyAddNames = 0;
+    const notifObs = [of('')];
     refShortNames.forEach((refShortName) => {
       console.log('Searching referee ', refShortName);
       obs.push(
@@ -204,6 +215,7 @@ export class CompetitionRefereesPage implements OnInit {
                   this.referees.push(referee);
                   this.competition.referees.push({ refereeShortName: referee.shortName, refereeId: referee.id});
                   console.log('Referee ', refShortName, ' added.');
+                  notifObs.push(this.notificationService.refereeAddedToCompetition(referee, this.competition));
                 } else {
                   alreadyAddNames ++;
                   console.log('Referee ', refShortName, ' already belongd the compeetition.');
@@ -221,6 +233,7 @@ export class CompetitionRefereesPage implements OnInit {
     if (obs.length) {
       forkJoin(obs).pipe(
         mergeMap(() => this.competitionService.save(this.competition)),
+        mergeMap(() => forkJoin(notifObs)),
         map(() => {
           this.refereesImported(refShortNames.length, addedRefereeNumber, unknownShortNames, alreadyAddNames);
         })
@@ -251,6 +264,9 @@ export class CompetitionRefereesPage implements OnInit {
             this.toolService.deleteFromArrayById(this.competition.referees, referee.id, 'refereeId');
             // remove the referee from the local list
             this.toolService.deleteFromArrayById(this.referees, referee.id);
+            this.competitionService.save(this.competition)
+              .pipe(map(() => this.notificationService.refereeRemovedFromCompetition(referee, this.competition)))
+              .subscribe();
           }
         }
       ]

@@ -224,6 +224,7 @@ export class CompetitionImportComponent implements OnInit {
       date: src.date,
       category: src.category,
       categorySenior: src.categorySenior,
+      completed: false,
       days: src.days.filter(d => true),
       year: src.year,
       region: src.region,
@@ -281,12 +282,13 @@ export class CompetitionImportComponent implements OnInit {
   }
 
   private newCompetition(name): Competition {
-    const c: Competition =  {
+    const comp: Competition =  {
       id: null,
       version: 0,
       creationDate : new Date(),
       lastUpdate : new Date(),
       dataStatus: 'NEW',
+      completed: false,
       name,
       ownerId: this.connectedUserService.getCurrentUser().id,
       date: new Date(),
@@ -300,8 +302,8 @@ export class CompetitionImportComponent implements OnInit {
       categorySenior: 'C1',
       days: []
     };
-    c.days.push(c.date);
-    return c;
+    comp.days.push(comp.date);
+    return comp;
   }
 
   private analyseReferee(refereeShortName: string, iag: AnalysedImport<GameAllocation>): Observable<any> {

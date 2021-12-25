@@ -34,6 +34,9 @@ export class DateService {
       + TIME_SEP + this.to2Digit(aDate.getMinutes());
   }
 
+  public datetime2string(aDate: Date) {
+    return this.date2string(aDate) + ' ' + this.time2string(aDate);
+  }
   public string2date(dateStr: string, aDate: Date): Date {
     const elements = dateStr.split(DATE_SEP);
     if (!aDate) {

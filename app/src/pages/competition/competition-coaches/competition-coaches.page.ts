@@ -14,6 +14,8 @@ import { Component, OnInit } from '@angular/core';
 import { map, mergeMap, catchError } from 'rxjs/operators';
 import { of, Observable, forkJoin } from 'rxjs';
 import { ResponseWithData } from 'src/app/service/response';
+import { NotificationService } from 'src/app/service/NotificationService';
+import { Notification } from 'src/app/model/notification';
 
 @Component({
   selector: 'app-competition-coaches',
@@ -37,6 +39,7 @@ export class CompetitionCoachesPage implements OnInit {
     public dateService: DateService,
     private helpService: HelpService,
     private navController: NavController,
+    private notificationService: NotificationService,
     private route: ActivatedRoute,
     private toolService: ToolService,
     private userService: UserService
@@ -116,20 +119,23 @@ export class CompetitionCoachesPage implements OnInit {
       })
     );
   }
-
   async addRefereeCoach() {
     const modal = await this.modalController.create({ component: UserSelectorComponent,
       componentProps: { role: 'REFEREE_COACH', region: this.connectedUserService.getCurrentUser().region}});
     modal.onDidDismiss().then( (data) => {
       const selection: SharedWith = data.data as SharedWith;
       if (selection && selection.users && selection.users.length) {
+        const obs = [of('')];
         selection.users.forEach((user) => {
           console.log({ coachShortName: user.shortName, coachId: user.id});
           this.toolService.addToSetById(this.competition.refereeCoaches,
             { coachShortName: user.shortName, coachId: user.id}, 'coachId');
-          this.toolService.addToSetById(this.coaches, user);
+          const added = this.toolService.addToSetById(this.coaches, user);
+          if (added) {
+            obs.push(this.notificationService.coachAddedToCompetition(user, this.competition));
+          }
         });
-        this.save().subscribe();
+        this.save().pipe(mergeMap(() => forkJoin(obs))).subscribe();
       }
     });
     return await modal.present();
@@ -147,7 +153,7 @@ export class CompetitionCoachesPage implements OnInit {
             this.toolService.deleteFromArrayById(this.competition.refereeCoaches, coach.id, 'coachId');
             // remove the referee coach  from the local list
             this.toolService.deleteFromArrayById(this.coaches, coach.id);
-            this.save().subscribe();
+            this.save().pipe(mergeMap(() => this.notificationService.coachRemovedFromCompetition(coach, this.competition))).subscribe();
           }
         }
       ]
