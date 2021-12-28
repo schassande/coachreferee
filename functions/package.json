@@ -31,7 +31,7 @@
         "firebase-functions-test": "^0.2.3"
     },
     "engines": {
-        "node": "10"
+        "node": "14"
     },
     "private": true
 }
