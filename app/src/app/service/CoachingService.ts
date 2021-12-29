@@ -1,17 +1,17 @@
 import { AppSettingsService } from './AppSettingsService';
 import { DateService } from './DateService';
 import { ConnectedUserService } from './ConnectedUserService';
-import { AngularFirestore, Query } from '@angular/fire/firestore';
+import { Firestore, query, Query, where } from '@angular/fire/firestore';
 import { Referee } from './../model/user';
 import { RefereeService } from './RefereeService';
 import { ResponseWithData } from './response';
-import { Observable, of, forkJoin } from 'rxjs';
+import { Observable, of, forkJoin, from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { RemotePersistentDataService } from './RemotePersistentDataService';
 import { Coaching } from './../model/coaching';
 import { ToastController } from '@ionic/angular';
-import { AngularFireFunctions } from '@angular/fire/functions';
+import { Functions, httpsCallable } from '@angular/fire/functions';
 import { DataRegion } from '../model/common';
 import { ToolService } from './ToolService';
 
@@ -23,10 +23,10 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
 
     constructor(
       appSettingsService: AppSettingsService,
-      db: AngularFirestore,
+      db: Firestore,
       protected refereeService: RefereeService,
       private connectedUserService: ConnectedUserService,
-      private angularFireFunctions: AngularFireFunctions,
+      private angularFireFunctions: Functions,
       private dateService: DateService,
       toastController: ToastController,
       private toolService: ToolService
@@ -49,10 +49,10 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
     }
 
     getCoachingByReferee(refereeId: string): Observable<ResponseWithData<Coaching[]>> {
-      return forkJoin(
-        this.query(this.getBaseQueryMyCoahchings()
-          .where('refereeIds', 'array-contains', refereeId), 'default'),
-        this.query(this.getBaseQuerySharedCoahchings(), 'default').pipe(
+      return forkJoin([
+        this.query(query(this.getBaseQueryMyCoahchings(),
+          where('refereeIds', 'array-contains', refereeId))),
+        this.query(this.getBaseQuerySharedCoahchings()).pipe(
           map((rcoa) => {
             // query does not support double array contain in where clause
             if (rcoa.data) {
@@ -61,15 +61,14 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
             return rcoa;
           })
         )
-     ).pipe(
-       map((list) => this.mergeObservables(list))
-     );
+      ]).pipe(map((list) => this.mergeObservables(list)));
     }
     getCoachingByRefereeCompetition(refereeId: string, competitionId: string): Observable<ResponseWithData<Coaching[]>> {
-      return forkJoin(
-        this.query(this.getBaseQueryMyCoahchings()
-          .where('refereeIds', 'array-contains', refereeId).where('competitionId', '==', competitionId), 'default'),
-        this.query(this.getBaseQuerySharedCoahchings(), 'default').pipe(
+      return forkJoin([
+        this.query(query(this.getBaseQueryMyCoahchings(),
+          where('refereeIds', 'array-contains', refereeId),
+          where('competitionId', '==', competitionId))),
+        this.query(this.getBaseQuerySharedCoahchings()).pipe(
           map((rcoa) => {
             // query does not support double array contain in where clause
             if (rcoa.data) {
@@ -78,12 +77,12 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
             return rcoa;
           })
         )
-     ).pipe(
-       map((list) => this.mergeObservables(list, true))
-     );
+      ]).pipe(
+        map((list) => this.mergeObservables(list, true))
+      );
     }
     public getCoachingByCompetition(competitionId: string): Observable<ResponseWithData<Coaching[]>> {
-      return this.query( this.getCollectionRef().where('competitionId', '==', competitionId), 'default');
+      return this.query(query(this.getCollectionRef(), where('competitionId', '==', competitionId)));
     }
 
     /**
@@ -91,10 +90,10 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
      * Provide option to define the source of the data: 'default' | 'server' | 'cache'
      */
     public all(options: 'default' | 'server' | 'cache' = 'default'): Observable<ResponseWithData<Coaching[]>> {
-      return forkJoin(
+      return forkJoin([
         this.query(this.getBaseQueryMyCoahchings(), options),
         this.query(this.getBaseQuerySharedCoahchings(), options)
-      ).pipe(
+      ]).pipe(
         map((list) => this.mergeObservables(list))
       );
     }
@@ -102,25 +101,25 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
     public allFromAllUsers(beginDate: Date,  endDate: Date, region: DataRegion): Observable<ResponseWithData<Coaching[]>> {
       let q: Query<Coaching> = this.getCollectionRef();
       if (beginDate) {
-        q = q.where('date', '>=', this.dateService.to00h00(this.adjustDate(beginDate, this.dateService)));
+        q = query(q, where('date', '>=', this.dateService.to00h00(this.adjustDate(beginDate, this.dateService))));
       }
       if (endDate) {
-        q = q.where('date', '<=', this.dateService.to00h00(this.adjustDate(endDate, this.dateService)));
+        q = query(q, where('date', '<=', this.dateService.to00h00(this.adjustDate(endDate, this.dateService))));
       }
       if (this.toolService.isValidString(region)) {
-        q = q.where('region', '==', region);
+        q = query(q, where('region', '==', region));
       }
       return this.query(q, 'server');
     }
 
     /** Query basis for coaching limiting access to the coachings of the user */
     private getBaseQueryMyCoahchings(): Query {
-      return this.getCollectionRef().where('coachId', '==', this.connectedUserService.getCurrentUser().id);
+      return query(this.getCollectionRef(), where('coachId', '==', this.connectedUserService.getCurrentUser().id));
     }
 
     /** Query basis for coaching limiting access to the coachings of the user */
     private getBaseQuerySharedCoahchings(): Query {
-      return this.getCollectionRef().where('sharedWith.users', 'array-contains', this.connectedUserService.getCurrentUser().id);
+      return query(this.getCollectionRef(), where('sharedWith.users', 'array-contains', this.connectedUserService.getCurrentUser().id));
     }
 
     public sortCoachings(coachings: Coaching[], reverse: boolean = false): Coaching[] {
@@ -220,9 +219,9 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
     }
 
     public sendCoachingByEmail(coachingId: string): Observable<any> {
-      return this.angularFireFunctions.httpsCallable('sendCoaching')({
+      return from(httpsCallable(this.angularFireFunctions, 'sendCoaching')({
         coachingId,
         userId: this.connectedUserService.getCurrentUser().id
-      });
+      }));
     }
 }

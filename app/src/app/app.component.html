@@ -5,7 +5,7 @@
                 <ion-title>Menu</ion-title>
             </ion-toolbar>
         </ion-header>
-        <ion-content id="ctt">
+        <ion-content>
             <ion-list>
                 <ion-item *ngIf="this.connectedUserService.isConnected()">
                     <ion-icon name="home" scope="start"></ion-icon>
@@ -38,6 +38,7 @@
             </ion-list>
         </ion-content>
     </ion-menu>
+    <div id="ctt"></div>
     <ion-router-outlet style="max-width: 500px; margin: 0 auto;">
         <div style="text-align: center; margin-top: 50px; font-size: 1.5em; color: red;" *ngIf="!connectedUserService || !connectedUserService.isConnected()">
             <p>Referee Coach Application</p>

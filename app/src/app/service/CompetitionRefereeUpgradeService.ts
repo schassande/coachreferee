@@ -4,7 +4,7 @@ import { ResponseWithData } from './response';
 import { Observable, of, from } from 'rxjs';
 import { CompetitionRefereeUpgrade, UpgradeVote } from './../model/upgrade';
 import { AppSettingsService } from './AppSettingsService';
-import { AngularFirestore, Query } from '@angular/fire/firestore';
+import { Firestore, Query, query, where } from '@angular/fire/firestore';
 import { Injectable } from '@angular/core';
 import { RemotePersistentDataService } from './RemotePersistentDataService';
 import { ToastController } from '@ionic/angular';
@@ -15,7 +15,7 @@ export class CompetitionRefereeUpgradeService extends RemotePersistentDataServic
 
     constructor(
       appSettingsService: AppSettingsService,
-      db: AngularFirestore,
+      db: Firestore,
       toastController: ToastController
     ) {
         super(appSettingsService, db, toastController);
@@ -30,27 +30,24 @@ export class CompetitionRefereeUpgradeService extends RemotePersistentDataServic
     }
 
     getCompetitionRefereeUpgrade(competitionId: string, refereeId: string): Observable<ResponseWithData<CompetitionRefereeUpgrade>> {
-      return this.queryOne(this.getCollectionRef()
-        .where('competitionId', '==', competitionId)
-        .where('refereeId', '==', refereeId), 'default').pipe(
-          mergeMap((rcru: ResponseWithData<CompetitionRefereeUpgrade>) => {
-            return rcru.data ? this.getDocumentObservable(rcru.data.id).get() : of(null);
-          }),
-          map((doc) => this.docSnapNTToResponse(doc))
-        );
+      return this.queryOne(query(this.getCollectionRef(),
+          where('competitionId', '==', competitionId),
+          where('refereeId', '==', refereeId)));
     }
 
     findCompetitionRefereeUpgradeByReferee(refereeId: string, season: string): Observable<ResponseWithData<CompetitionRefereeUpgrade[]>> {
-      return this.query(this.getCollectionRef().where('refereeId', '==', refereeId).where('season', '==', season), 'default');
+      return this.query(query(this.getCollectionRef(), 
+        where('refereeId', '==', refereeId),
+        where('season', '==', season)));
     }
 
     setCoachVote(id: string, vote: UpgradeVote): Observable<any> {
       const newPartialCru: Partial<CompetitionRefereeUpgrade> = {};
       newPartialCru['votes.' + vote.coachId] = vote;
-      return from(this.getDocumentObservable(id).update(newPartialCru));
+      return this.partialUpdate(id, newPartialCru);
     }
 
     setDecision(id: string, vote: Upgradable): Observable<any> {
-      return from(this.getDocumentObservable(id).update({ finalDecision: vote }));
+      return this.partialUpdate(id, { finalDecision: vote });
     }
 }

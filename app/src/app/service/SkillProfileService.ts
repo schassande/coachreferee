@@ -1,6 +1,6 @@
 import { AppSettingsService } from './AppSettingsService';
 import { map } from 'rxjs/operators';
-import { AngularFirestore, Query } from '@angular/fire/firestore';
+import { Firestore } from '@angular/fire/firestore';
 import { Injectable } from '@angular/core';
 import { RemotePersistentDataService } from './RemotePersistentDataService';
 import { SkillProfile, ProfileType } from './../model/skill';
@@ -11,7 +11,7 @@ export class SkillProfileService  extends RemotePersistentDataService<SkillProfi
 
     constructor(
         appSettingsService: AppSettingsService,
-        db: AngularFirestore,
+        db: Firestore,
         toastController: ToastController
     ) {
         super(appSettingsService, db, toastController);

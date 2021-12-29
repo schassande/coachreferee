@@ -2,7 +2,7 @@ import { AppSettingsService } from './AppSettingsService';
 import { DateService } from './DateService';
 import { Competition, CompetitionCategory } from './../model/competition';
 import { ConnectedUserService } from './ConnectedUserService';
-import { AngularFirestore, Query } from '@angular/fire/firestore';
+import { Firestore, query, Query, where } from '@angular/fire/firestore';
 import { Observable, forkJoin, of } from 'rxjs';
 import { ResponseWithData } from './response';
 import { Injectable } from '@angular/core';
@@ -17,7 +17,7 @@ export class CompetitionService extends RemotePersistentDataService<Competition>
 
     constructor(
         appSettingsService: AppSettingsService,
-        db: AngularFirestore,
+        db: Firestore,
         private connectedUserService: ConnectedUserService,
         private dateService: DateService,
         toastController: ToastController,
@@ -60,7 +60,7 @@ export class CompetitionService extends RemotePersistentDataService<Competition>
         let q: Query<Competition> = this.getCollectionRef();
         const region = regionP ? regionP : this.connectedUserService.getCurrentUser().region;
         console.log('searchCompetitions(' + text + ',' + options + ') filter by the region of the user: \'' + region + '\'');
-        q = q.where('region', '==', region);
+        q = query(q, where('region', '==', region));
         let res = this.query(q, options);
         const str = this.toolService.isValidString(text) ? text.trim() : null;
         if (str) {
@@ -107,7 +107,7 @@ export class CompetitionService extends RemotePersistentDataService<Competition>
         if (!name) {
             return of({data: null, error: null});
         }
-        return this.queryOne(this.getCollectionRef().where('name', '==', name), 'default');
+        return this.queryOne(query(this.getCollectionRef(), where('name', '==', name)));
     }
     public getCompetitionCategory(competition: Competition, referee: Referee): CompetitionCategory {
         if (referee.referee.refereeCategory === 'SENIOR' && competition.categorySenior) {

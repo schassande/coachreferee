@@ -1,7 +1,5 @@
-import { Assessment, SkillSetEvaluation } from './../model/assessment';
-import { ModifiableData } from './LocalDatabaseService';
 import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/Storage';
+import { Storage } from '@ionic/storage-angular';
 import { Observable } from 'rxjs';
 
 import { LocalAppSettings } from './../model/settings';

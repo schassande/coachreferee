@@ -18,6 +18,7 @@ import { Assessment, SkillSetEvaluation } from '../../../app/model/assessment';
 
 import { mergeMap, map, catchError } from 'rxjs/operators';
 import { RefereeSelectorService } from 'src/pages/referee/referee-selector-service';
+import { DateService } from 'src/app/service/DateService';
 
 @Component({
   selector: 'app-page-assessment-edit',
@@ -43,6 +44,7 @@ export class AssessmentEditPage implements OnInit {
 
   constructor(
     public modalController: ModalController,
+    public dateService: DateService,
     private changeDetectorRef: ChangeDetectorRef,
     private route: ActivatedRoute,
     private navController: NavController,

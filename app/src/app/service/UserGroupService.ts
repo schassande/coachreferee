@@ -1,7 +1,7 @@
 import { AppSettingsService } from './AppSettingsService';
 import { ToastController } from '@ionic/angular';
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { Firestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { UserGroup } from '../model/user';
 
@@ -13,7 +13,7 @@ export class UserGroupService extends RemotePersistentDataService<UserGroup> {
 
     constructor(
         appSettingsService: AppSettingsService,
-        db: AngularFirestore,
+        db: Firestore,
         toastController: ToastController
     ) {
         super(appSettingsService, db, toastController);

@@ -1,7 +1,6 @@
 import { PhotoEvent } from './../../widget/camera-icon-component';
 import { HelpService } from './../../../app/service/HelpService';
 import { Component, OnInit } from '@angular/core';
-import { AngularFireStorage } from '@angular/fire/storage';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { ModalController, LoadingController } from '@ionic/angular';
 import { map } from 'rxjs/operators';

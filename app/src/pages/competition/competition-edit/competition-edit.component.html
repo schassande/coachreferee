@@ -22,9 +22,14 @@
                 <ion-label position="fixed">name:</ion-label>
                 <ion-input type="text" [(ngModel)]="name" minlength="1" required="true"></ion-input>
             </ion-item>
-            <ion-item>
+            <ion-item button="true" id="open-compdate-input">
                 <ion-label position="fixed">Date:</ion-label>
-                <ion-datetime displayFormat="YYYY-MM-DD" pickerFormat="YYYY-MM-DD" [(ngModel)]="date" style="text-align: center;"></ion-datetime>
+                <ion-input readonly="true">{{ dateService.date2string(competition.date) }}</ion-input>
+                <ion-popover trigger="open-compdate-input" side="bottom" alignment="end" *ngIf="!readonly">
+                    <ng-template>
+                        <ion-datetime #popoverCompDate presentation="date" first-day-of-week="1" (ionChange)="date = popoverCompDate.value"></ion-datetime>
+                    </ng-template>
+                </ion-popover>
             </ion-item>
             <ion-item>
                 <ion-label position="fixed">Nb days:</ion-label>

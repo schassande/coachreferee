@@ -20,6 +20,7 @@ import { Coaching } from '../../../app/model/coaching';
 import { User, Referee } from '../../../app/model/user';
 import { SharedWith } from 'src/app/model/common';
 import { RefereeSelectorService } from 'src/pages/referee/referee-selector-service';
+import { DateService } from 'src/app/service/DateService';
 
 /**
  * Generated class for the CoachingNewPage page.
@@ -55,6 +56,7 @@ export class CoachingEditPage implements OnInit {
     private route: ActivatedRoute,
     private navController: NavController,
     public connectedUserService: ConnectedUserService,
+    public dateService: DateService,
     private helpService: HelpService,
     public userService: UserService,
     public userGroupService: UserGroupService,
@@ -271,6 +273,9 @@ export class CoachingEditPage implements OnInit {
 
   computeTimeSlot(ts: Date): string {
     return this.coachingService.computeTimeSlot(ts);
+  }
+  setTimeSlot(ts: string) {
+    this.coaching.timeSlot = this.computeTimeSlot(new Date(ts))
   }
 
   saveNback() {

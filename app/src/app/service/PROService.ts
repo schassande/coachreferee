@@ -1,7 +1,7 @@
 import { AppSettingsService } from './AppSettingsService';
 import { map } from 'rxjs/operators';
 import { ConnectedUserService } from './ConnectedUserService';
-import { AngularFirestore, Query } from '@angular/fire/firestore';
+import { Firestore, query, Query, where } from '@angular/fire/firestore';
 import { Observable, forkJoin } from 'rxjs';
 import { ResponseWithData } from './response';
 import { Injectable } from '@angular/core';
@@ -14,7 +14,7 @@ export class PROService extends RemotePersistentDataService<PersistentPRO> {
 
     constructor(
         appSettingsService: AppSettingsService,
-        db: AngularFirestore,
+        db: Firestore,
         private connectedUserService: ConnectedUserService,
         toastController: ToastController
     ) {
@@ -41,12 +41,12 @@ export class PROService extends RemotePersistentDataService<PersistentPRO> {
 
     /** Query basis for assessment limiting access to the assessments of the user */
     private getBaseQueryMyAssessments(): Query {
-        return this.getCollectionRef().where('coachId', '==', this.connectedUserService.getCurrentUser().id);
+        return query(this.getCollectionRef(), where('coachId', '==', this.connectedUserService.getCurrentUser().id));
     }
 
     /** Query basis for assessment limiting access to the public assessments */
     private getBaseQueryPublicAssessments(): Query {
-        return this.getCollectionRef().where('sharedPublic', '==', true);
+        return query(this.getCollectionRef(), where('sharedPublic', '==', true));
     }
 
     public searchPros(text: string): Observable<ResponseWithData<PersistentPRO[]>> {

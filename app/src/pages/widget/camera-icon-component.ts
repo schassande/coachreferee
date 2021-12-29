@@ -1,7 +1,7 @@
 import { mergeMap, map, catchError } from 'rxjs/operators';
-import { Observable, from, of } from 'rxjs';
+import { Observable, from } from 'rxjs';
 import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
-import { AngularFireStorage } from '@angular/fire/storage';
+import { getDownloadURL, ref, Storage, StorageReference, uploadString } from '@angular/fire/storage';
 import { ToastController } from '@ionic/angular';
 import { v4 as uuid } from 'uuid';
 
@@ -42,7 +42,7 @@ export class CameraIconComponent  {
     @ViewChild('inputPhoto') inputPhoto: ElementRef;
 
     constructor(
-        private afStorage: AngularFireStorage,
+        private afStorage: Storage,
         private toastController: ToastController) {}
 
     openPhoto() {
@@ -69,16 +69,16 @@ export class CameraIconComponent  {
         this.loading = true;
         // Champ present pour un fichier : name, size, type="image/jpeg"
         const fileName = uuid() + '.jpg';
-        const child =  this.afStorage.ref('').child(this.storageDirectory + '/' + fileName);
+        const r: StorageReference =  ref(this.afStorage, this.storageDirectory + '/' + fileName);
         let obs: Observable<any>;
         if (imageURI.name && imageURI.size) {
-            obs = from(child.put(imageURI, {contentType: 'image/jpeg'}).then().then());
+            obs = from(uploadString(r, imageURI));
         } else {
             obs = this.encodeImageUri(imageURI).pipe(
                 mergeMap( (image64) => {
                     // console.log('uploadImage: image64.length=', image64.length, imageURI);
                         // Perhaps this syntax might change, it's no error here!
-                    return from(child.put(image64, {contentType: 'image/jpeg'}).then().then());
+                    return from(uploadString(r, image64));
                 })
             );
         }
@@ -87,7 +87,7 @@ export class CameraIconComponent  {
                     // console.log('uploadImage: snapshot=' + JSON.stringify(snapshot.metadata, null, 2));
                 const gsUrl = 'gs://' + environment.firebase.storageBucket + '/' + snapshot.metadata.fullPath;
                 // console.log('gsUrl=' + gsUrl);
-                return this.afStorage.storage.refFromURL(gsUrl).getDownloadURL().then((url: string) => {
+                return getDownloadURL(ref(this.afStorage, gsUrl)).then((url: string) => {
                   return { path: snapshot.metadata.fullPath, url, error: null };
                 });
             }),

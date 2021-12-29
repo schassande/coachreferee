@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { LocalAppSettings } from './../model/settings';
-import { Storage } from '@ionic/Storage';
+import { Storage } from '@ionic/storage-angular';
 import { Injectable } from '@angular/core';
 import { LocalSingletonDataService } from './LocalSingletonDataService';
 import { environment } from '../../environments/environment';

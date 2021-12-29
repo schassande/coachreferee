@@ -27,7 +27,7 @@ export class CoachingActivityPage implements OnInit {
 
   constructor(
     private coachingService: CoachingService,
-    private dateService: DateService,
+    public dateService: DateService,
     private userService: UserService
   ) { }
 

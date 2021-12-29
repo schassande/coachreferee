@@ -2,7 +2,7 @@ import { Response } from './response';
 import { PersistentData } from './../model/common';
 import { Observable, from } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/Storage';
+import { Storage } from '@ionic/storage-angular';
 import { map } from 'rxjs/operators';
 
 /**

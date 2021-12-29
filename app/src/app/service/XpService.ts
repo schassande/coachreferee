@@ -1,8 +1,8 @@
 import { AppSettingsService } from './AppSettingsService';
-import { AngularFireFunctions } from '@angular/fire/functions';
+import { Functions, httpsCallable } from '@angular/fire/functions';
 import { ConnectedUserService } from './ConnectedUserService';
-import { AngularFirestore, Query } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Firestore, orderBy, query, Query, where } from '@angular/fire/firestore';
+import { from, Observable } from 'rxjs';
 import { ResponseWithData } from './response';
 import { Injectable } from '@angular/core';
 import { RemotePersistentDataService } from './RemotePersistentDataService';
@@ -15,9 +15,9 @@ export class XpService extends RemotePersistentDataService<Xp> {
 
     constructor(
         appSettingsService: AppSettingsService,
-        db: AngularFirestore,
+        db: Firestore,
         private connectedUserService: ConnectedUserService,
-        private angularFireFunctions: AngularFireFunctions,
+        private angularFireFunctions: Functions,
         toastController: ToastController
     ) {
         super(appSettingsService, db, toastController);
@@ -43,15 +43,15 @@ export class XpService extends RemotePersistentDataService<Xp> {
 
     /** Overide to restrict to the coachings of the user */
     public all(): Observable<ResponseWithData<Xp[]>> {
-        return this.query(this.getBaseQueryMyAssessments().orderBy('year', 'desc'), 'default');
+        return this.query(query(this.getByMeQuery(), orderBy('year', 'desc')));
     }
 
     /** Query basis for coaching limiting access to the coachings of the user */
-    private getBaseQueryMyAssessments(): Query {
-        return this.getBaseQuery(this.connectedUserService.getCurrentUser().id);
+    private getByMeQuery(): Query {
+        return this.getByCoachQuery(this.connectedUserService.getCurrentUser().id);
     }
-    private getBaseQuery(coachId: string): Query {
-        return this.getCollectionRef().where('coachId', '==', coachId);
+    private getByCoachQuery(coachId: string): Query {
+        return query(this.getCollectionRef(), where('coachId', '==', coachId));
     }
 
     public searchXps(text: string): Observable<ResponseWithData<Xp[]>> {
@@ -69,13 +69,13 @@ export class XpService extends RemotePersistentDataService<Xp> {
 
     findXps(coach: User = null): Observable<ResponseWithData<Xp[]>> {
         const coachId = coach === null ? this.connectedUserService.getCurrentUser().id : coach.id;
-        return this.query(this.getBaseQuery(coachId).orderBy('year', 'desc'), 'default');
+        return this.query(query(this.getByCoachQuery(coachId), orderBy('year', 'desc')));
     }
 
-    sendYearlyXp(coachId: string, year: number) {
-        return this.angularFireFunctions.httpsCallable('sendXpReport')({
+    sendYearlyXp(coachId: string, year: number): Observable<any> {
+        return from(httpsCallable(this.angularFireFunctions, 'sendXpReport')({
             coachId,
             year
-          });
+          }));
     }
 }

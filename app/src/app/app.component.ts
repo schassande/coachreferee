@@ -4,7 +4,7 @@ import { LocalAppSettings } from './model/settings';
 import { VersionService } from './service/VersionService';
 import { Bookmark, BookmarkService } from './service/BookmarkService';
 import { HelpService } from './service/HelpService';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { disableNetwork, enableNetwork, Firestore } from '@angular/fire/firestore';
 import { AppSettingsService } from './service/AppSettingsService';
 import { OfflinesService } from './service/OfflineService';
 import { UserService } from './service/UserService';
@@ -31,7 +31,7 @@ export class AppComponent {
     private userService: UserService,
     public connectedUserService: ConnectedUserService,
     private menu: MenuController,
-    private firestore: AngularFirestore
+    private firestore: Firestore
   ) {
     this.initializeApp();
   }
@@ -44,9 +44,9 @@ export class AppComponent {
       this.appSettingsService.get().subscribe((appSetttings) => {
         this.appSetttings = appSetttings;
         if (appSetttings.forceOffline) {
-          this.firestore.firestore.disableNetwork().then(() => console.log('Offline'));
+          disableNetwork(this.firestore).then(() => console.log('Offline'));
         } else {
-          this.firestore.firestore.enableNetwork().then(() => console.log('Online'));
+          enableNetwork(this.firestore).then(() => console.log('Online'));
         }
       });
     });
@@ -66,7 +66,7 @@ export class AppComponent {
   }
 
   public reloadPage() {
-    window.location.reload(true);
+    window.location.reload();
   }
 
   public onToggleForceOffline() {

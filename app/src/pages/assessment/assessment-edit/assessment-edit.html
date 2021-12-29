@@ -31,16 +31,26 @@
                 <ion-grid fixed="true" class="coachEditGrid">
                     <ion-row>
                         <ion-col size="4" align-self="flex-start">
-                            <ion-item>
+                            <ion-item button="true" id="open-assdate-input">
                                 <ion-label position="stacked">Date:</ion-label>
-                                <ion-input *ngIf="readonly" type="text" [(ngModel)]="date" readonly="true" style="text-align: center;"></ion-input>
-                                <ion-datetime *ngIf="!readonly" displayFormat="YYYY-MM-DD" pickerFormat="YYYY-MM-DD" [(ngModel)]="date" style="text-align: center;"></ion-datetime>
+                                <ion-input>{{ dateService.date2string(assessment.date) }}</ion-input>
+                                <ion-popover trigger="open-assdate-input" side="bottom" alignment="end" *ngIf="!readonly">
+                                    <ng-template>
+                                        <ion-datetime #popoverAssDate presentation="date" first-day-of-week="1" (ionChange)="date = popoverAssDate.value"></ion-datetime>
+                                    </ng-template>
+                                </ion-popover>
                             </ion-item>
                         </ion-col>
                         <ion-col size="4" align-self="flex-start">
-                            <ion-label position="stacked">Slot:</ion-label>
-                            <ion-input *ngIf="readonly" type="text" [(ngModel)]="assessment.timeSlot" readonly="true" style="text-align: center;"></ion-input>
-                            <ion-datetime item-content *ngIf="!readonly" displayFormat="HH:mm" minuteValues="0,5,10,15,20,25,30,35,40,45,50,55" [(ngModel)]="assessment.timeSlot" style="text-align: center;"></ion-datetime>
+                            <ion-item button="true" id="open-timeslot-input">
+                                <ion-label position="stacked">Slot:</ion-label>
+                                <ion-input>{{ assessment.timeSlot }}</ion-input>
+                                <ion-popover trigger="open-timeslot-input" side="bottom" alignment="end" *ngIf="!readonly">
+                                    <ng-template>
+                                        <ion-datetime #popoverTimeSlot hour-cycle="h23" minuteValues="0,5,10,15,20,25,30,35,40,45,50,55" presentation="time" (ionChange)="assessment.timeSlot = popoverTimeSlot.value"></ion-datetime>
+                                    </ng-template>
+                                </ion-popover>
+                            </ion-item>
                         </ion-col>
                         <ion-col size="4" align-self="flex-start">
                             <ion-label position="stacked">Field:</ion-label>

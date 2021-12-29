@@ -5,7 +5,7 @@ import { map, mergeMap } from 'rxjs/operators';
 import { ToastController } from '@ionic/angular';
 import { Injectable } from '@angular/core';
 import { Observable, of, forkJoin } from 'rxjs';
-import { AngularFirestore, Query } from '@angular/fire/firestore';
+import { Firestore, query, Query, where } from '@angular/fire/firestore';
 
 import { RefereeService } from './RefereeService';
 import { Competition, RefereeRef } from '../model/competition';
@@ -22,7 +22,7 @@ export class CompetitionRefereeRankingService extends RemotePersistentDataServic
     constructor(
       appSettingsService: AppSettingsService,
       private coachingService: CoachingService,
-      db: AngularFirestore,
+      db: Firestore,
       private refereeService: RefereeService,
       toastController: ToastController,
       private toolService: ToolService
@@ -40,9 +40,9 @@ export class CompetitionRefereeRankingService extends RemotePersistentDataServic
 
     public findCompetitionRefereeRanking(competitionId: string, coachId: string): Observable<ResponseWithData<CompetitionRankingList[]>> {
       console.log('findCompetitionRefereeRanking(', competitionId, coachId);
-      return this.query(this.getCollectionRef()
-        .where('competitionId', '==', competitionId)
-        .where('coachId', '==', coachId), 'default');
+      return this.query(query(this.getCollectionRef(),
+        where('competitionId', '==', competitionId),
+        where('coachId', '==', coachId)));
     }
 
     private splitGroupAll(list: CompetitionRankingList, groupIdx: number) {

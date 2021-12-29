@@ -1,14 +1,14 @@
 import { AppSettingsService } from './AppSettingsService';
-import { AngularFireFunctions } from '@angular/fire/functions';
+import { Functions, httpsCallable } from '@angular/fire/functions';
 import { ConnectedUserService } from './ConnectedUserService';
-import { AngularFirestore, Query } from '@angular/fire/firestore';
+import { Firestore, query, Query, where } from '@angular/fire/firestore';
 import { RefereeService } from './RefereeService';
 import { Referee } from './../model/user';
 import { Response, ResponseWithData } from './response';
 import { Injectable } from '@angular/core';
 import { RemotePersistentDataService } from './RemotePersistentDataService';
 import { Assessment } from './../model/assessment';
-import { Observable, of } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ToastController } from '@ionic/angular';
 
@@ -23,10 +23,10 @@ export class AssessmentService extends RemotePersistentDataService<Assessment> {
 
     constructor(
         appSettingsService: AppSettingsService,
-        db: AngularFirestore,
+        db: Firestore,
         protected refereeService: RefereeService,
         private connectedUserService: ConnectedUserService,
-        private angularFireFunctions: AngularFireFunctions,
+        private angularFireFunctions: Functions,
         toastController: ToastController
     ) {
         super(appSettingsService, db, toastController);
@@ -50,17 +50,17 @@ export class AssessmentService extends RemotePersistentDataService<Assessment> {
     }
 
     getAssessmentByReferee(refereeId: string): Observable<ResponseWithData<Assessment[]>> {
-        return this.query(this.getBaseQueryMyAssessments().where('refereeId', '==', refereeId), 'default');
+        return this.query(query(this.getBaseQueryMyAssessments(), where('refereeId', '==', refereeId)));
     }
 
     /** Overide to restrict to the coachings of the user */
     public all(): Observable<ResponseWithData<Assessment[]>> {
-        return this.query(this.getBaseQueryMyAssessments(), 'default');
+        return this.query(this.getBaseQueryMyAssessments());
     }
 
     /** Query basis for coaching limiting access to the coachings of the user */
     private getBaseQueryMyAssessments(): Query {
-        return this.getCollectionRef().where('coachId', '==', this.connectedUserService.getCurrentUser().id);
+        return query(this.getCollectionRef(), where('coachId', '==', this.connectedUserService.getCurrentUser().id));
     }
     public sortAssessments(assessments: Assessment[], reverse: boolean = false): Assessment[] {
         let array: Assessment[] = assessments.sort(this.compareAssessment.bind(this));
@@ -162,11 +162,13 @@ export class AssessmentService extends RemotePersistentDataService<Assessment> {
     }
 
     public sendAssessmentByEmail(assessmentId: string, skillProfileId: string, refereeId: string): Observable<any> {
-        return this.angularFireFunctions.httpsCallable('sendAssessment')({
+        return from(httpsCallable(this.angularFireFunctions, 'sendAssessment')({
           assessmentId,
           skillProfileId,
           refereeId,
           userId: this.connectedUserService.getCurrentUser().id
-        });
+        })
+        .then(() => { return {}; } )
+        .catch(err => { return { error: err}; }));
       }
 }

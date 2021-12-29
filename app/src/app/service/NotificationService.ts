@@ -1,6 +1,6 @@
 import { AppSettingsService } from './AppSettingsService';
 import { DateService } from './DateService';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { Firestore, orderBy, query, where } from '@angular/fire/firestore';
 import { Injectable } from '@angular/core';
 import { RemotePersistentDataService } from './RemotePersistentDataService';
 import { ToastController } from '@ionic/angular';
@@ -19,7 +19,7 @@ export class NotificationService extends RemotePersistentDataService<Notificatio
     constructor(
       appSettingsService: AppSettingsService,
       private connectedUserService: ConnectedUserService,
-      db: AngularFirestore,
+      db: Firestore,
       private dateService: DateService,
       toastController: ToastController
     ) {
@@ -39,11 +39,10 @@ export class NotificationService extends RemotePersistentDataService<Notificatio
     }
 
     findMyNotitifications(): Observable<ResponseWithData<Notification[]>> {
-      return this.query(this.getCollectionRef()
-        .where('applicationNames', 'array-contains', CurrentApplicationName)
-        .where('targetedUserId', '==', this.connectedUserService.getCurrentUser().id)
-        .orderBy('eventDate', 'asc'),
-        'default');
+      return this.query(query(this.getCollectionRef(),
+        where('applicationNames', 'array-contains', CurrentApplicationName),
+        where('targetedUserId', '==', this.connectedUserService.getCurrentUser().id),
+        orderBy('eventDate', 'asc')));
     }
 
     closeNotification(notification: Notification): Observable<any> {

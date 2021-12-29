@@ -14,13 +14,23 @@
 
 <ion-content>
     <ion-list>
-        <ion-item>
-            <ion-label position="stacked">Begin:</ion-label>
-            <ion-datetime displayFormat="YYYY-MM-DD" pickerFormat="YYYY-MM-DD" [(ngModel)]="beginD" style="text-align: center;" (ionChange)="loadData()"></ion-datetime>
+        <ion-item button="true" id="open-begindate-input">
+            <ion-label>Begin:</ion-label>
+            <ion-text slot="end">{{ dateService.date2string(this.beginDate) }}</ion-text>
+            <ion-popover trigger="open-begindate-input" side="bottom" alignment="end">
+                <ng-template>
+                    <ion-datetime #popoverBeginDate presentation="date" first-day-of-week="1" (ionChange)="beginD = popoverBeginDate.value; loadData()"></ion-datetime>
+                </ng-template>
+            </ion-popover>
         </ion-item>
-        <ion-item>
-            <ion-label position="stacked">End:</ion-label>
-            <ion-datetime displayFormat="YYYY-MM-DD" pickerFormat="YYYY-MM-DD" [(ngModel)]="endD" style="text-align: center;" (ionChange)="loadData()"></ion-datetime>
+        <ion-item button="true" id="open-enddate-input">
+            <ion-label>End:</ion-label>
+            <ion-text slot="end">{{ dateService.date2string(this.endDate) }}</ion-text>
+            <ion-popover trigger="open-enddate-input" side="bottom" alignment="end">
+                <ng-template>
+                    <ion-datetime #popoverEndDate presentation="date" first-day-of-week="1" (ionChange)="endD = popoverEndDate.value; loadData()"></ion-datetime>
+                </ng-template>
+            </ion-popover>
         </ion-item>
         <!-- 
         <ion-item>

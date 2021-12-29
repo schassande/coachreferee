@@ -32,9 +32,14 @@
             <ion-label>Day {{i + 1}}</ion-label>
             <ion-icon slot="end" name="trash" [ngStyle]="{ color: 'red' }" class="group-competency" (click)="delete(i)" style="margin-right: 5px;"></ion-icon>
         </ion-item-divider>
-        <ion-item>
+        <ion-item button="true" id="open-xpdate-input">
             <ion-label position="fixed" style="min-width: 60%;">Date</ion-label>
-            <ion-datetime displayFormat="YYYY-MM-DD" pickerFormat="YYYY-MM-DD" [value]="getCDDate(cd)" (ionChange)="onCDDate(cd, $event)" style="text-align: center;"></ion-datetime>
+            <ion-input>{{ getCDDate(cd) }}</ion-input>
+            <ion-popover trigger="open-xpdate-input" side="bottom" alignment="end">
+                <ng-template>
+                    <ion-datetime #popoverXpDate presentation="date" first-day-of-week="1" (ionChange)="setCDDate(cd, popoverXpDate.value)"></ion-datetime>
+                </ng-template>
+            </ion-popover>
         </ion-item>
         <ion-item>
             <ion-label position="fixed" style="min-width: 60%;">Game duration (min)</ion-label>

@@ -203,7 +203,7 @@ export class SettingsPage implements OnInit {
   }
 
   public reloadPage() {
-    window.location.reload(true);
+    window.location.reload();
   }
 
   private toast(msg: string) {
