@@ -22,8 +22,8 @@ admin.initializeApp(func.config().firebase);
 
 const ctx = { 
     db : admin.firestore(), 
-    gmailEmail : func.config().gmail.email, 
-    gmailPassword : func.config().gmail.password
+    gmailEmail : 'coachreferee@gmail.com', 
+    // gmailPassword : func.config().gmail.password
 };
 // ===================================================================
 // Scheduled functions

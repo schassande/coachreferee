@@ -7,25 +7,25 @@ import { SkillProfile }   from './model/skill';
 
 
 export function func(request:any, response:any, ctx:any):Promise<any> {
+    console.log('send-assessement: request')
     return loadAssessmentData(request, response, ctx)
     .then( (data: AssessmentData) => {
+        console.log('send-assessement: data=' + JSON.stringify(data))
         //Build email
         const subject = assessmentAsEmailSubject(data.assessment);
         const html = assessmentAsEmailBody(data.assessment, data.skillProfile, data.user, data.referee);
         const email = {
-            from: ctx.gmailEmail,
             to: data.user.email,
-            bcc: ctx.gmailEmail,
+            cc: ctx.gmailEmail,
             subject,
             html: `Hi ${data.user.firstName},<br> The assessment sheet is attached to this email.<br>Best regard<br>Coach Referee App`,
             attachments: [{   
                 filename: common.toFileName(subject),
                 contentType: 'text/html',
-                content: html
+                content: mailer.stringToBase64(html)
                 }]
         };
-        mailer.sendMail(email, response);
-        return 'ok';
+        return mailer.sendMail(email, response);
     });
 }
 

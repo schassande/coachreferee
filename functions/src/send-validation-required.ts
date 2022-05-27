@@ -41,7 +41,6 @@ export function func(request:any, response:any, ctx:any):Promise<any> {
             }
         }
         const email = {
-            from: ctx.gmailEmail,
             cc: ccEmails.concat(minCCEmails),
             to: toEmails,
             subject,
@@ -52,7 +51,6 @@ export function func(request:any, response:any, ctx:any):Promise<any> {
                 <br>Coach Referee App</p>`
         };
         //Send email
-        mailer.sendMail(email, response);
-        return 'ok';
+        return mailer.sendMail(email, response);
     });
 }

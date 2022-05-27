@@ -9,7 +9,6 @@ export function func(request:any, response:any, ctx:any):Promise<any> {
         //Build email
         const subject = `[CoachReferee.com] Account validation required: ${user.firstName} ${user.lastName}`;
         const email = {
-            from: ctx.gmailEmail,
             to: ctx.gmailEmail,
             subject,
             html: `Hi Admin, 
@@ -21,7 +20,6 @@ export function func(request:any, response:any, ctx:any):Promise<any> {
                     <br>Coach Referee App`
         };
         //Send email
-        mailer.sendMail(email, response);
-        return 'ok';
+        return mailer.sendMail(email, response);
     })
 }

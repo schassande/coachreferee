@@ -32,14 +32,12 @@ export function func(request:any, response:any, ctx:any):Promise<any> {
         <br>Coach Referee admin</p>`;
 
         const email = {
-            from: ctx.gmailEmail,
             to: user.email,
             cc: ctx.gmailEmail,
             subject,
             html: msg
         };
         //Send email
-        mailer.sendMail(email, response);
-        return 'ok';
+        return mailer.sendMail(email, response);
     });
 }

@@ -138,7 +138,7 @@ function sortMissings(m1: Missing, m2: Missing): number {
     }
     return res;
 }
-async function sendEmail(to: string, cc: string, missings: Missing[], competition: Competition, ctx:any) {
+async function sendEmail(to: string, cc: string, missings: Missing[], competition: Competition, ctx:any): Promise<void> {
     let ccUser = null;
     if (cc && cc !== to) {
         ccUser = await loadUser(cc, ctx);
@@ -165,9 +165,8 @@ async function sendEmail(to: string, cc: string, missings: Missing[], competitio
 <p>Please perfom the missing actions as soon as possible.</p>
 <p>Best regards`;
     const email: any = {
-        from: ctx.gmailEmail,
         to: toUser.email,
-        bcc: ctx.gmailEmail,
+        cc: ctx.gmailEmail,
         subject,
         html,
     };
@@ -175,7 +174,7 @@ async function sendEmail(to: string, cc: string, missings: Missing[], competitio
         email.cc = ccUser.email;
     }
     console.log('Send the email:\n' + JSON.stringify(email, null, 2));
-    mailer.sendMail(email);
+    return mailer.sendMail(email);
 }
 function isRefereeUpgradable(referee: User, competition: Competition): boolean {
     return referee && referee.referee 

@@ -19,7 +19,6 @@ export async function func(request:any, response:any, ctx:any):Promise<any> {
     const subject = `[CoachReferee.com] Referee Upgrade to ${refereeUpgrade.upgradeLevel}`;
     const certificateFile = await generateCertificate(refereeUpgrade, referee);
     const email = {
-        from: ctx.gmailEmail,
         to: referee.email,
         cc: ctx.gmailEmail,
         subject,
@@ -31,11 +30,10 @@ export async function func(request:any, response:any, ctx:any):Promise<any> {
         attachments: [{   
             filename: 'Referee_Certificate_' + refereeUpgrade.upgradeLevel + '_' + referee.firstName + '_' + referee.lastName + '.png',
             contentType: 'text/png',
-            path: certificateFile
+            content: mailer.fileToBase64(certificateFile)
             }]
     };
-    mailer.sendMail(email, response);
-    return 'ok';
+    return mailer.sendMail(email, response);
 }
 
 async function loadRefereeUpgrade(request:any, response:any, ctx:any): Promise<RefereeUpgrade> {

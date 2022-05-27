@@ -12,18 +12,16 @@ export function func(request:any, response:any, ctx:any):Promise<any> {
         const subject = coachingAsEmailSubject(data.coaching);
         const html = coachingAsEmailBody(data);
         const email = {
-            from: ctx.gmailEmail,
             to: data.user.email,
             subject,
             html: `Hi ${data.user.firstName},<br> The coaching sheet is attached to this email.<br>Best regard<br>Coach Referee App`,
             attachments: [{   
                 filename: common.toFileName(subject),
                 contentType: 'text/html',
-                content: html
+                content: mailer.stringToBase64(html)
                 }]
         };
-        mailer.sendMail(email, response);
-        return 'ok';
+        return mailer.sendMail(email, response);
     });
 }
 
