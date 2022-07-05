@@ -272,10 +272,12 @@ export class CoachingEditPage implements OnInit {
   }
 
   computeTimeSlot(ts: Date): string {
+    ts.setMinutes(Math.ceil(ts.getMinutes()/5)*5);
     return this.coachingService.computeTimeSlot(ts);
   }
-  setTimeSlot(ts: string) {
-    this.coaching.timeSlot = this.computeTimeSlot(new Date(ts))
+  setTimeSlot(timeSlot: string) {
+    console.log(timeSlot);
+    this.coaching.timeSlot = timeSlot;
   }
 
   saveNback() {

@@ -6,11 +6,6 @@
 -->
 <ion-header>
     <ion-toolbar>
-        <ion-buttons slot="start">
-            <ion-button (click)="saveNback()">
-                <ion-icon name="arrow-back"></ion-icon>
-            </ion-button>
-        </ion-buttons>
         <ion-title style="text-align: center;">Axis of improvment</ion-title>
         <ion-buttons slot="end">
             <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
@@ -18,8 +13,18 @@
     </ion-toolbar>
 </ion-header>
 <ion-content (swipe)="onSwipe($event)">
+    <ion-row>
+        <ion-col>
+            <ion-button shape="round" color="danger" (click)="back()" style="width: 100%;">
+                <ion-icon name="close"></ion-icon>&nbsp;Cancel</ion-button>
+        </ion-col>
+        <ion-col>
+            <ion-button shape="round" (click)="saveNback()" style="width: 100%;">
+                <ion-icon name="save"></ion-icon>&nbsp;Save</ion-button>
+        </ion-col>
+    </ion-row>
     <ion-list>
-        <ion-searchbar *ngIf="!readonly" [(ngModel)]="searchInput" [showCancelButton]="false" (ionChange)="onSearchBarInput($event)" tabindex="1" autofocus></ion-searchbar>
+        <ion-searchbar *ngIf="!readonly" [(ngModel)]="searchInput" showCancelButton="never" (ionChange)="onSearchBarInput($event)" tabindex="1" autofocus></ion-searchbar>
         <div *ngIf="pros && pros.length === 0" style="text-align: center; font-style: italic">No PRO found.</div>
         <ion-item-group *ngIf="!readonly && showProList" style="margin: 0 10px 25px 50px; border: 1px solid lightgray;">
             <ion-item *ngFor="let pro of pros">

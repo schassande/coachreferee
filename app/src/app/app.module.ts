@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 // Module dependencies
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouteReuseStrategy } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { FormsModule } from '@angular/forms';
@@ -20,6 +21,8 @@ import { Drivers } from '@ionic/storage';
 import { MarkdownModule } from 'ngx-markdown';
 import { NgChartsModule } from 'ng2-charts';
 import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
+
 @Injectable()
 export class CustomHammerConfig extends HammerGestureConfig {}
 
@@ -135,7 +138,9 @@ import { NotificationService } from './service/NotificationService';
         provideMessaging(() => getMessaging()),
         IonicStorageModule.forRoot({ name: '__mydb', driverOrder: [Drivers.IndexedDB, Drivers.LocalStorage] }),
         BrowserModule,
+        BrowserAnimationsModule,
         NgChartsModule,
+        NgxMaterialTimepickerModule,
         FormsModule,
         HttpClientModule,
         MarkdownModule.forRoot({ loader: HttpClient }),

@@ -88,13 +88,15 @@ export class CoachingImprovmentFeedbackEditPage implements OnInit {
       })
     ).subscribe();
   }
-
+  back() {
+    this.navController.navigateRoot(`/coaching/coach/${this.coaching.id}?refereeIdx=${this.refereeIndex}`);
+  }
   saveNback() {
     console.log('Save and Back');
     this.save().subscribe((success) => {
       if (success) {
         console.log('saved');
-        this.navController.navigateRoot(`/coaching/coach/${this.coaching.id}?refereeIdx=${this.refereeIndex}`);
+        this.back();
       }
     });
   }
@@ -152,7 +154,7 @@ export class CoachingImprovmentFeedbackEditPage implements OnInit {
   }
 
   proSelected($event, pro) {
-    this.feedback.skillName = pro.skillName,
+    this.feedback.skillName = pro.skillName;
     this.feedback.problem = pro.problem;
     this.feedback.problemShortDesc = pro.problemShortDesc;
     this.feedback.remedy = pro.remedy;
