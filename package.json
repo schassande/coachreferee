@@ -27,5 +27,8 @@
         "grunt-exec": "^3.0.0",
         "grunt-git-tag": "0.0.5",
         "grunt-markdown": "^0.7.0"
+    },
+    "dependencies": {
+        "firebase-functions": "^3.21.2"
     }
 }
