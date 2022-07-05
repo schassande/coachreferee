@@ -58,8 +58,8 @@ export async function func(ctx:any):Promise<any> {
             }
             // the referee is upgradable
             // tslint:disable-next-line:prefer-for-of
-            for (let d=0; d<competition.days.length; d++) {
-                const day = competition.days[d];
+            for (const element of competition.days) {
+                const day = element;
                 const upgrade: RefereeUpgrade|null = await getRefereeUpgrade(ctx.db, ref.refereeId, day, competition.id);
                 if (upgrade && upgrade.upgradeStatus === 'PUBLISHED') {
                     console.log('At "' + competition.name + '", the referee ' + ref.refereeShortName + ' already has a published upgrade on day' + common.date2string(day) + '.');
@@ -82,14 +82,18 @@ export async function func(ctx:any):Promise<any> {
                     missings.push({  type: panelVote ? 'PANEL_CLOSE' : 'PANEL_VOTE', to: directorId, referee, day });
                     console.log('At "' + competition.name + '", the referee ' + ref.refereeShortName + ' has no panel vote on day' + common.date2string(day) + '.');
                     // tslint:disable-next-line:prefer-for-of
-                    for(let i=0; i<competition.refereeCoaches.length; i++) {
-                        const coach = competition.refereeCoaches[i];
-                        const coachVote: CompetitionDayRefereeCoachVote|null = await getCoachVote(ctx.db, competition.id, day, coach.coachId, ref.refereeId);
-                        if (coachVote) {
-                            console.log('At "' + competition.name + '", the referee ' + ref.refereeShortName + ' already has a coach vote by ' +  coach.coachShortName + ' on day' + common.date2string(day) + '.');
+                    for(const coach of competition.refereeCoaches) {
+                        const canVote = await coachCanVoteAboutReferee(ctx, coach.coachId, referee);
+                        if (!canVote) {
+                            console.log('At "' + competition.name + '" the referee coach ' +  coach.coachShortName + ' cannot vote about the referee ' + ref.refereeShortName + '.');
                         } else {
-                            missings.push({ type: 'COACH_VOTE', to: coach.coachId, referee, coach, day });
-                            console.log('At "' + competition.name + '", the referee ' + ref.refereeShortName + ' has no coach vote by ' +  coach.coachShortName + ' on day' + common.date2string(day) + '.');
+                            const coachVote: CompetitionDayRefereeCoachVote|null = await getCoachVote(ctx.db, competition.id, day, coach.coachId, ref.refereeId);
+                            if (coachVote) {
+                                console.log('At "' + competition.name + '", the referee ' + ref.refereeShortName + ' already has a coach vote by ' +  coach.coachShortName + ' on day' + common.date2string(day) + '.');
+                            } else {
+                                missings.push({ type: 'COACH_VOTE', to: coach.coachId, referee, coach, day });
+                                console.log('At "' + competition.name + '", the referee ' + ref.refereeShortName + ' has no coach vote by ' +  coach.coachShortName + ' on day' + common.date2string(day) + '.');
+                            }
                         }
                     }
                 }
@@ -223,8 +227,31 @@ function adjustFieldOnLoadCompetition(item: Competition): Competition {
 async function loadUser(refereeId:string, ctx:any): Promise<User> {
     return await common.loadFromDb(ctx.db, common.collectionUser, refereeId) as User;
 }
-
-
+async function coachCanVoteAboutReferee(ctx:any, coachId: string, referee: User): Promise<boolean> {
+    const coach = await loadUser(coachId, ctx);
+    return canVoteLevel(referee.referee.nextRefereeLevel, coach.refereeCoach.refereeCoachLevel);
+}
+function canVoteLevel(refereeLevel: string, refereeCoachLevel: string): boolean {
+    if (!refereeLevel || !refereeCoachLevel) {
+        return false;
+    }
+    if (refereeLevel === 'EURO_2') {
+        return refereeCoachLevel === 'EURO_2'
+        ||  refereeCoachLevel === 'EURO_3'
+        ||  refereeCoachLevel === 'EURO_4'
+        ||  refereeCoachLevel === 'EURO_5';
+    } else if (refereeLevel === 'EURO_3') {
+        return refereeCoachLevel === 'EURO_3'
+            ||  refereeCoachLevel === 'EURO_4'
+            ||  refereeCoachLevel === 'EURO_5';
+    } else if (refereeLevel === 'EURO_4') {
+        return refereeCoachLevel === 'EURO_4'
+            ||  refereeCoachLevel === 'EURO_5';
+    } else if (refereeLevel === 'EURO_5') {
+        return refereeCoachLevel === 'EURO_5';
+    }
+    return false;
+}
 async function getCoachVote(db:any, competitionId: string, day: Date, coachId: string, refereeId: string): Promise<CompetitionDayRefereeCoachVote|null> {
     console.log('getCoachVote(' + competitionId + ',' + common.date2string(day) + ',' + coachId + ', ' + refereeId + ')');
     const querySnapshot = await db.collection(common.collectionCompetitionDayRefereeCoachVote)
