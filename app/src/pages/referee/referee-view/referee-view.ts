@@ -100,15 +100,15 @@ export class RefereeViewPage implements OnInit {
     this.bookmarkPage();
     this.coachingService.getCoachingByReferee(this.referee.id).subscribe((response: ResponseWithData<Coaching[]>) => {
       this.errorfindCoachings = response.error;
-      this.coachings = response.data;
+      this.coachings = this.coachingService.sortCoachings(response.data, true);
     });
     this.assessmentService.getAssessmentByReferee(this.referee.id).subscribe((response: ResponseWithData<Assessment[]>) => {
       this.errorfindAssessments = response.error;
-      this.assessments = response.data;
+      this.assessments = this.assessmentService.sortAssessments(response.data, true);
       console.log('Assessments=', this.assessments);
     });
   }
-
+  
   getRefIdx(coaching: Coaching) {
     return coaching.refereeIds.indexOf(this.referee.id);
   }
