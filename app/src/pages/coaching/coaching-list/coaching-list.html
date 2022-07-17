@@ -23,9 +23,14 @@
         <ion-fab-button (click)="newCoaching()" class="plusButton">+</ion-fab-button>
     </ion-fab>
     <div>
-        <ion-searchbar style="width: 80%; display: inline-block;" [(ngModel)]="searchInput" [showCancelButton]="false" (ionChange)="onSearchBarInput()"></ion-searchbar>
+        <ion-searchbar style="width: 60%; display: inline-block;" [(ngModel)]="searchInput" [showCancelButton]="false" (ionChange)="onSearchBarInput()"></ion-searchbar>
+
         <ion-checkbox style="display: inline-block;" [(ngModel)]="today" (ionChange)="onToday()"></ion-checkbox>
-        <ion-label style="display: inline-block;">&nbsp;Today</ion-label>
+        <ion-label style="display: inline-block; margin-left: 5px;">&nbsp;Today</ion-label>
+
+        <ion-checkbox style="display: inline-block; margin-left: 10px;" [(ngModel)]="currentYearOnly" (ionChange)="doRefresh()"></ion-checkbox>
+        <ion-label style="display: inline-block; margin-left: 5px;">This year</ion-label>
+
         <div *ngIf="loading" style="margin: 20px auto; text-align: center;">
             <ion-spinner></ion-spinner>
         </div>
@@ -44,7 +49,6 @@
                 </ion-item-divider>
                 <div *ngIf="coachingList.visible">
                     <ion-item *ngFor="let coaching of coachingList.coachings" [color]="getCoachingColor(coaching)">
-                        <!-- #BEF990 style='--color: #D8FFFF;' -->
                         <ion-label style="border: none;" class="listItemButton" (click)="coachingSelected($event, coaching)">
                             <p>{{getCoachingDate(coaching)}} {{coaching.timeSlot}}: Field {{coaching.field}}, {{coaching.gameCategory}}<br> Referees: {{getRefereeShortNames(coaching)}}</p>
                         </ion-label>

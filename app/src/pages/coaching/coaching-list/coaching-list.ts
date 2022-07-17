@@ -35,6 +35,7 @@ export class CoachingListPage implements OnInit {
   searchInput: string;
   loading = false;
   today = false;
+  currentYearOnly = true;
 
   constructor(
     public alertCtrl: AlertController,
@@ -53,13 +54,13 @@ export class CoachingListPage implements OnInit {
   onToday() {
     this.changeDetectorRef.detectChanges();
   }
-  doRefresh(event) {
+  doRefresh(event = null) {
     this.searchCoaching(false, event);
   }
   private searchCoaching(forceServer: boolean = false, event: any = null) {
     this.loading = true;
-    // console.log('searchCoaching(' + this.searchInput + ')');
-    this.coachingService.searchCoachings(this.searchInput, forceServer ? 'server' : 'default')
+    this.coachingService.searchCoachings(this.searchInput, this.currentYearOnly,
+        forceServer ? 'server' : 'default')
       .subscribe((response: ResponseWithData<Coaching[]>) => {
         this.coachings = this.coachingService.sortCoachings(response.data, true);
         this.coachingLists = this.computeCoachingLists(this.coachings);

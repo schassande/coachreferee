@@ -130,10 +130,13 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
         return array;
     }
 
-    public searchCoachings(text: string, options: 'default' | 'server' | 'cache' = 'default'): Observable<ResponseWithData<Coaching[]>> {
+    public searchCoachings(text: string, currentYearOnly: boolean, 
+          options: 'default' | 'server' | 'cache' = 'default'): Observable<ResponseWithData<Coaching[]>> {
         const str = text !== null && text && text.trim().length > 0 ? text.trim() : null;
+        const q: Observable<ResponseWithData<Coaching[]>> = currentYearOnly 
+            ? this.coachingThisYear(options) : this.all(options);
         return str ?
-            super.filter(this.all(options), (coaching: Coaching) => {
+            super.filter(q, (coaching: Coaching) => {
                 return this.stringContains(str, coaching.competition)
                 || (coaching.referees[0] && this.stringContains(str, coaching.referees[0].refereeShortName))
                 || (coaching.referees[1] && this.stringContains(str, coaching.referees[1].refereeShortName))
@@ -141,7 +144,20 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
                 || this.stringContains(str, coaching.field)
                 || this.stringContains(str, this.getCoachingDateAsString(coaching));
             })
-            : this.all(options);
+            : q;
+    }
+
+    private coachingThisYear(options: 'default' | 'server' | 'cache' = 'default'): Observable<ResponseWithData<Coaching[]>> {
+        const beginDate = this.dateService.to00h00(this.adjustDate(new Date(), this.dateService));
+        beginDate.setMonth(0);
+        beginDate.setDate(1);
+
+        return forkJoin([
+          this.query(query(this.getBaseQueryMyCoahchings(), where('date', '>=', beginDate)), options),
+          this.query(query(this.getBaseQuerySharedCoahchings(), where('date', '>=', beginDate)), options),
+        ]).pipe(
+          map((list) => this.mergeObservables(list))
+        );
     }
 
     public compareCoaching(coaching1: Coaching, coaching2: Coaching): number {
