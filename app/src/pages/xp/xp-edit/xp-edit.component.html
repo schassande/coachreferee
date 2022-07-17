@@ -16,7 +16,7 @@
     <ion-list>
         <ion-item>
             <ion-label>Event name:</ion-label>
-            <ion-input type="text" [(ngModel)]="xp.eventName"></ion-input>
+            <a (click)="onClickCompetition()">{{xp.eventName ? xp.eventName : 'Click here'}}</a>
         </ion-item>
         <ion-item>
             <ion-label>Event class:</ion-label>
@@ -32,10 +32,10 @@
             <ion-label>Day {{i + 1}}</ion-label>
             <ion-icon slot="end" name="trash" [ngStyle]="{ color: 'red' }" class="group-competency" (click)="delete(i)" style="margin-right: 5px;"></ion-icon>
         </ion-item-divider>
-        <ion-item button="true" id="open-xpdate-input">
+        <ion-item button="true" id="open-xpdate-input{{i}}">
             <ion-label position="fixed" style="min-width: 60%;">Date</ion-label>
             <ion-input>{{ getCDDate(cd) }}</ion-input>
-            <ion-popover trigger="open-xpdate-input" side="bottom" alignment="end">
+            <ion-popover trigger="open-xpdate-input{{i}}" side="bottom" alignment="end">
                 <ng-template>
                     <ion-datetime #popoverXpDate presentation="date" first-day-of-week="1" (ionChange)="setCDDate(cd, popoverXpDate.value)"></ion-datetime>
                 </ng-template>

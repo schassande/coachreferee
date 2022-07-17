@@ -2,7 +2,7 @@ import { UserService } from './../../../app/service/UserService';
 import { User } from './../../../app/model/user';
 import { HelpService } from './../../../app/service/HelpService';
 import { DateService } from '../../../app/service/DateService';
-import { NavController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { ConnectedUserService } from '../../../app/service/ConnectedUserService';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { XpService } from '../../../app/service/XpService';
@@ -10,7 +10,8 @@ import { Xp, CoachingDay } from '../../../app/model/xphistory';
 import { Component, OnInit } from '@angular/core';
 import { mergeMap, map } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { Coaching } from 'src/app/model/coaching';
+import { CompetitionSelectorComponent } from 'src/pages/widget/competition-selector';
+import { CoachingList, CoachingService } from 'src/app/service/CoachingService';
 
 const DATE_SEP = '-';
 
@@ -28,8 +29,10 @@ export class XpEditComponent implements OnInit {
 
   constructor(
     private connectedUserService: ConnectedUserService,
+    private coachingService: CoachingService,
     private dateService: DateService,
     private helpService: HelpService,
+    public modalController: ModalController,
     private navController: NavController,
     private route: ActivatedRoute,
     private userService: UserService,
@@ -73,7 +76,7 @@ export class XpEditComponent implements OnInit {
       eventName: this.connectedUserService.getCurrentUser().defaultCompetition,
       eventClass: 'B',
       year: new Date().getFullYear(),
-      days: [this.buildNewDay()]
+      days: []
     };
   }
 
@@ -106,28 +109,72 @@ export class XpEditComponent implements OnInit {
   }
 
   newDay() {
-    this.xp.days.push(this.buildNewDay());
+    const coachingDay: CoachingDay = this.xp.days.length > 0 
+      ? this.xp.days[this.xp.days.length-1]
+      : null;
+    this.xp.days.push(this.buildNewDay(coachingDay));
   }
 
-  buildNewDay(): CoachingDay {
-    return {
-      coachingDate: new Date(),
-      gameDuration: 40,
-      nbGames: 8,
-      coachingDuration: 320,
-      refereeAllocation: 'No'
-    };
+  buildNewDay(previousCoachingDay: CoachingDay = null): CoachingDay {
+    if (previousCoachingDay) {
+      return {
+        coachingDate: this.dateService.to00h00(this.dateService.nextDay(previousCoachingDay.coachingDate)),
+        gameDuration: previousCoachingDay.gameDuration,
+        nbGames: previousCoachingDay.nbGames,
+        coachingDuration: previousCoachingDay.coachingDuration,
+        refereeAllocation: previousCoachingDay.refereeAllocation
+      };
+    } else {
+      return {
+        coachingDate: this.dateService.to00h00(new Date()),
+        gameDuration: 40,
+        nbGames: 8,
+        coachingDuration: 320,
+        refereeAllocation: 'No'
+      };
+    }
+  }
+
+  async onClickCompetition() {
+    const modal = await this.modalController.create({
+      component: CompetitionSelectorComponent,
+      componentProps: { name: this.xp.eventName}
+    });
+    modal.onDidDismiss().then( (result) => {
+      this.xp.eventName = result.data.name;
+      this.autoCompute(result.data.id);
+    });
+    modal.present();
   }
 
   onGameDataChange(cd: CoachingDay) {
     cd.coachingDuration = cd.nbGames * cd.gameDuration;
   }
 
-  autoCompute() {
-    // TODO
+  autoCompute(competitionId: string) {
+    if (!competitionId || this.xp.days.length > 0) {
+      return;
+    }
+    this.coachingService.getCoachingByCompetition(competitionId).subscribe((rcoachings) => {
+      if (rcoachings.data) {
+        const myCoachings = this.coachingService.sortCoachings(
+          rcoachings.data.filter(coaching => coaching.coachId === this.connectedUserService.getCurrentUser().id));
+        const coachingLists: CoachingList[] = this.coachingService.computeCoachingLists(myCoachings);
+        this.xp.days = coachingLists.map(cl => {
+          console.log('Create a xp day for ' + cl.day);
+          return {
+            coachingDate: this.dateService.to00h00(cl.coachings[0].date),
+            gameDuration: 40,
+            nbGames: cl.coachings.length,
+            coachingDuration: cl.coachings.length * 40,
+            refereeAllocation: 'No'
+          } as CoachingDay;
+        });
+      }
+    });
   }
+
   onSwipe(event) {
-    // console.log('onSwipe', event);
     if (event.direction === 4) {
       this.saveNback();
     }

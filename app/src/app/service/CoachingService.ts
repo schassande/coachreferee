@@ -240,4 +240,36 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
         userId: this.connectedUserService.getCurrentUser().id
       }));
     }
+    
+    public computeCoachingLists(coachings: Coaching[]): CoachingList[] {
+      const lists: CoachingList[] = [];
+      let currentIndex = -1;
+      coachings.forEach((c: Coaching) => {
+        const cd: string = this.getCoachingDateAsString(c);
+        if (currentIndex >= 0
+            && lists[currentIndex].day === cd
+            && lists[currentIndex].competitionName === c.competition) {
+          lists[currentIndex].coachings.push(c);
+        } else {
+          currentIndex ++;
+          const today = this.dateService.isToday(c.date);
+          lists.push({
+            day: cd,
+            today,
+            competitionName: c.competition,
+            coachings : [c],
+            visible: today
+          });
+        }
+      });
+      return lists;
+    }
+  
+}
+export interface CoachingList {
+  day: string;
+  today: boolean;
+  competitionName: string;
+  coachings: Coaching[];
+  visible: boolean;
 }

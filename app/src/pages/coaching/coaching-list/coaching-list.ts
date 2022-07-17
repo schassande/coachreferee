@@ -5,16 +5,7 @@ import { AlertController, NavController } from '@ionic/angular';
 
 import { ResponseWithData } from '../../../app/service/response';
 import { Coaching } from '../../../app/model/coaching';
-import { CoachingService } from '../../../app/service/CoachingService';
-
-
-export interface CoachingList {
-  day: string;
-  today: boolean;
-  competitionName: string;
-  coachings: Coaching[];
-  visible: boolean;
-}
+import { CoachingList, CoachingService } from '../../../app/service/CoachingService';
 
 /**
  * Generated class for the CoachingListPage page.
@@ -63,7 +54,7 @@ export class CoachingListPage implements OnInit {
         forceServer ? 'server' : 'default')
       .subscribe((response: ResponseWithData<Coaching[]>) => {
         this.coachings = this.coachingService.sortCoachings(response.data, true);
-        this.coachingLists = this.computeCoachingLists(this.coachings);
+        this.coachingLists = this.coachingService.computeCoachingLists(this.coachings);
         this.loading = false;
         if (event) {
           event.target.complete();
@@ -75,7 +66,7 @@ export class CoachingListPage implements OnInit {
       });
   }
 
-  public coachingSelected(event: any, coaching: Coaching): void {
+  public coachingSelected(event, coaching: Coaching): void {
     this.navController.navigateRoot(`/coaching/edit/${coaching.id}`);
   }
 
@@ -112,31 +103,7 @@ export class CoachingListPage implements OnInit {
     }).then( (alert) => alert.present() );
   }
 
-  computeCoachingLists(coachings: Coaching[]): CoachingList[] {
-    const lists: CoachingList[] = [];
-    let currentIndex = -1;
-    coachings.forEach((c: Coaching) => {
-      const cd: string = this.coachingService.getCoachingDateAsString(c);
-      if (currentIndex >= 0
-          && lists[currentIndex].day === cd
-          && lists[currentIndex].competitionName === c.competition) {
-        lists[currentIndex].coachings.push(c);
-      } else {
-        currentIndex ++;
-        const today = this.dateService.isToday(c.date);
-        lists.push({
-          day: cd,
-          today,
-          competitionName: c.competition,
-          coachings : [c],
-          visible: today
-        });
-      }
-    });
-    return lists;
-  }
   onSwipe(event) {
-    // console.log('onSwipe', event);
     if (event.direction === 4) {
       this.navController.navigateRoot(`/home`);
     }
