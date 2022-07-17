@@ -15,14 +15,14 @@
 <ion-content (swipe)="onSwipe($event)">
     <ion-item *ngIf="isAdmin">
         <ion-label>Coach</ion-label>
-        <ion-select [(ngModel)]="selectedCoachId" (ionChange)="onCoachChange()">
-            <ion-select-option *ngFor="let coach of coaches" [value]="coach.id">{{coach.shortName}}</ion-select-option>
+        <ion-select [(ngModel)]="selectedCoachId" (ionChange)="onCoachChange()" interface="action-sheet">
+            <ion-select-option *ngFor="let coach of coaches" [value]="coach.id">{{coach.shortName}} - {{coach.firstName}}</ion-select-option>
         </ion-select>
     </ion-item>
     <div *ngIf="years && years.length > 0">
         <ion-item *ngIf="years.length > 1">
             <ion-label>Year</ion-label>
-            <ion-select [(ngModel)]="selectedYear" (ionChange)="onYearChange()">
+            <ion-select [(ngModel)]="selectedYear" (ionChange)="onYearChange()" interface="action-sheet">
                 <ion-select-option *ngFor="let year of years" [value]="year">{{year}}</ion-select-option>
             </ion-select>
         </ion-item>
@@ -30,11 +30,11 @@
             <ion-label>XP :</ion-label>
         </div>
         <ion-grid>
-            <ion-row class="ion-justify-content-center" style="padding: 5px 0; border: 1px grey solid;">
+            <ion-row class="ion-justify-content-center" style="padding: 5px 0; border: 1px grey solid; text-align: center;">
                 <ion-col align-self-center size="5">Event Name</ion-col>
-                <ion-col align-self-center size="2" style="text-align: center;">Class</ion-col>
-                <ion-col align-self-center size="2" style="text-align: center;">Days</ion-col>
-                <ion-col align-self-center size="3" style="text-align: center;">Time</ion-col>
+                <ion-col align-self-center size="2">Class</ion-col>
+                <ion-col align-self-center size="2">Days</ion-col>
+                <ion-col align-self-center size="3">Duration</ion-col>
             </ion-row>
             <ion-row *ngFor="let xp of xps" class="ion-justify-content-center" (click)="xpSelected(xp)" style="padding: 5px 0; border: 1px grey solid;">
                 <ion-col align-self-center size="5">{{xp.eventName}}</ion-col>

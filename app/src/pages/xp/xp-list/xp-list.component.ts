@@ -6,7 +6,7 @@ import { Xp, CoachingDay } from '../../../app/model/xphistory';
 import { map, mergeMap, catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { ConnectedUserService } from '../../../app/service/ConnectedUserService';
-import { User } from '../../../app/model/user';
+import { CurrentApplicationName, User } from '../../../app/model/user';
 import { Component, OnInit } from '@angular/core';
 
 import { XpService } from '../../../app/service/XpService';
@@ -69,7 +69,6 @@ export class XpListComponent implements OnInit {
 
   /** The user selects a new year */
   public onYearChange() {
-    console.log('onYearChange(): ' + this.selectedYear);
     if (this.years && this.years.length) {
       if (typeof this.selectedYear === 'string') {
         this.selectedYear = Number.parseInt(this.selectedYear, 10);
@@ -138,7 +137,8 @@ export class XpListComponent implements OnInit {
       return this.userService.all().pipe(
         map((ruser) => {
           if (ruser.data) {
-            this.coaches = ruser.data;
+            this.coaches = ruser.data.filter(coach => 
+              coach.applications.filter(a => a.name === CurrentApplicationName && a.role === 'REFEREE_COACH').length > 0);
           } else {
             this.coaches = [this.selectedCoach];
           }
@@ -156,8 +156,8 @@ export class XpListComponent implements OnInit {
         const y2x = new Map<number, Xp[]>();
         this.years = [];
         if (rxps.data) {
+          rxps.data.sort((xp1, xp2) => this.dateService.compareDate(xp2.days[0].coachingDate, xp1.days[0].coachingDate));
           rxps.data.forEach(xp => {
-            console.log('xp.year' + xp.year);
             let xps: Xp[] = y2x.get(xp.year);
             if (!xps) {
               xps = [];
@@ -184,7 +184,6 @@ export class XpListComponent implements OnInit {
     this.onYearChange();
   }
   onSwipe(event) {
-    // console.log('onSwipe', event);
     if (event.direction === 4) {
       this.navController.navigateRoot(`/home`);
     }
