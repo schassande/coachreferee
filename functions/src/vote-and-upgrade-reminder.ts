@@ -42,10 +42,14 @@ export async function func(ctx:any):Promise<any> {
         }
     }));
 
-    // real begin
-    const competitions = await findNotCompletedCompetition(ctx.db);
+    // real begin, search competition not marked as completed
+    let competitions = await findNotCompletedCompetition(ctx.db);
+
+    // Ignore future competition
+    competitions = competitions.filter(c => c.date.getTime() < new Date().getTime());
+
     console.log(competitions.length + ' competitions to analyse.');
-    await Promise.all(competitions.map(async competition => {
+    await Promise.all(competitions.map(async (competition) => {
         console.log('Analyse the competitions "' + competition.name + `" (${competition.category}/${competition.categorySenior}/${competition.region}).`);
         const missings: Missing[] = [];
         let promises: Promise<void>[] = [];
@@ -149,9 +153,10 @@ async function sendEmail(to: string, cc: string, missings: Missing[], competitio
     }
     const toUser: User = await loadUser(to, ctx);
     const subject = `Referee Upgrade(${competition.name}): reminder of missing actions (${common.date2string(new Date())})`;
+    missings.sort(sortMissings);
     const html = `Hi ${toUser.firstName},<br> 
 <p>In the referee upgrade web application, you need to perform actions for the competition ${competition.name} (${competition.category}/${competition.categorySenior}/${competition.region}). The following action are required:</p><ul>`
-+ missings.sort(sortMissings).map(m => {
++ missings.map(m => {
     switch(m.type) {
     case 'COACH_VOTE':
         return `<li>Coach vote by ${m.coach?.coachShortName} is missing for the referee ${m.referee.firstName} ${m.referee.lastName} on day ${common.date2string(m.day)}.</li>`
@@ -195,19 +200,16 @@ async function findNotCompletedCompetition(db:any): Promise<Competition[]> {
         .where('region', '==', 'Europe')
         .where('completed', '==', false)
         .get();
-    const docs: Competition[] = [];
-    querySnapshot.forEach((doc:any) => {
-        let item: Competition = doc.data() as Competition;
-        item = adjustFieldOnLoadCompetition(item);
-        docs.push(item);
-    });
-    return docs;
+    return querySnapshotToArray(querySnapshot);
 }
 async function findAllCompetitions(db:any): Promise<Competition[]> {
     console.log('findAllCompetitions()');
     const querySnapshot = await db.collection(common.collectionCompetition)
         .where('region', '==', 'Europe')
         .get();
+    return querySnapshotToArray(querySnapshot);
+}
+function querySnapshotToArray(querySnapshot: any): Competition[] {
     const docs: Competition[] = [];
     querySnapshot.forEach((doc:any) => {
         let item: Competition = doc.data() as Competition;
