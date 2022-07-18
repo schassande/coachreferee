@@ -161,8 +161,11 @@ async function findPanelVotes(ctx:any, referee: User, beginDate: Date, endDate: 
     if (!panelVotes || panelVotes.length === 0) {
         throw new Error('No panel vote for the referee ' + referee.id);
     }
-    console.log('findPanelVotes(' + referee.id + ',' + common.date2string(beginDate) + ',' + common.date2string(endDate) + '):' + JSON.stringify(panelVotes));
-    return panelVotes;
+    // ignore abstein days
+    const filteredPanelVotes: CompetitionDayPanelVote[] = panelVotes.filter(pv => pv.vote !== 'Abstein');
+    
+    console.log('findPanelVotes(' + referee.id + ',' + common.date2string(beginDate) + ',' + common.date2string(endDate) + '):' + JSON.stringify(filteredPanelVotes));
+    return filteredPanelVotes;
 }
 
 async function loadPanelVotesByRefereeFromDB(db:any, refereeId: string, beginDate: Date, endDate: Date, upgradeLevel: RefereeLevel): Promise<CompetitionDayPanelVote[]> {
