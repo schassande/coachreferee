@@ -118,17 +118,17 @@
             <ion-item-divider color="light" style="text-align: center; font-size: 1.2em; padding: 10px;">
                 <ion-label>Coached referees</ion-label>
             </ion-item-divider>
-            <ion-item>
+            <ion-item (click)="searchReferee(0)">
                 <ion-label>1: {{getReferee(0)}}</ion-label>
-                <ion-icon *ngIf="!readonly" slot="end" name="search" (click)="searchReferee(0)"></ion-icon>
+                <ion-icon *ngIf="!readonly" slot="end" name="search"></ion-icon>
             </ion-item>
-            <ion-item>
+            <ion-item (click)="searchReferee(1)">
                 <ion-label>2: {{getReferee(1)}}</ion-label>
-                <ion-icon *ngIf="!readonly" slot="end" name="search" (click)="searchReferee(1)"></ion-icon>
+                <ion-icon *ngIf="!readonly" slot="end" name="search"></ion-icon>
             </ion-item>
-            <ion-item>
+            <ion-item (click)="searchReferee(2)">
                 <ion-label>3: {{getReferee(2)}}</ion-label>
-                <ion-icon *ngIf="!readonly" slot="end" name="search" (click)="searchReferee(2)"></ion-icon>
+                <ion-icon *ngIf="!readonly" slot="end" name="search"></ion-icon>
             </ion-item>
         </ion-item-group>
         <ion-item>
