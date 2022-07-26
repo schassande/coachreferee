@@ -10,7 +10,6 @@ import { AssessmentListPage } from 'src/pages/assessment/assessment-list/assessm
 import { AssessmentEditPage } from 'src/pages/assessment/assessment-edit/assessment-edit';
 import { AssessRefereePage } from 'src/pages/assessment/assess-referee/assess-referee';
 import { CoachingListPage } from 'src/pages/coaching/coaching-list/coaching-list';
-import { CoachingEditPage } from 'src/pages/coaching/coaching-edit/coaching-edit';
 import { CoachingGamePage } from 'src/pages/coaching/coaching-game/coaching-game';
 import { CoachingPositiveFeedbackEditPage } from 'src/pages/coaching/coaching-positive-feedback-edit/coaching-positive-feedback-edit';
 import { CoachingImprovmentFeedbackEditPage } from '../pages/coaching/coaching-improvment-feedback-edit/coaching-improvment-feedback-edit';
@@ -52,8 +51,8 @@ const routes: Routes = [
   { path: 'assessment/assess/:id', component: AssessRefereePage, canActivate: [AuthGuard] },
 
   { path: 'coaching/list', component: CoachingListPage, canActivate: [AuthGuard] },
-  { path: 'coaching/create', component: CoachingEditPage, canActivate: [AuthGuard] },
-  { path: 'coaching/edit/:id', component: CoachingEditPage, canActivate: [AuthGuard] },
+  { path: 'coaching/create', component: CoachingGamePage, canActivate: [AuthGuard] },
+  { path: 'coaching/edit/:id', component: CoachingGamePage, canActivate: [AuthGuard] },
   { path: 'coaching/coach/:id', component: CoachingGamePage, canActivate: [AuthGuard] },
   { path: 'coaching/coach/:id/referee/:refereeIdx/negativeFeedback/:feedbackIdx',
         component: CoachingImprovmentFeedbackEditPage, canActivate: [AuthGuard] },

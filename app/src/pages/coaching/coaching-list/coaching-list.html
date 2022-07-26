@@ -42,10 +42,11 @@
         <div *ngFor="let coachingList of coachingLists">
             <ion-item-group *ngIf="!today || coachingList.today">
                 <ion-item-divider color="light">
-                    <ion-icon name="{{ coachingList.visible ? 'remove' : 'add'}}" (click)="toggleCoachingListVisibility(coachingList)"></ion-icon> &nbsp;
-                    <span>{{coachingList.competitionName}} - {{coachingList.day}}</span>
+                    <span (click)="toggleCoachingListVisibility(coachingList)" style="width: 100%;">
+                        <ion-icon name="{{ coachingList.visible ? 'remove' : 'add'}}"></ion-icon> &nbsp;
+                        <span>{{coachingList.competitionName}} - {{coachingList.day}}</span>
+                    </span>
                     <ion-icon name="lock-closed-outline" slot="end" (click)="lockCoachings(coachingList)" style="margin-right: 15px;"></ion-icon>
-
                 </ion-item-divider>
                 <div *ngIf="coachingList.visible">
                     <ion-item *ngFor="let coaching of coachingList.coachings" [color]="getCoachingColor(coaching)">

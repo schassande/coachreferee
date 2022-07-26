@@ -37,7 +37,6 @@ import { AssessRefereePage } from '../pages/assessment/assess-referee/assess-ref
 import { AssessmentEditPage } from '../pages/assessment/assessment-edit/assessment-edit';
 import { AssessmentListPage } from '../pages/assessment/assessment-list/assessment-list';
 import { CoachingActivityPage } from './../pages/admin/coaching-activity/coaching-activity.page';
-import { CoachingEditPage } from '../pages/coaching/coaching-edit/coaching-edit';
 import { CoachingGamePage } from '../pages/coaching/coaching-game/coaching-game';
 import { CoachingImprovmentFeedbackEditPage } from '../pages/coaching/coaching-improvment-feedback-edit/coaching-improvment-feedback-edit';
 import { CoachingListPage } from '../pages/coaching/coaching-list/coaching-list';
@@ -114,7 +113,7 @@ import { NotificationService } from './service/NotificationService';
     declarations: [AppComponent,
         AdminHomeComponent, UserManagerComponent, RefereeImportComponent, CoachingActivityPage,
         AssessRefereePage, AssessmentEditPage, AssessmentListPage,
-        CoachingEditPage, CoachingGamePage, CoachingImprovmentFeedbackEditPage, CoachingListPage, CoachingPositiveFeedbackEditPage,
+        CoachingGamePage, CoachingImprovmentFeedbackEditPage, CoachingListPage, CoachingPositiveFeedbackEditPage,
         CompetitionImportComponent, CompetitionListPage, CompetitionEditComponent,
         CompetitionCoachesPage, CompetitionHomePage, CompetitionRankingPage, CompetitionUpgradesPage, CompetitionRefereesPage,
         CompetitionRankingPage, CompetitionRankingBestOf2Page, CompetitionGamesPage, CompetitionRankingListComponent,

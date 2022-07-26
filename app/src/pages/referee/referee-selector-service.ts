@@ -16,7 +16,6 @@ export class RefereeSelectorService {
 
     public searchReferee(region: DataRegion, competitionId: string): Observable<User> {
         const subject: Subject<User> = new Subject();
-        // console.log('searchReferee(competitionId=' + competitionId);
         this.modalController.create({
             component: UserSelectorComponent,
             componentProps: {
@@ -27,7 +26,7 @@ export class RefereeSelectorService {
             }
         }).then(modal => {
             modal.onDidDismiss().then( (data: any) => {
-                if (data.data.create) {
+                if (data.data &&data.data.create) {
                     this.modalController.create({component: RefereeEditPage}).then(m => m.present().then(() => {
                         m.onDidDismiss().then((d: any) => {
                             if (d && d.data && d.data.referee) {

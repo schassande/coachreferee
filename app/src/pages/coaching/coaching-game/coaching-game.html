@@ -16,7 +16,10 @@
             <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
         </ion-buttons>
     </ion-toolbar>
-    <ion-segment #segment id="refereeSegment" *ngIf="coaching" [(ngModel)]="currentRefereeIdx" (ionChange)="refereeSelected(currentRefereeIdx)">
+    <ion-segment #segment id="refereeSegment" *ngIf="coaching && coaching.referees.length > 0" [ngModel]="currentRefereeIdx" (ionChange)="refereeSelected()">
+        <ion-segment-button value="3" style="--background-checked: gold;">
+            <ion-icon name="settings-outline"></ion-icon>
+        </ion-segment-button>
         <ion-segment-button value="{{i}}" *ngFor="let referee of coaching.referees; index as i" class="refTab" style="--background-checked: gold;">
             <p>{{referee.refereeShortName}}<sup><span [ngClass]="{'badge-warning': referee.positiveFeedbacks.length==0}">{{referee.positiveFeedbacks.length}}</span>-<span [ngClass]="{'badge-warning': referee.feedbacks.length==0}">{{referee.feedbacks.length}}</span></sup></p>
         </ion-segment-button>
@@ -25,82 +28,240 @@
 
 
 <ion-content *ngIf="coaching" (swipe)="onSwipe($event)">
-    <div *ngIf="currentReferee" style="text-align: center;margin: 10px 0; font-size: 1.2em;">{{currentReferee.firstName}} {{currentReferee.lastName}}, {{currentReferee.referee.refereeLevel}}/{{currentReferee.referee.refereeCategory}}</div>
-    <ion-list *ngIf="currentReferee">
-        <ion-item-group>
-            <ion-item-divider color="light">Positive points ({{coaching.referees[currentRefereeIdx].positiveFeedbacks.length}})</ion-item-divider>
-            <ion-item *ngFor="let positiveFeedback of coaching.referees[currentRefereeIdx].positiveFeedbacks; let idx = index" [ngClass]="{'period1' : positiveFeedback.period == 1, 'period2' : positiveFeedback.period == 2}">
-                <ion-icon name="alert" (click)="deliverPositiveFeedback(positiveFeedback, idx)" class="star" [ngClass]="{'yellowStar' : positiveFeedback.deliver}"></ion-icon>
-                <p (click)="selectPositiveFeedback(positiveFeedback, idx)" class="feedbackTxt">{{positiveFeedback.skillName}}</p>
-                <ion-badge slot="end" (click)="switchPeriod(positiveFeedback)" color="{{positiveFeedback.period === 1 ? 'light' : 'primary'}}">{{positiveFeedback.period}}</ion-badge>
-                <ion-icon slot="end" *ngIf="!readonly" name="trash" (click)="deletePositiveFeedback(idx)"></ion-icon>
-            </ion-item>
-            <div *ngIf="coaching.referees[currentRefereeIdx].positiveFeedbacks.length == 0 && !readonly" style="padding: 5px;">No positive feedback, please click on green + to add one.</div>
-        </ion-item-group>
-        <ion-item-group>
-            <ion-item-divider color="light">Axis of improvment ({{coaching.referees[currentRefereeIdx].feedbacks.length}})</ion-item-divider>
-            <ion-item *ngFor="let feedback of coaching.referees[currentRefereeIdx].feedbacks; let idx = index" [ngClass]="{'period1' : feedback.period == 1, 'period2' : feedback.period == 2}">
-                <ion-icon name="alert" (click)="deliverFeedback(feedback, idx)" class="star" [ngClass]="{'yellowStar' : feedback.deliver}"></ion-icon>
-                <p (click)="selectFeedback(feedback, idx)" class="feedbackTxt">{{feedback.problemShortDesc}}</p>
-                <ion-icon slot="end" name="trending-up" *ngIf="feedback.appliedLater"></ion-icon>
-                <ion-badge slot="end" (click)="switchPeriod(feedback)" color="{{feedback.period === 1 ? 'light' : 'primary'}}">{{feedback.period}}</ion-badge>
-                <ion-icon slot="end" *ngIf="!readonly" name="trash" (click)="deleteFeedback(idx)"></ion-icon>
-            </ion-item>
-            <div *ngIf="coaching.referees[currentRefereeIdx].feedbacks.length == 0 && !readonly" style="padding: 5px;">No feedback, please click on red + to add one.</div>
-        </ion-item-group>
-        <ion-item-group>
-            <ion-item-divider color="light">Misc</ion-item-divider>
+    <div *ngIf="currentRefereeIdx === 3">
+        <ion-list>
+            <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;">
+                <ion-item-divider color="light" style="text-align: center; font-size: 1.2em; padding: 10px;">
+                    <ion-label>Game information</ion-label>
+                </ion-item-divider>
+                <ion-item>
+                    <ion-label position="fixed">Competition:</ion-label>
+                    <span *ngIf="!readonly"><a (click)="onClickCompetition()">{{coaching.competition ? coaching.competition : 'Click here'}}</a></span>
+                    <span *ngIf="readonly">{{coaching.competition}}</span>
+                </ion-item>
+                <ion-item>
+                    <ion-grid fixed="true" class="coachEditGrid">
+                        <ion-row>
+                            <ion-col size="4" align-self="flex-start">
+                                <ion-item button="true" id="open-coachdate-input">
+                                    <ion-label position="stacked">Date:</ion-label>
+                                    <ion-input readonly="true" type="text" style="text-align: center; width: 100%;">{{ date }}</ion-input>
+                                    <ion-popover trigger="open-coachdate-input" side="bottom" alignment="end" *ngIf="!readonly">
+                                        <ng-template>
+                                            <ion-datetime #popoverCoachDate presentation="date" first-day-of-week="1" (ionChange)="date = popoverCoachDate.value"></ion-datetime>
+                                        </ng-template>
+                                    </ion-popover>
+                                </ion-item>
+                            </ion-col>
+                            <ion-col size="4" align-self="flex-start">
+                                <ion-item button="true" id="open-timeslot-input">
+                                    <ion-label position="stacked">Slot:</ion-label>
+                                    <ion-input readonly="true" [ngxTimepicker]="fullTime" [format]="24" type="text" [value]="coaching.timeSlot" style="text-align: center; width: 100%;"></ion-input>
+                                    <ngx-material-timepicker #fullTime [minutesGap]="5" (timeChanged)="setTimeSlot($event)"></ngx-material-timepicker>
+                                </ion-item>
+                            </ion-col>
+                            <ion-col size="4" align-self="flex-start">
+                                <ion-label position="stacked">Field:</ion-label>
+                                <ion-input *ngIf="readonly" type="text" [(ngModel)]="coaching.field" readonly="true" style="text-align: center;"></ion-input>
+                                <ion-select item-content *ngIf="!readonly" [(ngModel)]="coaching.field" style="text-align: center;" interface="action-sheet" (ionChange)="onCoachingChange()">
+                                    <ion-select-option *ngFor="let item of [].constructor(25); let i = index" value="{{i+1}}">{{i+1}}</ion-select-option>
+                                </ion-select>
+                            </ion-col>
+                        </ion-row>
+                    </ion-grid>
+                </ion-item>
+                <ion-item>
+                    <ion-grid fixed="true" class="coachEditGrid">
+                        <ion-row>
+                            <ion-col size="4" align-self="flex-start">
+                                <ion-label position="stacked">Speed:</ion-label>
+                                <ion-input *ngIf="readonly" type="text" [(ngModel)]="coaching.gameSpeed" readonly="true" style="text-align: center;"></ion-input>
+                                <ion-select *ngIf="!readonly" [(ngModel)]="coaching.gameSpeed" class="stackedSelect" style="text-align: center;" interface="action-sheet" (ionChange)="onCoachingChange()">
+                                    <ion-select-option value="Low">Low</ion-select-option>
+                                    <ion-select-option value="Medium">Medium</ion-select-option>
+                                    <ion-select-option value="High">High</ion-select-option>
+                                </ion-select>
+                            </ion-col>
+                            <ion-col size="4" align-self="flex-start">
+                                <ion-label position="stacked">Skill:</ion-label>
+                                <ion-input *ngIf="readonly" type="text" [(ngModel)]="coaching.gameSkill" readonly="true" style="text-align: center;"></ion-input>
+                                <ion-select *ngIf="!readonly" [(ngModel)]="coaching.gameSkill" class="stackedSelect" style="text-align: center;" interface="action-sheet" (ionChange)="onCoachingChange()">
+                                    <ion-select-option value="Low">Low</ion-select-option>
+                                    <ion-select-option value="Medium">Medium</ion-select-option>
+                                    <ion-select-option value="High">High</ion-select-option>
+                                </ion-select>
+                            </ion-col>
+                            <ion-col size="4" align-self="flex-start">
+                                <ion-label position="stacked">Category:</ion-label>
+                                <ion-input *ngIf="readonly" type="text" [(ngModel)]="coaching.gameCategory" readonly="true" style="text-align: center;"></ion-input>
+                                <ion-select *ngIf="!readonly" [(ngModel)]="coaching.gameCategory" class="stackedSelect" style="text-align: center;" interface="action-sheet" (ionChange)="onCoachingChange()">
+                                    <ion-select-option value="OPEN">OPEN</ion-select-option>
+                                    <ion-select-option value="XO">XO</ion-select-option>
+                                    <ion-select-option value="MO">MO</ion-select-option>
+                                    <ion-select-option value="WO">WO</ion-select-option>
+
+                                    <ion-select-option value="MO30">MO30</ion-select-option>
+                                    <ion-select-option value="MO35">MO35</ion-select-option>
+                                    <ion-select-option value="MO40">MO40</ion-select-option>
+                                    <ion-select-option value="MO45">MO45</ion-select-option>
+                                    <ion-select-option value="MO50">MO50</ion-select-option>
+                                    <ion-select-option value="MO55">MO55</ion-select-option>
+                                    <ion-select-option value="MO60">MO60</ion-select-option>
+
+                                    <ion-select-option value="SMX">SMX</ion-select-option>
+                                    <ion-select-option value="X21">X21</ion-select-option>
+
+                                    <ion-select-option value="WO27">WO27</ion-select-option>
+                                    <ion-select-option value="WO30">WO30</ion-select-option>
+                                    <ion-select-option value="WO35">WO35</ion-select-option>
+                                    <ion-select-option value="WO40">WO40</ion-select-option>
+                                    <ion-select-option value="WO45">WO45</ion-select-option>
+                                    <ion-select-option value="WO50">WO50</ion-select-option>
+                                    <ion-select-option value="WO55">WO55</ion-select-option>
+                                    <ion-select-option value="WO60">WO60</ion-select-option>
+                                </ion-select>
+                            </ion-col>
+                        </ion-row>
+                    </ion-grid>
+                </ion-item>
+            </ion-item-group>
+            <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;">
+                <ion-item-divider color="light" style="text-align: center; font-size: 1.2em; padding: 10px;">
+                    <ion-label>Coached referees</ion-label>
+                </ion-item-divider>
+                <ion-item>
+                    <ion-label (click)="searchReferee(0)">1: {{refereeName0}}</ion-label>
+                    <ion-icon *ngIf="!readonly && refereeName0" slot="end" name="trash" (click)="deleteReferee(0)"></ion-icon>
+                    <ion-icon *ngIf="!readonly && !refereeName0" slot="end" name="search" (click)="searchReferee(0)"></ion-icon>
+                </ion-item>
+                <ion-item>
+                    <ion-label (click)="searchReferee(1)">2: {{refereeName1}}</ion-label>
+                    <ion-icon *ngIf="!readonly && refereeName1" slot="end" name="trash" (click)="deleteReferee(1)"></ion-icon>
+                    <ion-icon *ngIf="!readonly && !refereeName1" slot="end" name="search" (click)="searchReferee(1)"></ion-icon>
+                </ion-item>
+                <ion-item>
+                    <ion-label (click)="searchReferee(2)">3: {{refereeName2}}</ion-label>
+                    <ion-icon *ngIf="!readonly && refereeName2" slot="end" name="trash" (click)="deleteReferee(2)"></ion-icon>
+                    <ion-icon *ngIf="!readonly && !refereeName2" slot="end" name="search" (click)="searchReferee(2)"></ion-icon>
+                </ion-item>
+            </ion-item-group>
             <ion-item>
-                <ion-label>Rank:</ion-label>
-                <ion-input type="number" *ngIf="readonly" [value]="coaching.referees[currentRefereeIdx].rank" readonly="true" (change)="saveCoaching()" style="text-align: center;"></ion-input>
-                <ion-select *ngIf="!readonly" [(ngModel)]="coaching.referees[currentRefereeIdx].rank" (ionChange)="saveCoaching()">
-                    <ion-select-option value="0">No</ion-select-option>
-                    <ion-select-option value="1">1</ion-select-option>
-                    <ion-select-option value="2">2</ion-select-option>
-                    <ion-select-option value="3">3</ion-select-option>
-                </ion-select>
+                <ion-grid>
+                    <ion-row style="text-align: center; margin-top: 10px;">
+                        <ion-col style="margin-right: 10px;" *ngIf="coaching.dataStatus !== 'NEW' && coachingOwner">
+                            <ion-button color="danger" shape="round" (click)="deleteCoaching()" style="width: 100%;">
+                                <ion-icon name="trash"></ion-icon>&nbsp;Delete
+                            </ion-button>
+                        </ion-col>
+                        <ion-col style="margin-right: 10px;" *ngIf="coaching.dataStatus !== 'NEW' && coachingOwner">
+                            <ion-button shape="round" (click)="switchLockCoaching()" style="width: 100%;">
+                                <span *ngIf="!closed"><ion-icon name="lock-closed-outline"></ion-icon>&nbsp;Lock</span>
+                                <span *ngIf="closed"><ion-icon name="lock-open-outline"></ion-icon>&nbsp;Unlock</span>
+                            </ion-button>
+                        </ion-col>
+                        <ion-col style="margin-right: 10px;" *ngIf="coaching.dataStatus !== 'NEW' && coachingOwner">
+                            <ion-button shape="round" (click)="sendCoaching()" [disabled]="sending" style="width: 100%;">
+                                <ion-spinner *ngIf="sending"></ion-spinner>
+                                <ion-icon name="send"></ion-icon>&nbsp;Email
+                            </ion-button>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
             </ion-item>
-            <ion-item>
-                <ion-label>Upgrade:</ion-label>
-                <ion-input *ngIf="!lookingForUpgrade()" type="text" readonly="true" style="text-align: center;" value="N/A"></ion-input>
-                <ion-input *ngIf="readonly && lookingForUpgrade()" type="text" [value]="coaching.referees[currentRefereeIdx].upgrade" readonly="true" style="text-align: center;"></ion-input>
-                <ion-select *ngIf="!readonly && lookingForUpgrade()" [(ngModel)]="coaching.referees[currentRefereeIdx].upgrade" (ionChange)="saveCoaching()" slot="end" style="max-width: 100%;">
-                    <ion-select-option value="DNS">Do Not See</ion-select-option>
-                    <ion-select-option value="DNSE">Do Not See Enough</ion-select-option>
-                    <ion-select-option value="No">No</ion-select-option>
-                    <ion-select-option value="Possible">Possible</ion-select-option>
-                    <ion-select-option value="Yes">Yes</ion-select-option>
-                </ion-select>
-            </ion-item>
-        </ion-item-group>
-        <ion-item-group>
-            <ion-item-divider color="light">Assessements</ion-item-divider>
-            <ion-item *ngFor="let assessment of id2assessments.get(currentReferee.id)">
-                {{assessment.competition}} - {{dateService.date2string(assessment.date)}} - {{assessment.profileName}}
-            </ion-item>
-            <ion-item>
-                <span *ngIf="!currentReferee.id || !id2assessments.get(currentReferee.id) || !id2assessments.get(currentReferee.id).length">
+            <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;" *ngIf="coachingOwner">
+                <ion-item-divider color="light" style="text-align: center; font-size: 1.2em; padding: 10px;">
+                    <ion-label>Coaching shared with</ion-label>
+                    <ion-button shape="round" slot="end" (click)="shareWith()" *ngIf="coachingOwner">
+                        <ion-icon name="share-social-outline"></ion-icon>
+                    </ion-button>
+                </ion-item-divider>
+                <ion-item *ngFor="let user of sharedWith.users">
+                    <ion-label>User {{user.firstName}} {{user.lastName}}</ion-label>
+                    <ion-icon slot="end" name="trash" (click)="deleteSharedUser(user)" *ngIf="coachingOwner"></ion-icon>
+                </ion-item>
+                <ion-item *ngFor="let group of sharedWith.groups">
+                    <ion-label>Group {{group.name}}</ion-label>
+                    <ion-icon slot="end" name="trash" (click)="deleteSharedGroup(group)" *ngIf="coachingOwner"></ion-icon>
+                </ion-item>
+            </ion-item-group>
+        </ion-list>
+        <div color="light" style="text-align: center; font-size: 0.8em;">Coach by {{coachingCoach}}</div>
+    </div>
+    <div *ngIf="currentReferee">
+        <div style="text-align: center;margin: 10px 0; font-size: 1.2em;">{{currentReferee.firstName}} {{currentReferee.lastName}}, {{currentReferee.referee.refereeLevel}}/{{currentReferee.referee.refereeCategory}}</div>
+        <ion-list>
+            <ion-item-group>
+                <ion-item-divider color="light">Positive points ({{coaching.referees[currentRefereeIdx].positiveFeedbacks.length}})</ion-item-divider>
+                <ion-item *ngFor="let positiveFeedback of coaching.referees[currentRefereeIdx].positiveFeedbacks; let idx = index" [ngClass]="{'period1' : positiveFeedback.period == 1, 'period2' : positiveFeedback.period == 2}">
+                    <ion-icon name="alert" (click)="deliverPositiveFeedback(positiveFeedback, idx)" class="star" [ngClass]="{'yellowStar' : positiveFeedback.deliver}"></ion-icon>
+                    <p (click)="selectPositiveFeedback(positiveFeedback, idx)" class="feedbackTxt">{{positiveFeedback.skillName}}</p>
+                    <ion-badge slot="end" (click)="switchPeriod(positiveFeedback)" color="{{positiveFeedback.period === 1 ? 'light' : 'primary'}}">{{positiveFeedback.period}}</ion-badge>
+                    <ion-icon slot="end" *ngIf="!readonly" name="trash" (click)="deletePositiveFeedback(idx)"></ion-icon>
+                </ion-item>
+                <div *ngIf="coaching.referees[currentRefereeIdx].positiveFeedbacks.length == 0 && !readonly" style="padding: 5px;">No positive feedback, please click on green + to add one.</div>
+            </ion-item-group>
+            <ion-item-group>
+                <ion-item-divider color="light">Axis of improvment ({{coaching.referees[currentRefereeIdx].feedbacks.length}})</ion-item-divider>
+                <ion-item *ngFor="let feedback of coaching.referees[currentRefereeIdx].feedbacks; let idx = index" [ngClass]="{'period1' : feedback.period == 1, 'period2' : feedback.period == 2}">
+                    <ion-icon name="alert" (click)="deliverFeedback(feedback, idx)" class="star" [ngClass]="{'yellowStar' : feedback.deliver}"></ion-icon>
+                    <p (click)="selectFeedback(feedback, idx)" class="feedbackTxt">{{feedback.problemShortDesc}}</p>
+                    <ion-icon slot="end" name="trending-up" *ngIf="feedback.appliedLater"></ion-icon>
+                    <ion-badge slot="end" (click)="switchPeriod(feedback)" color="{{feedback.period === 1 ? 'light' : 'primary'}}">{{feedback.period}}</ion-badge>
+                    <ion-icon slot="end" *ngIf="!readonly" name="trash" (click)="deleteFeedback(idx)"></ion-icon>
+                </ion-item>
+                <div *ngIf="coaching.referees[currentRefereeIdx].feedbacks.length == 0 && !readonly" style="padding: 5px;">No feedback, please click on red + to add one.</div>
+            </ion-item-group>
+            <ion-item-group>
+                <ion-item-divider color="light">Misc</ion-item-divider>
+                <ion-item>
+                    <ion-label>Rank:</ion-label>
+                    <ion-input type="number" *ngIf="readonly" [value]="coaching.referees[currentRefereeIdx].rank" readonly="true" (change)="saveCoaching()" style="text-align: center;"></ion-input>
+                    <ion-select *ngIf="!readonly" [(ngModel)]="coaching.referees[currentRefereeIdx].rank" (ionChange)="saveCoaching()">
+                        <ion-select-option value="0">No</ion-select-option>
+                        <ion-select-option value="1">1</ion-select-option>
+                        <ion-select-option value="2">2</ion-select-option>
+                        <ion-select-option value="3">3</ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <ion-item>
+                    <ion-label>Upgrade:</ion-label>
+                    <ion-input *ngIf="!lookingForUpgrade()" type="text" readonly="true" style="text-align: center;" value="N/A"></ion-input>
+                    <ion-input *ngIf="readonly && lookingForUpgrade()" type="text" [value]="coaching.referees[currentRefereeIdx].upgrade" readonly="true" style="text-align: center;"></ion-input>
+                    <ion-select *ngIf="!readonly && lookingForUpgrade()" [(ngModel)]="coaching.referees[currentRefereeIdx].upgrade" (ionChange)="saveCoaching()" slot="end" style="max-width: 100%;">
+                        <ion-select-option value="DNS">Do Not See</ion-select-option>
+                        <ion-select-option value="DNSE">Do Not See Enough</ion-select-option>
+                        <ion-select-option value="No">No</ion-select-option>
+                        <ion-select-option value="Possible">Possible</ion-select-option>
+                        <ion-select-option value="Yes">Yes</ion-select-option>
+                    </ion-select>
+                </ion-item>
+            </ion-item-group>
+            <ion-item-group>
+                <ion-item-divider color="light">Assessements</ion-item-divider>
+                <ion-item *ngFor="let assessment of id2assessments.get(currentReferee.id)">
+                    {{assessment.competition}} - {{dateService.date2string(assessment.date)}} - {{assessment.profileName}}
+                </ion-item>
+                <ion-item>
+                    <span *ngIf="!currentReferee.id || !id2assessments.get(currentReferee.id) || !id2assessments.get(currentReferee.id).length">
                     No existing assessment.
                 </span>
-                <ion-button slot="end" shape="round" (click)="assessReferee()">Assess</ion-button>
+                    <ion-button slot="end" shape="round" (click)="assessReferee()">Assess</ion-button>
 
-            </ion-item>
-        </ion-item-group>
-    </ion-list>
-
-
-
-    <div style="margin-bottom: 120px;">&nbsp;</div>
-    <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="!readonly">
-        <ion-fab-button style='--background:green; font-size: 1.6em; margin-bottom: 10px;' (click)="newPositiveFeedback($event)">+</ion-fab-button>
-        <ion-fab-button style='--background:red; font-size: 1.6em;' (click)="newFeedback($event)">+</ion-fab-button>
-    </ion-fab>
-    <ion-fab vertical="bottom" horizontal="start" slot="fixed" *ngIf="!readonly && periods && periods.length > 1">
-        <ion-row>
-            <ion-col *ngFor="let period of periods">
-                <ion-fab-button *ngIf="coaching.currentPeriod === period" style='--background:blue; --color: white; font-size: 1.6em;'>{{period}}</ion-fab-button>
-                <ion-fab-button *ngIf="coaching.currentPeriod !== period" style='--background:white; --color: blue; font-size: 1.6em;' (click)="setPeriod(period)">{{period}}</ion-fab-button>
-            </ion-col>
-        </ion-row>
-    </ion-fab>
+                </ion-item>
+            </ion-item-group>
+        </ion-list>
+        <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="!readonly">
+            <ion-fab-button style='--background:green; font-size: 1.6em; margin-bottom: 10px;' (click)="newPositiveFeedback($event)">+</ion-fab-button>
+            <ion-fab-button style='--background:red; font-size: 1.6em;' (click)="newFeedback($event)">+</ion-fab-button>
+        </ion-fab>
+        <ion-fab vertical="bottom" horizontal="start" slot="fixed" *ngIf="!readonly && periods && periods.length > 1">
+            <ion-row>
+                <ion-col *ngFor="let period of periods">
+                    <ion-fab-button *ngIf="coaching.currentPeriod === period" style='--background:blue; --color: white; font-size: 1.6em;'>{{period}}</ion-fab-button>
+                    <ion-fab-button *ngIf="coaching.currentPeriod !== period" style='--background:white; --color: blue; font-size: 1.6em;' (click)="setPeriod(period)">{{period}}</ion-fab-button>
+                </ion-col>
+            </ion-row>
+        </ion-fab>
+        <div style="margin-bottom: 120px;">&nbsp;</div>
+    </div>
 </ion-content>
