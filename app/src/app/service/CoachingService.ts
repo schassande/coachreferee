@@ -81,6 +81,14 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
         map((list) => this.mergeObservables(list, true))
       );
     }
+    getCoachingByRefereeCoachCompetition(coachId: string, beginDate: Date, endDate: Date): Observable<ResponseWithData<Coaching[]>> {
+      return this.query(query(this.getBaseQuery(),
+          where('coachId', '==', coachId),
+          where('date', '>=', this.dateService.to00h00(this.adjustDate(beginDate, this.dateService))),
+          where('date', '<=', this.dateService.to00h00(this.adjustDate(endDate, this.dateService)))
+        ));
+    }
+
     public getCoachingByCompetition(competitionId: string): Observable<ResponseWithData<Coaching[]>> {
       return this.query(query(this.getCollectionRef(), where('competitionId', '==', competitionId)));
     }

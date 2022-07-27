@@ -5,11 +5,10 @@ import { LocalAppSettings } from '../../../app/model/settings';
 import { AppSettingsService } from '../../../app/service/AppSettingsService';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Component, ViewChild, OnInit, ChangeDetectorRef } from '@angular/core';
-import { AlertController, NavController, IonSegment, ModalController, ToastController } from '@ionic/angular';
+import { AlertController, NavController, IonSegment, ModalController, ToastController, getTimeGivenProgression } from '@ionic/angular';
 import { Observable, of, Subscription } from 'rxjs';
 import { mergeMap, map, catchError } from 'rxjs/operators';
 
-import { EmailService } from '../../../app/service/EmailService';
 import { ConnectedUserService } from '../../../app/service/ConnectedUserService';
 import { RefereeService } from '../../../app/service/RefereeService';
 import { UserService } from '../../../app/service/UserService';
@@ -33,7 +32,11 @@ import { CompetitionService } from 'src/app/service/CompetitionService';
  * See http://ionicframework.com/docs/components/#navigation for more info
  * on Ionic pages and navigation.
  */
-
+export interface CoachingCreationParams extends GameAllocation {
+  competitionId: string;
+  competitionName: string;
+  dateStr: string;
+}
 @Component({
   selector: 'app-page-coaching-game',
   templateUrl: 'coaching-game.html',
@@ -55,14 +58,24 @@ export class CoachingGamePage implements OnInit {
   appCoach: User;
   sending = false;
   sharedWith: SharedWith = { users: [], groups: [] };
-  param = {
-     alloc: null as GameAllocation,
-     competitionId: null as string,
-     competitionName: null as string,
+  param: CoachingCreationParams = {
+    id: undefined,
+    date: undefined,
+    dateStr: undefined,
+    field: undefined,
+    timeSlot: undefined,
+    gameCategory: 'OPEN',
+    gameSpeed:  'Medium',
+    gameSkill:  'Medium',
+    referees: [],
+    refereeCoaches: [],
+    competitionId: undefined,
+    competitionName: undefined
   };
   refereeName0: string;
   refereeName1: string;
   refereeName2: string;
+  agenda: AgendaItem[];
 
   @ViewChild(IonSegment) segment: IonSegment;
 
@@ -98,24 +111,23 @@ export class CoachingGamePage implements OnInit {
     this.appCoach = this.connectedUserService.getCurrentUser();
     this.loadParams().pipe(
       mergeMap(() => this.loadCoaching()),
-      map((response: ResponseWithData<Coaching>) => {
+      mergeMap((response) => {
         this.coaching = response.data;
         if (this.coaching) {
-          this.clean(this.coaching);
-          this.computeRefereeNames();
-          this.computeCoachingValues();
-          this.loadingReferees();
-          this.computeSharedWith();
-          this.bookmarkPage();
-          this.loadAssessments();
-        } else if (this.param.alloc !== null) {
-          this.createCoachingFromParam();
-          this.loadingReferees();
-          this.computeCoachingValues();
+          return of(this.coaching);
         } else {
-          this.initCoaching();
-          this.loadingReferees();
-          }
+          return this.initCoaching();
+        }
+      }),
+      map(() => {
+        this.clean(this.coaching);
+        this.computeRefereeNames();
+        this.computeCoachingValues();
+        this.loadingReferees();
+        this.computeSharedWith();
+        this.bookmarkPage();
+        this.loadAssessments();
+        this.loadDayCoachings();
       })
     ).subscribe();
   }
@@ -128,57 +140,26 @@ export class CoachingGamePage implements OnInit {
   loadParams(): Observable<any> {
     return this.route.queryParams.pipe(
       map((params) => {
-        const str = params.alloc;
-        if (str) {
-          this.param.alloc = JSON.parse(str);
-        }
-        this.param.competitionId = params.competitionId;
+        console.log('Params ', params);
         this.param.competitionName = params.competitionName;
+        this.param.competitionId = params.competitionId;
+        this.param.field = params.field;
+        this.param.dateStr = params.dateStr;
+        this.param.gameCategory = params.gameCategory;
+        this.param.gameSpeed = params.gameSpeed;
+        this.param.gameSkill = params.gameSkill;
       }));
   }
 
-  private createCoachingFromParam() {
-    console.log('createCoachingFromParam');
-    this.coaching = {
-      id: null,
-      version: 0,
-      creationDate : new Date(),
-      lastUpdate : new Date(),
-      dataStatus: 'NEW',
-      competition: this.param.competitionName,
-      competitionId: this.param.competitionId,
-      field: this.param.alloc.field,
-      date : new Date(this.param.alloc.date),
-      timeSlot: this.param.alloc.timeSlot,
-      coachId: this.appCoach.id,
-      gameCategory: this.param.alloc.gameCategory,
-      gameSpeed: 'Medium',
-      gameSkill: 'Medium',
-      referees : this.param.alloc.referees.map((ref) => {
-        return {
-          refereeId: ref.refereeId,
-          refereeShortName: ref.refereeShortName,
-          feedbacks: [],
-          positiveFeedbacks: [],
-          upgrade: null,
-          rank: 0
-        };
-      }),
-      refereeIds: this.param.alloc.referees.map((ref) => ref.refereeId),
-      currentPeriod : 1,
-      closed: false,
-      sharedWith: {
-        users: [],
-        groups: []
-      }
-    };
-  }
-  initCoaching() {
-    this.competitionService.get(this.appCoach.defaultCompetitionId).pipe(
+  initCoaching(): Observable<any> {
+    return this.competitionService.get(this.appCoach.defaultCompetitionId).pipe(
       map((rcompetition) => {
         let defaultCompetitionName = this.appCoach.defaultCompetition;
         let defaultCompetitionId = '';
-        if (rcompetition.data) {
+        if (this.param.competitionName && this.param.competitionId) {
+          defaultCompetitionName = this.param.competitionName;
+          defaultCompetitionId = this.param.competitionId;
+        } else if (rcompetition.data) {
           defaultCompetitionName = rcompetition.data.name;
           defaultCompetitionId = rcompetition.data.id;
         }
@@ -190,15 +171,24 @@ export class CoachingGamePage implements OnInit {
           dataStatus: 'NEW',
           competition: defaultCompetitionName,
           competitionId: defaultCompetitionId,
-          field: '1',
-          date : new Date(),
-          timeSlot: this.computeTimeSlot(new Date()),
+          field: this.param.field ? this.param.field : '1',
+          date : this.param.dateStr ? this.dateService.string2date(this.param.dateStr, new Date()) : new Date(),
+          timeSlot: this.param.timeSlot ? this.param.timeSlot : this.computeTimeSlot(new Date()),
           coachId: this.appCoach.id,
-          gameCategory: 'OPEN',
-          gameSpeed: 'Medium',
-          gameSkill: 'Medium',
-          referees : [],
-          refereeIds: [],
+          gameCategory: this.param.gameCategory ? this.param.gameCategory : 'OPEN',
+          gameSpeed: this.param.gameSpeed ? this.param.gameSpeed : 'Medium',
+          gameSkill: this.param.gameSkill ? this.param.gameSkill : 'Medium',
+          referees : this.param.referees ? this.param.referees.map((ref) => {
+            return {
+              refereeId: ref.refereeId,
+              refereeShortName: ref.refereeShortName,
+              feedbacks: [],
+              positiveFeedbacks: [],
+              upgrade: null,
+              rank: 0
+            };
+          }) : [],
+          refereeIds: this.param.referees ? this.param.referees.map((ref) => ref.refereeId) : [],
           currentPeriod : 1,
           closed: false,
           sharedWith: {
@@ -206,9 +196,9 @@ export class CoachingGamePage implements OnInit {
             groups: []
           }
         };
-        this.computeCoachingValues();
-      })
-    ).subscribe();
+        console.log('Coaching date:', this.coaching.date);
+        return this.coaching;
+      }));
   }
 
   computeCoachingValues() {
@@ -314,7 +304,6 @@ export class CoachingGamePage implements OnInit {
       this.assessmentService.getAssessmentByReferee(refId).pipe(
         map((rassessments) => {
           this.id2assessments.set(refId, rassessments.data);
-          console.log('Assessment of ', refId, rassessments.data);
         })
       ).subscribe();
     });
@@ -345,9 +334,8 @@ export class CoachingGamePage implements OnInit {
 
   refereeSelected(refereeIndex = Number.parseInt(this.segment.value)) {
     if (this.segment) { // prevent call before the component has been initialised.
-      console.log('refereeSelected('+ refereeIndex + ')', 'Segment.value=' + this.segment.value);
-      if (refereeIndex === 3){
-        this.currentRefereeIdx = 3;
+      if (refereeIndex === 3 || refereeIndex === 4){
+        this.currentRefereeIdx = refereeIndex;
         this.currentReferee = null;
       } else {
         this.currentRefereeIdx = Math.max(0, Math.min(refereeIndex, this.coaching.referees.length-1));
@@ -513,7 +501,9 @@ export class CoachingGamePage implements OnInit {
       componentProps: { name: this.coaching.competition}
     });
     modal.onDidDismiss().then( (result) => {
-      this.competitionInfoSelected(result.data.name, result.data.id).subscribe();
+      if (result.data) {
+        this.competitionInfoSelected(result.data.name, result.data.id).subscribe();
+      }
     });
     modal.present();
   }
@@ -642,4 +632,65 @@ export class CoachingGamePage implements OnInit {
       ]
     }).then( (alert) => alert.present() );
   }
+
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////// AGENDA /////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  loadDayCoachings() {
+    if (!this.coaching) {
+      return;
+    }
+    const begin = this.dateService.to00h00(new Date(this.coaching.date));
+    const end = this.dateService.nextDay(this.dateService.to00h00(new Date(this.coaching.date)));
+    this.coachingService.getCoachingByRefereeCoachCompetition(this.coaching.coachId, begin, end).subscribe((rcs) => {
+      if (rcs.data) {
+        this.agenda = rcs.data.map((c: Coaching) => {
+          return { coaching: c, 
+            color: this.getAgendaItemColor(c),
+            date: this.coachingService.getCoachingDateAsString(c),
+            refereeShortNames: c.referees.map((ref) => ref.refereeShortName).join(', ')
+          };
+        });
+      } else {
+        this.agenda = [];
+      }
+    });
+  }
+  getAgendaItemColor(coaching: Coaching): string {
+    const delta = this.getDateTime(this.coaching).getTime() - this.getDateTime(coaching).getTime(); 
+    return coaching.id === this.coaching.id 
+      ? 'success' 
+      : (delta > 0 ? 'warning' : 'normal');
+  }
+  getDateTime(coaching: Coaching): Date {
+    const [hours, minutes] = coaching.timeSlot.split(":");
+    const date = new Date(coaching.date);
+    date.setHours(Number.parseInt(hours, 10));
+    date.setMinutes(Number.parseInt(minutes, 10));
+    return date;
+  }
+  coachingSelected(coaching) {
+    this.navController.navigateRoot(`/coaching/coach/${coaching.id}`);
+  }
+  newCoaching() {
+    const params = {
+      queryParams: {
+        competitionName: this.coaching.competition,
+        competitionId: this.coaching.competitionId,
+        field: this.coaching.field,
+        dateStr: this.dateService.date2string(this.coaching.date),
+        gameCategory: this.coaching.gameCategory,
+        gameSpeed: this.coaching.gameSpeed,
+        gameSkill: this.coaching.gameSkill,
+      }
+    };
+    this.navController.navigateRoot('/coaching/create', params);
+  }
+}
+interface AgendaItem {
+  coaching: Coaching;
+  color: string;
+  date: string;
+  refereeShortNames: string;
 }

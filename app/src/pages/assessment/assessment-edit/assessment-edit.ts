@@ -221,7 +221,9 @@ export class AssessmentEditPage implements OnInit {
       componentProps: { name: this.assessment.competition}
     });
     modal.onDidDismiss().then( (result) => {
-      this.competitionInfoSelected(result.data.name, result.data.id).subscribe();
+      if (result.data) {
+        this.competitionInfoSelected(result.data.name, result.data.id).subscribe();
+      }
     });
     modal.present();
   }

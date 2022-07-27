@@ -141,8 +141,10 @@ export class XpEditComponent implements OnInit {
       componentProps: { name: this.xp.eventName}
     });
     modal.onDidDismiss().then( (result) => {
-      this.xp.eventName = result.data.name;
-      this.autoCompute(result.data.id);
+      if (result.data) {
+        this.xp.eventName = result.data.name;
+        this.autoCompute(result.data.id);
+      }
     });
     modal.present();
   }

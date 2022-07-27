@@ -54,6 +54,9 @@ export class CompetitionSelectorComponent {
             map((rcomp) => {
                 this.competitions = rcomp.data;
                 this.error = rcomp.error;
+                if (this.competitions) {
+                    this.competitions.sort((c1, c2) => c2.date.getTime() - c1.date.getTime());
+                }
             })
         ).subscribe();
     }

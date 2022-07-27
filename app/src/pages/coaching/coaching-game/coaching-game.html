@@ -23,12 +23,18 @@
         <ion-segment-button value="{{i}}" *ngFor="let referee of coaching.referees; index as i" class="refTab" style="--background-checked: gold;">
             <p>{{referee.refereeShortName}}<sup><span [ngClass]="{'badge-warning': referee.positiveFeedbacks.length==0}">{{referee.positiveFeedbacks.length}}</span>-<span [ngClass]="{'badge-warning': referee.feedbacks.length==0}">{{referee.feedbacks.length}}</span></sup></p>
         </ion-segment-button>
+        <ion-segment-button value="4" style="--background-checked: gold;">
+            <ion-icon name="calendar-outline"></ion-icon>
+        </ion-segment-button>
     </ion-segment>
 </ion-header>
 
 
 <ion-content *ngIf="coaching" (swipe)="onSwipe($event)">
     <div *ngIf="currentRefereeIdx === 3">
+        <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="coaching.dataStatus == 'CLEAN'">
+            <ion-fab-button (click)="newCoaching()" class="plusButton">+</ion-fab-button>
+        </ion-fab>
         <ion-list>
             <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;">
                 <ion-item-divider color="light" style="text-align: center; font-size: 1.2em; padding: 10px;">
@@ -263,5 +269,21 @@
             </ion-row>
         </ion-fab>
         <div style="margin-bottom: 120px;">&nbsp;</div>
+    </div>
+    <div *ngIf="currentRefereeIdx === 4">
+        <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+            <ion-fab-button (click)="newCoaching()" class="plusButton">+</ion-fab-button>
+        </ion-fab>
+        <ion-list>
+            <ion-item-group>
+                <ion-item-divider color="light">Coachings of the day</ion-item-divider>
+                <ion-item *ngFor="let agendaItem of agenda" [color]="agendaItem.color">
+                    <ion-label style="border: none;" class="listItemButton" (click)="coachingSelected(agendaItem.coaching)">
+                        <p>{{agendaItem.date}} {{agendaItem.coaching.timeSlot}}: Field {{agendaItem.coaching.field}}, {{agendaItem.coaching.gameCategory}}
+                            <br> Referees: {{agendaItem.refereeShortNames}}</p>
+                    </ion-label>
+                </ion-item>
+            </ion-item-group>
+        </ion-list>
     </div>
 </ion-content>
