@@ -107,6 +107,7 @@ import { VersionService } from './service/VersionService';
 import { XpService } from './service/XpService';
 import { RefereeSelectorService } from 'src/pages/referee/referee-selector-service';
 import { NotificationService } from './service/NotificationService';
+import { UserPreferenceService } from './service/UserPreferenceService';
 
 
 @NgModule({
@@ -170,6 +171,7 @@ import { NotificationService } from './service/NotificationService';
         ToolService,
         UserService,
         UserGroupService,
+        UserPreferenceService,
         VersionService,
         XpService,
         { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig },

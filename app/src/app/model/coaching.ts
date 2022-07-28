@@ -52,6 +52,7 @@ export interface Coaching extends PersistentData, SharedElement {
         refereeShortName: string;
         feedbacks: Feedback[];
         positiveFeedbacks: PositiveFeedback[];
+        comments: string;
         upgrade: Upgradable;
         rank: number;
     }[];

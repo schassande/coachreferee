@@ -48,6 +48,7 @@
             <ion-label>
                 {{coaching.competition}}<br>{{coachingService.getCoachingDateAsString(coaching)}} &nbsp;&nbsp;{{coaching.timeSlot}} &nbsp;&nbsp;Field {{coaching.field}}, &nbsp;&nbsp;{{coaching.gameCategory}}
                 <div> Referees: <span *ngFor="let referee of coaching.referees; last as isLast">{{referee.refereeShortName}}<span *ngIf="!isLast">, </span></span>
+                    <div *ngIf="coaching.referees[getRefIdx(coaching)].comments">{{coaching.referees[getRefIdx(coaching)].comments}}</div>
                     <div *ngFor="let positiveFeedback of coaching.referees[getRefIdx(coaching)].positiveFeedbacks" class="feedback">+
                         <span [ngClass]="{'delivered': positiveFeedback.deliver}">{{positiveFeedback.skillName}}</span></div>
                     <div *ngFor="let feedback of coaching.referees[getRefIdx(coaching)].feedbacks" class="feedback">-{{feedback.appliedLater ? '&gt;+': ''}}

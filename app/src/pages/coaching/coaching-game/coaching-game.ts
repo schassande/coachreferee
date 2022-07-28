@@ -15,7 +15,7 @@ import { UserService } from '../../../app/service/UserService';
 import { ResponseWithData } from '../../../app/service/response';
 import { CoachingService } from '../../../app/service/CoachingService';
 import { BookmarkService, Bookmark } from '../../../app/service/BookmarkService';
-import { Referee, User, UserGroup } from '../../../app/model/user';
+import { Referee, User, UserGroup, UserPreference } from '../../../app/model/user';
 import { Coaching, PositiveFeedback, Feedback } from '../../../app/model/coaching';
 import { DateService } from 'src/app/service/DateService';
 import { RefereeSelectorService } from 'src/pages/referee/referee-selector-service';
@@ -25,6 +25,7 @@ import { SharedWith } from 'src/app/model/common';
 import { UserGroupService } from 'src/app/service/UserGroupService';
 import { UserSelectorComponent } from 'src/pages/widget/user-selector-component';
 import { CompetitionService } from 'src/app/service/CompetitionService';
+import { UserPreferenceService } from 'src/app/service/UserPreferenceService';
 
 /**
  * Generated class for the CoachingGamePage page.
@@ -37,6 +38,10 @@ export interface CoachingCreationParams extends GameAllocation {
   competitionName: string;
   dateStr: string;
 }
+const USER_PREF_CAT = 'COACHING_GAME';
+const UP_EDIT_STYLE = 'EDIT_STYLE';
+type UpEditStyle = 'FREE' | 'CAT';
+
 @Component({
   selector: 'app-page-coaching-game',
   templateUrl: 'coaching-game.html',
@@ -76,6 +81,7 @@ export class CoachingGamePage implements OnInit {
   refereeName1: string;
   refereeName2: string;
   agenda: AgendaItem[];
+  freeEditStyle = false;
 
   @ViewChild(IonSegment) segment: IonSegment;
 
@@ -97,6 +103,7 @@ export class CoachingGamePage implements OnInit {
     private route: ActivatedRoute,
     public toastController: ToastController,
     public userGroupService: UserGroupService,
+    private userPreferenceService: UserPreferenceService,
     public userService: UserService) {
       this.coaching = null;
   }
@@ -110,6 +117,7 @@ export class CoachingGamePage implements OnInit {
     this.coaching = null;
     this.appCoach = this.connectedUserService.getCurrentUser();
     this.loadParams().pipe(
+      mergeMap(() => this.loadUserPreference()),
       mergeMap(() => this.loadCoaching()),
       mergeMap((response) => {
         this.coaching = response.data;
@@ -130,6 +138,20 @@ export class CoachingGamePage implements OnInit {
         this.loadDayCoachings();
       })
     ).subscribe();
+  }
+
+  loadUserPreference():Observable<any> {
+    return this.userPreferenceService.getMyPreferences(USER_PREF_CAT).pipe(
+      map((rup) => this.userPreferenceService.toMap(rup.data)),
+      map((userPreferences: Map<string,UserPreference>) => {
+        this.freeEditStyle = this.userPreferenceService.getValue(userPreferences, UP_EDIT_STYLE, 'CAT') !== 'CAT';
+      })
+    );
+  }
+  toggleEditStyle() {
+    this.freeEditStyle = !this.freeEditStyle;
+    this.userPreferenceService.setMyPreference(USER_PREF_CAT, UP_EDIT_STYLE, 
+      this.freeEditStyle ? 'FREE' : 'CAT').subscribe();
   }
   computeRefereeNames() {
     this.refereeName0 = this.getReferee(0);
@@ -184,6 +206,7 @@ export class CoachingGamePage implements OnInit {
               refereeShortName: ref.refereeShortName,
               feedbacks: [],
               positiveFeedbacks: [],
+              comments: '',
               upgrade: null,
               rank: 0
             };

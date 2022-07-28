@@ -619,6 +619,7 @@ export class CompetitionImportComponent implements OnInit {
         refereeShortName: ref.refereeShortName,
         feedbacks: [],
         positiveFeedbacks: [],
+        comments: '',
         upgrade: null,
         rank: 0
       });

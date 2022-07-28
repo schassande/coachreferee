@@ -224,3 +224,9 @@ export function getRefereeLevelValue(level: string): number {
     }
 }
 
+export interface UserPreference  extends PersistentData {
+    userId: string;
+    category: string;
+    name: string;
+    value: string;
+}
