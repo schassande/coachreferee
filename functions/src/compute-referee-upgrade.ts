@@ -1,12 +1,12 @@
 import * as common          from './common';
-import { CoachRef, CompetitionRef } from './model/competition';
+import { CoachRef, CompetitionCategory, CompetitionRef } from './model/competition';
 import { CompetitionDayPanelVote, UpgradeCriteria, RefereeUpgrade } from './model/upgrade';
 import { RefereeLevel, User }  from './model/user';
 const moment = require('moment');
 
 /** 
 1.Load panel votes from last 12 months
-2.Sort panel votes by date
+2.Sort panel votes by date (but Abstain at the end)
 3.Retain panel votes by tournament category and globally limited to the window size
 4.Check global window size
 5.Check global number of yes
@@ -19,51 +19,43 @@ export async function func(request:any, response:any, ctx:any):Promise<any> {
     const day = common.string2date(request.body.data.day, new Date());
     const upgradeCriteria: UpgradeCriteria = await loadUpgradeCriteria(referee, day, ctx, response);
 
-    let ru: RefereeUpgrade = await compute(day, referee, upgradeCriteria, ctx, response);
-
-    ru = await persistUpgrade(ctx.db, ru, response)
+    let ru: RefereeUpgrade|null = await compute(day, referee, upgradeCriteria, ctx, response);
+    if (ru) {
+        ru = await persistUpgrade(ctx.db, ru, response)
+    }
     response.send({ data: ru}); 
 }
 
-async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteria, ctx: any, response:any): Promise<RefereeUpgrade> {
+async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteria, ctx: any, response:any): Promise<RefereeUpgrade|null> {
     const beginDate = moment(day.getTime()).subtract(upgradeCriteria.dayVoteDuration, 'months').toDate();
 
     const data: WorkingData = newWorkingData();
     data.restDayVotes = await findPanelVotes(ctx, referee, beginDate, day, referee.referee.nextRefereeLevel);
+    if (data.restDayVotes.length === 0) {
+        console.log('No panelVotes found');
+        return null;
+    }
     const allDays: CompetitionDayPanelVote[] = data.restDayVotes.map(e=> e);
-
     console.log('panelVotes=' + JSON.stringify(allDays));
-    const lastDay = data.restDayVotes.length > 0 ? data.restDayVotes[0].day : day;
-    const competitionId: string = data.restDayVotes.length > 0 ? data.restDayVotes[0].competitionRef.competitionId : '';
 
     extractDays(upgradeCriteria, data);
     console.log('AFTER extractDays, workingData=' + JSON.stringify(data));
-    data.windowSizeCheck = (data.c5dayVotes.length + data.c4dayVotes.length + data.c3dayVotes.length) === upgradeCriteria.daysRequired;
 
-    const c3Yes = data.c3dayVotes.filter(v => v.vote === 'Yes').length;
-    const c4Yes = data.c4dayVotes.filter(v => v.vote === 'Yes').length;
-    const c5Yes = data.c5dayVotes.filter(v => v.vote === 'Yes').length;
-    data.c3NbYes = c3Yes >= upgradeCriteria.c3YesRequired;
-    data.c4NbYes = c4Yes >= upgradeCriteria.c4YesRequired;
-    data.c5NbYes = c5Yes >= upgradeCriteria.c5YesRequired;
-    data.globalNbYes = (c3Yes + c4Yes + c5Yes) >= upgradeCriteria.totalYesRequired;
+    computeCriteria(upgradeCriteria, data);
+    console.log('AFTER computeCriteria, workingData=' + JSON.stringify(data));
 
-    data.c3Nb = data.c3dayVotes.length >= upgradeCriteria.c3DaysRequired;
-    data.c4Nb = data.c4dayVotes.length >= upgradeCriteria.c4DaysRequired;
-    data.c5Nb = data.c5dayVotes.length >= upgradeCriteria.c5DaysRequired;
+    const upgradeDecision = computeUpgradeStatus(data, upgradeCriteria);
+    console.log('upgradeDecision=' + upgradeDecision);
 
-    const retainVotes = data.c3dayVotes.concat(data.c4dayVotes).concat(data.c5dayVotes);
-    retainVotes.filter(v => v.vote === 'Yes')
-        .forEach((v => v.yesCoaches.forEach(c => common.addToSetById(data.yesCoach, c, 'coachId'))));
+    const competitionId: string = data.restDayVotes.length > 0 ? data.restDayVotes[0].competitionRef.competitionId : '';
+    const lastDay = data.restDayVotes.length > 0 ? data.restDayVotes[0].day : day;
 
-    data.multiDayCompetitionRefs = [];
-    retainVotes.filter(v => v.isMultiDayCompetition).map(v => v.competitionRef)
-        .forEach(cr => common.addToSetById(data.multiDayCompetitionRefs, cr, 'competitionId'));
+    // get the existing upgrade, in order to upgrade it. Otherwise a new one will be created.
+    const existingUpgrade: RefereeUpgrade|null = await getRefereeUpgrade(ctx.db, referee.id, lastDay, response);
+    const id = existingUpgrade ? existingUpgrade.id : '';
 
-    console.log('workingData=' + JSON.stringify(data));
-    let ru: RefereeUpgrade|null = await getRefereeUpgrade(ctx.db, referee.id, lastDay, response);
-    const id = ru ? ru.id : '';
-    ru = {
+    // build the upgrade from all data
+    return {
         id,
         version: 0,
         creationDate: new Date(),
@@ -71,10 +63,10 @@ async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteri
         dataStatus: 'CLEAN',
         referee: { refereeId: referee.id, refereeShortName: referee.shortName },
         upgradeLevel: upgradeCriteria.upgradeLevel,
-        decision: computeUpgradeStatus(data, upgradeCriteria) ? 'Yes' : 'No',
+        decision: upgradeDecision ? 'Yes' : 'No',
         decisionDate: common.to00h00(lastDay),
         competitionId,
-        upgradeStatus: ru ? ru.upgradeStatus : 'DECIDED',
+        upgradeStatus: existingUpgrade ? existingUpgrade.upgradeStatus : 'DECIDED',
         multiDayCompetitionRefs: data.multiDayCompetitionRefs,
         yesRefereeCoaches: data.yesCoach,
         c3PanelVotes: data.c3dayVotes,
@@ -83,7 +75,6 @@ async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteri
         upgradeCriteriaId: upgradeCriteria.id,
         allPanelVotes: allDays
     };
-    return ru;
 }
 
 function computeUpgradeStatus(data: WorkingData, upgradeCriteria: UpgradeCriteria): boolean {
@@ -97,19 +88,33 @@ function computeUpgradeStatus(data: WorkingData, upgradeCriteria: UpgradeCriteri
 }
 
 interface WorkingData {
+    /* Working var: the day can be used to meet the criteria */
     restDayVotes : CompetitionDayPanelVote[];
+    /** the day/vote retained for the C3+ categories */
     c3dayVotes: CompetitionDayPanelVote[];
+    /** the day/vote retained for the C4+ categories */
     c4dayVotes: CompetitionDayPanelVote[];
+    /** the day/vote retained for the C5 category */
     c5dayVotes: CompetitionDayPanelVote[];
+    /** Number of Yes C3+ days */
     c3Nb: boolean;
+    /** Number of Yes C4+ days */
     c4Nb: boolean;
+    /** Number of Yes C5 days */
     c5Nb: boolean;
+    /** does the referee has enough number of days in the global window */
     windowSizeCheck: boolean;
+    /** does the referee has enough number of yes days in the global window */
     globalNbYes: boolean;
+    /** does the referee has enough number of yes days in the C3+ window */
     c3NbYes: boolean;
+    /** does the referee has enough number of yes days in the C4 window */
     c4NbYes: boolean;
+    /** does the referee has enough number of yes days in the C5 window */
     c5NbYes: boolean;
+    /** The list of referee coach voting Yes */
     yesCoach: CoachRef[];
+    /** the list of the multiday competition where the refere got a yes */
     multiDayCompetitionRefs: CompetitionRef[];
 }
 function newWorkingData(): WorkingData {
@@ -162,7 +167,7 @@ async function findPanelVotes(ctx:any, referee: User, beginDate: Date, endDate: 
         throw new Error('No panel vote for the referee ' + referee.id);
     }
     // ignore abstein days
-    const filteredPanelVotes: CompetitionDayPanelVote[] = panelVotes.filter(pv => pv.vote !== 'Abstein');
+    const filteredPanelVotes: CompetitionDayPanelVote[] = panelVotes; //.filter(pv => pv.vote !== 'Abstein');
     
     console.log('findPanelVotes(' + referee.id + ',' + common.date2string(beginDate) + ',' + common.date2string(endDate) + '):' + JSON.stringify(filteredPanelVotes));
     return filteredPanelVotes;
@@ -211,41 +216,96 @@ function adjustFieldOnLoadUpgradeCriteria(item: UpgradeCriteria): UpgradeCriteri
     return item;
 }
 function extractDays(upgradeCriteria: UpgradeCriteria, data: WorkingData) {
-    if (upgradeCriteria.c5DaysRequired > 0) {
-        // extract the expected number of votes
-        data.c5dayVotes = data.restDayVotes.filter(pv => pv.competitionCategory === 'C5');
-        // console.log('extractDays: After filtering C5: data.c5dayVotes.length=' + data.c5dayVotes.length);
-        data.c5dayVotes = data.c5dayVotes.slice(0, upgradeCriteria.c5DaysRequired);
-        // console.log('extractDays: After slice C5: data.c5dayVotes.length=' + data.c5dayVotes.length);
-        // remove the votes from the rest
-        data.c5dayVotes.forEach(pv => {
-            data.restDayVotes.splice(data.restDayVotes.findIndex(rpv => rpv.id === pv.id), 1);
-        });
+    // firstly sort days by putting Abstain days at the end. 
+    // this ordering is done in memory because no database request permits to do it.
+    // Why sorting Abstain day at the end: 
+    // The Abstain day must not be a reason to refuse a badge. But it could help
+    // to match the windows size globally and for each category.
+    // ERC decision, June 2022
+    data.restDayVotes.sort((a, b) => {
+       if (a.vote === 'Abstein' && b.vote !== 'Abstein') {
+       // If the result is positive b is sorted before a. => b,a
+       return 1;
+       }
+       if (a.vote !== 'Abstein' && b.vote === 'Abstein') {
+       // If the result is negative a is sorted before b. => a,b
+       return -1;
+       }
+       // sort by the reverse day
+       return b.day.getTime() - a.day.getTime();
+    });
+    // Second, extract days depending on their category compatibility. data.restDayVotes is updated at each step
+    data.c5dayVotes = extractDaysOfLevel(upgradeCriteria.c5DaysRequired, data.restDayVotes, 'C5');
+    data.c4dayVotes = extractDaysOfLevel(upgradeCriteria.c4DaysRequired, data.restDayVotes, 'C5', 'C4');
+    data.c3dayVotes = extractDaysOfLevel(upgradeCriteria.c3DaysRequired, data.restDayVotes, 'C5', 'C4', 'C3');
+}
+
+/**
+ * Extracts the required number of compatible days from an array
+ * @param cXDaysRequired is the number of required day
+ * @param restDayVotes is the array of available days. This array content is changed by the method. 
+ *                     The extract elements are removed from this array.
+ * @param categories is the list of the compatible category
+ * @returns the extracted days.
+ */
+function extractDaysOfLevel(cXDaysRequired: number, 
+                            restDayVotes: CompetitionDayPanelVote[],
+                            ...categories: CompetitionCategory[]): CompetitionDayPanelVote[] {
+    if (cXDaysRequired > 0) {
+        // 1 - get votes with the right competition level
+        let cXdayVotes = restDayVotes.filter(
+            pv => categories.filter((c:CompetitionCategory) => c === pv.competitionCategory).length > 0);
+
+        // 2 - Retain only the required number
+        cXdayVotes = cXdayVotes.slice(0, cXDaysRequired);
+
+        //3 - Remove the retained days from the rest
+        removeElementsFrom(cXdayVotes, restDayVotes);
     }
-    if (upgradeCriteria.c4DaysRequired > 0) {
-        // extract the expected number of votes
-        data.c4dayVotes = data.restDayVotes
-            .filter(pv => pv.competitionCategory === 'C5' || pv.competitionCategory === 'C4');
-        // console.log('extractDays: After filtering C4: data.c4dayVotes.length=' + data.c4dayVotes.length);
-        data.c4dayVotes = data.c4dayVotes.slice(0, upgradeCriteria.c4DaysRequired);
-        // console.log('extractDays: After slice C4: data.c4dayVotes.length=' + data.c4dayVotes.length);
-        // remove the votes from the rest
-        data.c4dayVotes.forEach(pv => {
-            data.restDayVotes.splice(data.restDayVotes.findIndex(rpv => rpv.id === pv.id), 1);
-        });
-    }
-    if (upgradeCriteria.c3DaysRequired > 0) {
-        // extract the expected number of votes
-        data.c3dayVotes = data.restDayVotes
-            .filter(pv => pv.competitionCategory === 'C5' || pv.competitionCategory === 'C4' || pv.competitionCategory === 'C3');
-        // console.log('extractDays: After filtering C3: data.c3dayVotes.length=' + data.c3dayVotes.length);
-        data.c3dayVotes = data.c3dayVotes.slice(0, upgradeCriteria.c3DaysRequired);
-        // console.log('extractDays: After slice C3: data.c3dayVotes.length=' + data.c3dayVotes.length);
-        // remove the votes from the rest
-        data.c3dayVotes.forEach(pv => {
-            data.restDayVotes.splice(data.restDayVotes.findIndex(rpv => rpv.id === pv.id), 1);
-        });
-    }
+    return [];
+}
+/**
+ * Removes all elements containing in 'elementsToRemove', from the array 'ar'.
+ * @param elementsToRemove is the list of the elements to remove from the array ar
+ * @param ar is the array where the elements must be removed. It must not contain duplicated values.
+ */
+function removeElementsFrom(elementsToRemove: CompetitionDayPanelVote[], ar: CompetitionDayPanelVote[]) {
+    elementsToRemove.forEach(pv => {
+        ar.splice(ar.findIndex(rpv => rpv.id === pv.id), 1);
+    });
+}
+/**
+ * Computes if the referee meets the criteria of the level.
+ * 
+ * @param upgradeCriteria the criteria of the level
+ * @param data the data of the referee
+ */
+function computeCriteria(upgradeCriteria: UpgradeCriteria, data: WorkingData) {
+    data.windowSizeCheck = (data.c5dayVotes.length + data.c4dayVotes.length + data.c3dayVotes.length) === upgradeCriteria.daysRequired;
+
+    const c3Yes = data.c3dayVotes.filter(v => v.vote === 'Yes').length;
+    const c4Yes = data.c4dayVotes.filter(v => v.vote === 'Yes').length;
+    const c5Yes = data.c5dayVotes.filter(v => v.vote === 'Yes').length;
+    data.c3NbYes = c3Yes >= upgradeCriteria.c3YesRequired;
+    data.c4NbYes = c4Yes >= upgradeCriteria.c4YesRequired;
+    data.c5NbYes = c5Yes >= upgradeCriteria.c5YesRequired;
+    data.globalNbYes = (c3Yes + c4Yes + c5Yes) >= upgradeCriteria.totalYesRequired;
+
+    data.c5Nb = data.c5dayVotes.length >= upgradeCriteria.c5DaysRequired;
+    data.c4Nb = data.c4dayVotes.length >= upgradeCriteria.c4DaysRequired;
+    data.c3Nb = data.c3dayVotes.length >= upgradeCriteria.c3DaysRequired;
+
+    // compute a set of the referee coach said Yes: data.yesCoach
+    const retainVotes = data.c3dayVotes.concat(data.c4dayVotes).concat(data.c5dayVotes);
+    retainVotes.filter(v => v.vote === 'Yes')
+        .forEach((v => v.yesCoaches.forEach(c => common.addToSetById(data.yesCoach, c, 'coachId'))));
+
+    // compute a set of the multiday competitions: data.multiDayCompetitionRefs
+    data.multiDayCompetitionRefs = [];
+    retainVotes.filter(v => v.isMultiDayCompetition).map(v => v.competitionRef)
+        .forEach(cr => common.addToSetById(data.multiDayCompetitionRefs, cr, 'competitionId'));
+
+
 }
 async function getRefereeUpgrade(db:any, refereeId: string, day: Date, response:any): Promise<RefereeUpgrade|null> {
     console.log('getRefereeUpgrade(' + refereeId + ', ' + day + '): ' + day.getTime());
