@@ -251,13 +251,13 @@ export class CompetitionImportComponent implements OnInit {
     // console.log(`analyseCompetition(${lineNumber})`);
     if (!jsonGame.competition || !jsonGame.competition.trim()) {
       this.importedDatas.errors.push('Competition name is missing on line ' + lineNumber);
-      throw null;
+      throw new Error('Competition name is missing on line ' + lineNumber);
     }
     if (this.importedDatas.dataToImport) {
       // the competition has been already set => compare it is the same name
       if (this.importedDatas.dataToImport.name !== jsonGame.competition) {
         this.importedDatas.errors.push('Different competition name on line ' + lineNumber);
-        throw null;
+        throw new Error('Different competition name on line ' + lineNumber);
       }
       // console.log(`analyseCompetition(${lineNumber}): the competition has been already set`);
       return of(this.importedDatas);
