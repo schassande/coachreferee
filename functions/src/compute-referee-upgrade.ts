@@ -35,6 +35,14 @@ async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteri
         console.log('No panelVotes found');
         return null;
     }
+    const competitionId: string = data.restDayVotes[0].competitionRef.competitionId;
+    const lastDay = data.restDayVotes.length > 0 ? data.restDayVotes[0].day : day;
+    console.log('competitionId=' + competitionId + ', lastDay=' + lastDay);
+    if (!competitionId) {
+        console.log('ERROR: CompetitionId is missing')
+        return null;
+    }
+
     const allDays: CompetitionDayPanelVote[] = data.restDayVotes.map(e=> e);
     console.log('panelVotes=' + JSON.stringify(allDays));
 
@@ -47,13 +55,6 @@ async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteri
     const upgradeDecision = computeUpgradeStatus(data, upgradeCriteria);
     console.log('upgradeDecision=' + upgradeDecision);
 
-    const competitionId: string = data.restDayVotes[0].competitionRef.competitionId;
-    const lastDay = data.restDayVotes.length > 0 ? data.restDayVotes[0].day : day;
-    console.log('competitionId=' + competitionId + ', lastDay=' + lastDay);
-    if (!competitionId) {
-        console.log('ERROR: CompetitionId is missing')
-        return null;
-    }
     // get the existing upgrade, in order to upgrade it. Otherwise a new one will be created.
     const existingUpgrade: RefereeUpgrade|null = await getRefereeUpgrade(ctx.db, referee.id, lastDay, response);
     const id = existingUpgrade ? existingUpgrade.id : '';
