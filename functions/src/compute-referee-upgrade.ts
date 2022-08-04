@@ -31,6 +31,7 @@ async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteri
 
     const data: WorkingData = newWorkingData();
     data.restDayVotes = await findPanelVotes(ctx, referee, beginDate, day, referee.referee.nextRefereeLevel);
+    console.log('AFTER findPanelVotes, workingData=' + JSON.stringify(data));
     if (data.restDayVotes.length === 0) {
         console.log('No panelVotes found');
         return null;
@@ -44,7 +45,6 @@ async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteri
     }
 
     const allDays: CompetitionDayPanelVote[] = data.restDayVotes.map(e=> e);
-    console.log('panelVotes=' + JSON.stringify(allDays));
 
     extractDays(upgradeCriteria, data);
     console.log('AFTER extractDays, workingData=' + JSON.stringify(data));
@@ -60,7 +60,7 @@ async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteri
     const id = existingUpgrade ? existingUpgrade.id : '';
 
     // build the upgrade from all data
-    return {
+    const ru: RefereeUpgrade = {
         id,
         version: 0,
         creationDate: new Date(),
@@ -80,6 +80,8 @@ async function compute(day: Date, referee: User, upgradeCriteria: UpgradeCriteri
         upgradeCriteriaId: upgradeCriteria.id,
         allPanelVotes: allDays
     };
+    console.log('Referee Upgrade: ' + JSON.stringify(ru));
+    return ru;
 }
 
 function computeUpgradeStatus(data: WorkingData, upgradeCriteria: UpgradeCriteria): boolean {
@@ -239,10 +241,14 @@ function extractDays(upgradeCriteria: UpgradeCriteria, data: WorkingData) {
        // sort by the reverse day
        return b.day.getTime() - a.day.getTime();
     });
+    console.log('AFTER sorting days, workingData=' + JSON.stringify(data));
     // Second, extract days depending on their category compatibility. data.restDayVotes is updated at each step
     data.c5dayVotes = extractDaysOfLevel(upgradeCriteria.c5DaysRequired, data.restDayVotes, 'C5');
+    console.log('AFTER extracting C5 days, workingData=' + JSON.stringify(data));
     data.c4dayVotes = extractDaysOfLevel(upgradeCriteria.c4DaysRequired, data.restDayVotes, 'C5', 'C4');
+    console.log('AFTER extracting C4+ days, workingData=' + JSON.stringify(data));
     data.c3dayVotes = extractDaysOfLevel(upgradeCriteria.c3DaysRequired, data.restDayVotes, 'C5', 'C4', 'C3');
+    console.log('AFTER extracting C3+ days, workingData=' + JSON.stringify(data));
 }
 
 /**
@@ -266,8 +272,13 @@ function extractDaysOfLevel(cXDaysRequired: number,
 
         //3 - Remove the retained days from the rest
         removeElementsFrom(cXdayVotes, restDayVotes);
+
+        //return extracted days
+        return cXdayVotes;
+    } else {
+        console.log('No day required for' + categories.join(','));
+        return [];
     }
-    return [];
 }
 /**
  * Removes all elements containing in 'elementsToRemove', from the array 'ar'.
