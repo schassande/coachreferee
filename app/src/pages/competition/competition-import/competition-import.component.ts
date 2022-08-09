@@ -33,6 +33,7 @@ export class CompetitionImportComponent implements OnInit {
   nbError = 0;
   updateExisting = true;
   removeUnreferenced = false;
+  importedGames = 0;
 
   constructor(
     private coachingService: CoachingService,
@@ -498,6 +499,7 @@ export class CompetitionImportComponent implements OnInit {
   }
 
   importCompetition() {
+    this.importedGames = 0;
     let obs: Observable<any> = of('');
     if (!this.importedDatas.dataToImport.id) {
       this.importedDatas.dataToImport.id = this.competitionService.createId();
@@ -572,7 +574,8 @@ export class CompetitionImportComponent implements OnInit {
           this.setReferees(rcoaching.data, ana);
           return this.coachingService.save(rcoaching.data);
         }
-      })
+      }),
+      map(() => {this.importedGames++;})
     );
   }
   createCoaching(ana: AnalysedImport<GameAllocation>,
@@ -606,7 +609,8 @@ export class CompetitionImportComponent implements OnInit {
         if (rcoaching.data) {
           refco.coachingId = rcoaching.data.id;
         }
-      })
+      }),
+      map(() => {this.importedGames++;})
     );
   }
   private setReferees(coaching: Coaching, ana: AnalysedImport<GameAllocation>) {

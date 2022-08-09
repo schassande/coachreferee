@@ -30,7 +30,10 @@
           <ion-button shape="round" (click)="loadFile()" [disabled]="analysisStatus == 'ANALYSING'">Browse file</ion-button>
       </span>
     </div>
-    <div *ngIf="analysisStatus === 'ANALYSING'" style="text-align: center; margin: 10px;">Analysing...</div>
+    <div *ngIf="analysisStatus === 'ANALYSING'" style="text-align: center; margin: 10px;">
+        <ion-spinner></ion-spinner>
+        Analysing...
+    </div>
     <div *ngIf="analysisStatus === 'ANALYSED'" style="margin: 10px;">
         <p>The analysis is finished.
             <span *ngIf="nbError !== 0">But {{nbError}} error(s) detected. Please fix the problem and resubmit your file.</span>
@@ -79,7 +82,14 @@
             </ion-item-group>
         </ion-list>
         <div style="text-align: center">
-            <ion-button shape="round" (click)="importCompetition()" [disabled]="!showImportButton">Import games</ion-button>
+            <ion-button shape="round" (click)="importCompetition()" [disabled]="!showImportButton">
+                <span *ngIf="importStatus === 'IMPORTING'">
+                    <ion-spinner></ion-spinner>&nbsp;
+                    &nbsp;
+                    <span>{{importedGames / importedDatas.gameAnalysis.length | percent }</span>
+                </span>
+                Import games
+            </ion-button>
         </div>
     </div>
 </ion-content>
