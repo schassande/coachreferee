@@ -108,6 +108,7 @@ import { XpService } from './service/XpService';
 import { RefereeSelectorService } from 'src/pages/referee/referee-selector-service';
 import { NotificationService } from './service/NotificationService';
 import { UserPreferenceService } from './service/UserPreferenceService';
+import { TextLimiterPipe } from 'src/pages/widget/TextLimiterPipe';
 
 
 @NgModule({
@@ -127,7 +128,8 @@ import { UserPreferenceService } from './service/UserPreferenceService';
         UserEditPage, UserLoginComponent, UserWaitingValidationPage,
         XpListComponent, XpEditComponent,
         SharingComponent, CompetencyComponent, CompetencyPointsComponent, CompetitionSelectorComponent,
-        CameraIconComponent, UserSelectorComponent],
+        CameraIconComponent, UserSelectorComponent,
+        TextLimiterPipe],
     imports: [
         AppRoutingModule,
         provideFirebaseApp(() => initializeApp(environment.firebase)),

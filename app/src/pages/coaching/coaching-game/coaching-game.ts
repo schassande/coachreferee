@@ -431,6 +431,7 @@ export class CoachingGamePage implements OnInit {
     } else if (feedback.period === 2) {
       feedback.period = 1;
     }
+    this.saveCoaching();
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -465,7 +466,12 @@ export class CoachingGamePage implements OnInit {
       this.saveCoaching();
     }
   }
-
+  toggleAppliedLater(feedback: Feedback) {
+    if (!this.readonly) {
+      feedback.appliedLater = !feedback.appliedLater;
+      this.saveCoaching();
+    }
+  }
   public selectFeedback(feedback: Feedback, idx: number) {
     this.navController.navigateRoot([`/coaching/coach/${this.coaching.id}/referee/${this.currentRefereeIdx}/negativeFeedback/${idx}`]);
   }
