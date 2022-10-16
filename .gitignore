@@ -1,6 +1,6 @@
 .vscode
 hosting/app/*
 html/*
-node_modules
+node_modules*
 mobile/firebase-config.json
 mobile/src/environments/environment.ts
