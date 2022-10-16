@@ -104,6 +104,7 @@
                         <ion-button name="trash" color="danger" shape="round" (click)="delete(user)">Delete</ion-button>
                         <ion-button name="resetPassword" shape="round" (click)="resetPassword(user)">Reset Pwd</ion-button>
                         <ion-button name="edit" shape="round" routerLink="/user/edit/{{user.id}}">Edit</ion-button>
+                        <ion-button *ngIf="user.accountStatus === 'ACTIVE'" color="warning" name="spawn" shape="round" (click)="spawn(user)">Spawn</ion-button>
                     </div>
                 </ion-label>
             </ion-item>

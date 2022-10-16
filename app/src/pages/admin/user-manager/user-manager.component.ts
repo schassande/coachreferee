@@ -7,6 +7,7 @@ import { UserService } from './../../../app/service/UserService';
 import { mergeMap, map } from 'rxjs/operators';
 import { DataRegion } from 'src/app/model/common';
 import { ToolService } from 'src/app/service/ToolService';
+import { ConnectedUserService } from 'src/app/service/ConnectedUserService';
 
 @Component({
   selector: 'app-user-manager',
@@ -38,6 +39,7 @@ export class UserManagerComponent implements OnInit {
 
   constructor(
     private alertCtrl: AlertController,
+    private connectedUserService: ConnectedUserService,
     private navController: NavController,
     private toolService: ToolService,
     private userService: UserService
@@ -175,6 +177,11 @@ export class UserManagerComponent implements OnInit {
       this.filteredUsers = this.users;
       console.log('filterUsers(): no filtering');
     }
+  }
+
+  spawn(user) {
+    this.connectedUserService.userConnected(user, null);
+    this.navController.navigateRoot('/home');
   }
   lock(user: User) {
     user.accountStatus = 'LOCKED';
