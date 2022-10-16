@@ -60,6 +60,15 @@
                 </ion-select>
             </ion-item>
             <ion-item>
+                <ion-label>Role</ion-label>
+                <ion-select slot="end" (ionChange)="onRoleChange()" [(ngModel)]="role" interface="action-sheet">
+                    <ion-select-option value="">All</ion-select-option>
+                    <ion-select-option value="REFEREE">Referee</ion-select-option>
+                    <ion-select-option value="REFEREE_COACH">Referee Coach</ion-select-option>
+                    <ion-select-option value="ADMIN">ADMIN</ion-select-option>
+                </ion-select>
+            </ion-item>
+            <ion-item>
                 <ion-label>Region</ion-label>
                 <ion-select slot="end" (ionChange)="onRegionChange()" [(ngModel)]="region" interface="action-sheet">
                     <ion-select-option value="">All</ion-select-option>
@@ -68,6 +77,9 @@
                     <ion-select-option value="New Zealand">New Zealand</ion-select-option>
                     <ion-select-option value="Others">Others</ion-select-option>
                 </ion-select>
+            </ion-item>
+            <ion-item>
+                <ion-searchbar [(ngModel)]="searchInput" (ionChange)="onSearchBarInput()" animated="true" debounce="500" inputmode="text" type="text" showCancelButton="never" showClearButton="never" placeholder="user name" searchIcon="search-outline"></ion-searchbar>
             </ion-item>
             <div style="margin: 20px; text-align: right;" *ngIf="filteredUsers">{{filteredUsers.length}} user(s) found.</div>
             <ion-item *ngFor="let user of filteredUsers">

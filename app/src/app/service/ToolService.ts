@@ -45,4 +45,7 @@ export class ToolService {
     isValidString(str: string, minimalLength: number = 0, maximalLength: number = 100): boolean {
         return str && str.trim().length >= minimalLength && str.trim().length <= maximalLength;
     }
+    stringContains(elem: string, text: string): boolean {
+        return elem && text && text.toLowerCase().indexOf(elem.toLowerCase()) >= 0;
+    }
 }
