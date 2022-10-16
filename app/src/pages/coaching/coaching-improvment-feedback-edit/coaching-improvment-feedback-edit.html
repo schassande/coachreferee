@@ -24,7 +24,7 @@
         </ion-col>
     </ion-row>
     <ion-list>
-        <ion-searchbar *ngIf="!readonly" [(ngModel)]="searchInput" showCancelButton="never" (ionChange)="onSearchBarInput($event)" tabindex="1" inputmode="text" type="text" autofocus></ion-searchbar>
+        <ion-searchbar *ngIf="!readonly" [(ngModel)]="searchInput" showCancelButton="never" (ionChange)="onSearchBarInput($event)" tabindex="1" inputmode="text" type="text" spellcheck="true" autocorrect="true"></ion-searchbar>
         <div *ngIf="pros && pros.length === 0" style="text-align: center; font-style: italic">No PRO found.</div>
         <ion-item-group *ngIf="!readonly && showProList" style="margin: 0 10px 25px 50px; border: 1px solid lightgray;">
             <ion-item *ngFor="let pro of pros">
@@ -36,30 +36,30 @@
             <ion-item-divider color="light">PRO</ion-item-divider>
             <ion-item>
                 <ion-label fixed>Name</ion-label>
-                <ion-input type="text" placeholder="Short description of the problem (Required)" [(ngModel)]="feedback.problemShortDesc" placeholder="short desc (required)" [readonly]="readonly"></ion-input>
+                <ion-input type="text" placeholder="Short description of the problem (Required)" [(ngModel)]="feedback.problemShortDesc" placeholder="short desc (required)" autocorrect="on" spellcheck="true" inputmode="text" [readonly]="readonly"></ion-input>
             </ion-item>
             <ion-item>
                 <ion-label fixed>Problem</ion-label>
-                <ion-textarea placeholder="Description of the problem" rows="3" [(ngModel)]="feedback.problem" [readonly]="readonly" tabindex="2"></ion-textarea>
+                <ion-textarea placeholder="Description of the problem" rows="3" [(ngModel)]="feedback.problem" [readonly]="readonly" autocorrect="on" spellcheck="true" inputmode="text" tabindex="2"></ion-textarea>
             </ion-item>
             <ion-item>
                 <ion-label fixed>Remedy</ion-label>
-                <ion-textarea placeholder="Description of the remedy" rows="3" [(ngModel)]="feedback.remedy" [readonly]="readonly" tabindex="3"></ion-textarea>
+                <ion-textarea placeholder="Description of the remedy" rows="3" [(ngModel)]="feedback.remedy" [readonly]="readonly" autocorrect="on" spellcheck="true" inputmode="text" tabindex="3"></ion-textarea>
             </ion-item>
             <ion-item>
                 <ion-label fixed>Outcome</ion-label>
-                <ion-textarea placeholder="Description of the outcome" rows="3" [(ngModel)]="feedback.outcome" [readonly]="readonly" tabindex="4"></ion-textarea>
+                <ion-textarea placeholder="Description of the outcome" rows="3" [(ngModel)]="feedback.outcome" [readonly]="readonly" autocorrect="on" spellcheck="true" inputmode="text" tabindex="4"></ion-textarea>
             </ion-item>
             <ion-item>
                 <ion-label fixed>Skill</ion-label>
-                <ion-input type="text" [(ngModel)]="feedback.skillName" [readonly]="readonly" tabindex="5"></ion-input>
+                <ion-input type="text" [(ngModel)]="feedback.skillName" [readonly]="readonly" autocorrect="on" spellcheck="true" inputmode="text" tabindex="5"></ion-input>
             </ion-item>
         </ion-item-group>
 
         <ion-item-group *ngIf="feedback">
             <ion-item-divider color="light">Feedback</ion-item-divider>
             <ion-item>
-                <ion-label fixed>Apply later</ion-label>
+                <ion-label fixed>Improve later</ion-label>
                 <ion-input *ngIf="readonly" type="text" [readonly]="true" tabindex="6">{{feedback.appliedLater?'Yes':'No'}}</ion-input>
                 <ion-toggle *ngIf="!readonly" [(ngModel)]="feedback.appliedLater" tabindex="6"></ion-toggle>
             </ion-item>
