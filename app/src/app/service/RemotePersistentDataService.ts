@@ -14,7 +14,6 @@ import { Firestore,
     DocumentSnapshot,
     getDoc,
     getDocFromCache,
-    getDocFromServer,
     getDocs,
     getDocsFromCache,
     getDocsFromServer,
@@ -164,7 +163,7 @@ export abstract class RemotePersistentDataService<D extends PersistentData> impl
 
     protected docSnapNTToResponse(docSnap: DocumentSnapshot<D>): ResponseWithData<D> {
         const data: D = docSnap && docSnap.exists ? docSnap.data() as D : null;
-        // console.log('load item ' + docSnap.id + ' exists=' + docSnap.exists + ', data=', data);
+        // comment console.log('load item ' + docSnap.id + ' exists=' + docSnap.exists + ', data=', data);
         if (data) {
             // store id inside persistent object
             data.id = docSnap.id;
@@ -175,7 +174,7 @@ export abstract class RemotePersistentDataService<D extends PersistentData> impl
 
     protected docSnapToResponse(docSnap: DocumentSnapshot<D>): ResponseWithData<D> {
         const data: D = docSnap && docSnap.exists ? docSnap.data() : null;
-        // console.log('load item ' + docSnap.id + ' exists=' + docSnap.exists + ', data=', data);
+        // comment console.log('load item ' + docSnap.id + ' exists=' + docSnap.exists + ', data=', data);
         if (data) {
             // store id inside persistent object
             data.id = docSnap.id;

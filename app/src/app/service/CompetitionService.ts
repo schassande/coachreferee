@@ -84,11 +84,11 @@ export class CompetitionService extends RemotePersistentDataService<Competition>
         if (!competitions) {
             return competitions;
         }
-        let array: Competition[] = competitions.sort(this.compareCompetition.bind(this));
+        competitions.sort(this.compareCompetition.bind(this));
         if (reverse) {
-            array = array.reverse();
+            competitions = competitions.reverse();
         }
-        return array;
+        return competitions;
     }
 
     public compareCompetition(competition1: Competition, competition2: Competition): number {

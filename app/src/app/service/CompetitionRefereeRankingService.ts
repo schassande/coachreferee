@@ -197,7 +197,7 @@ export class CompetitionRefereeRankingService extends RemotePersistentDataServic
   }
 
   public toList(group: RankingGroup): RefereeRef[][] {
-    // console.log('>>>>>>>>>> toList(' + group.groupName + ')');
+    // comment console.log('>>>>>>>>>> toList(' + group.groupName + ')');
     const result: RefereeRef[][] = [];
     if (group.rankingTrees) {
         group.rankingTrees.forEach((rootNode: RankingNode) => {
@@ -207,12 +207,12 @@ export class CompetitionRefereeRankingService extends RemotePersistentDataServic
             this.toListOver(rootNode, currentTrack, result);
         });
     }
-    // console.log('<<<<<<<<<<< toList(' + group.groupName + ')', result);
+    // comment console.log('<<<<<<<<<<< toList(' + group.groupName + ')', result);
     return result;
   }
 
   private toListOver(node: RankingNode, currentTrack: RefereeRef[], result: RefereeRef[][]) {
-    // console.log('toListOver(' + node.refereeShortName + ')',node, currentTrack, result);
+    // comment console.log('toListOver(' + node.refereeShortName + ')',node, currentTrack, result);
     if (node.children) {
         node.children.forEach((child, idx) => {
             if (idx === 0) {
@@ -233,7 +233,7 @@ export class CompetitionRefereeRankingService extends RemotePersistentDataServic
 
   public launchNextRanking(list: CompetitionRankingList,
                            refereeComparator: RefereeComparator): Observable<StepResult<CompetitionRankingList>> {
-    // console.log('launchNextRanking', list.id);
+    // comment console.log('launchNextRanking', list.id);
     // Check if the list is already ranked
     if (list.ranked) {
       console.log('launchNextRanking', list.id, 'already ranked');
@@ -252,7 +252,7 @@ export class CompetitionRefereeRankingService extends RemotePersistentDataServic
       list.rankedReferees = this.toList(list.groups[0])[0];
       list.ranked = true;
     } else {
-      // console.log('launchNextRanking', list.id, 'else');
+      // comment console.log('launchNextRanking', list.id, 'else');
     }
     return of(new StepResult(list));
   }
@@ -271,7 +271,7 @@ export class CompetitionRefereeRankingService extends RemotePersistentDataServic
   }
 
   private mergeTwoGroups(list: CompetitionRankingList, groupIdx1: number, groupIdx2: number) {
-    // console.log('Merge groups', list.groups[groupIdx1].groupName, list.groups[groupIdx2].groupName);
+    // comment console.log('Merge groups', list.groups[groupIdx1].groupName, list.groups[groupIdx2].groupName);
     // Inject root nodes from group2 into group1
     list.groups[groupIdx2].rankingTrees.forEach((rootNode2) => {
         list.groups[groupIdx1].rankingTrees.push(rootNode2);
@@ -287,13 +287,13 @@ export class CompetitionRefereeRankingService extends RemotePersistentDataServic
   private rankGroup(group: RankingGroup,
                     list: CompetitionRankingList,
                     refereeComparator: RefereeComparator): Observable<StepResult<RankingGroup>> {
-    // console.log('rankGroup(' + group.groupName + ')');
+    // comment console.log('rankGroup(' + group.groupName + ')');
     if (group.ranked) {
-      // console.log('rankGroup(' + group.groupName + ') already ranked');
+      // comment  console.log('rankGroup(' + group.groupName + ') already ranked');
       return of(new StepResult(group));
     }
     if (group.rankingTrees.length === 1 && group.rankingTrees[0].ranked) {
-      // console.log('rankGroup(' + group.groupName + ') become ranked');
+      // comment console.log('rankGroup(' + group.groupName + ') become ranked');
       group.ranked = true;
       return of(new StepResult(group));
     }
@@ -326,8 +326,8 @@ export class CompetitionRefereeRankingService extends RemotePersistentDataServic
               node2.ranked = false;
               return new StepResult(group);
             } else {
-              // console.log('rankGroup', node1.refereeShortName, node2.refereeShortName,
-              //    'stop process', stepResult.result, node2.refereeId, node1.refereeId);
+              // comment console.log('rankGroup', node1.refereeShortName, node2.refereeShortName,
+              // comment     'stop process', stepResult.result, node2.refereeId, node1.refereeId);
               return new StepResult(group, false, false);
             }
           })
@@ -350,7 +350,7 @@ export class CompetitionRefereeRankingService extends RemotePersistentDataServic
   private rankNode(node: RankingNode,
                    list: CompetitionRankingList,
                    refereeComparator: RefereeComparator): Observable<StepResult<RankingNode>> {
-    // console.log('rankNode', node.refereeShortName);
+    // comment console.log('rankNode', node.refereeShortName);
     if (node.children.length === 0) {
       node.ranked = true;
       return of(new StepResult(node));
@@ -385,8 +385,8 @@ export class CompetitionRefereeRankingService extends RemotePersistentDataServic
             node2.children.push(node1);
             return new StepResult(node);
           } else {
-            // console.log('rankNode', node1.refereeShortName, node2.refereeShortName,
-            //  'stop process', stepResult.result, node2.refereeId, node1.refereeId);
+            // comment console.log('rankNode', node1.refereeShortName, node2.refereeShortName,
+            // comment  'stop process', stepResult.result, node2.refereeId, node1.refereeId);
             return new StepResult(node, false, false);
           }
         })

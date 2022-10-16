@@ -254,7 +254,7 @@ export class UserService  extends RemotePersistentDataService<User> {
     }
 
     public resetPassword(email, sub: Subject<ResponseWithData<User>> = null) {
-        // console.log('Reset password of the account', email);
+        // comment console.log('Reset password of the account', email);
         sendPasswordResetEmail(this.angularFireAuth, email).then(() => {
             this.alertCtrl.create({message: 'An email has been sent to \'' + email + '\' to reset the password.'})
                 .then((alert) => alert.present());
