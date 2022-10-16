@@ -31,10 +31,22 @@
 
 
 <ion-content *ngIf="coaching" (swipe)="onSwipe($event)">
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="!readonly && currentReferee" edge="true" style="margin-bottom: 40px;">
+        <ion-fab-button style='--background:green; font-size: 1.6em; margin-bottom: 10px;' (click)="newPositiveFeedback($event)">+</ion-fab-button>
+        <ion-fab-button style='--background:red; font-size: 1.6em;' (click)="newFeedback($event)">+</ion-fab-button>
+    </ion-fab>
+    <ion-fab vertical="bottom " horizontal="start " slot="fixed" *ngIf="!readonly && periods && periods.length> 1 && currentReferee">
+        <ion-row>
+            <ion-col *ngFor="let period of periods">
+                <ion-fab-button *ngIf="coaching.currentPeriod === period" style='--background:blue; --color: white; font-size: 1.6em;'>{{period}}</ion-fab-button>
+                <ion-fab-button *ngIf="coaching.currentPeriod !== period" style='--background:white; --color: blue; font-size: 1.6em;' (click)="setPeriod(period)">{{period}}</ion-fab-button>
+            </ion-col>
+        </ion-row>
+    </ion-fab>
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="currentRefereeIdx === 4 || (coaching.dataStatus == 'CLEAN' && currentRefereeIdx === 3)">
+        <ion-fab-button (click)="newCoaching()" class="plusButton">+</ion-fab-button>
+    </ion-fab>
     <div *ngIf="currentRefereeIdx === 3">
-        <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="coaching.dataStatus == 'CLEAN'">
-            <ion-fab-button (click)="newCoaching()" class="plusButton">+</ion-fab-button>
-        </ion-fab>
         <ion-list>
             <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;">
                 <ion-item-divider color="light" style="text-align: center; font-size: 1.2em; padding: 10px;">
@@ -277,27 +289,12 @@
                 </ion-item>
             </ion-item-group>
         </ion-list>
-        <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="!readonly">
-            <ion-fab-button style='--background:green; font-size: 1.6em; margin-bottom: 10px;' (click)="newPositiveFeedback($event)">+</ion-fab-button>
-            <ion-fab-button style='--background:red; font-size: 1.6em;' (click)="newFeedback($event)">+</ion-fab-button>
-        </ion-fab>
-        <ion-fab vertical="bottom " horizontal="start " slot="fixed" *ngIf="!readonly && periods && periods.length> 1">
-            <ion-row>
-                <ion-col *ngFor="let period of periods">
-                    <ion-fab-button *ngIf="coaching.currentPeriod === period" style='--background:blue; --color: white; font-size: 1.6em;'>{{period}}</ion-fab-button>
-                    <ion-fab-button *ngIf="coaching.currentPeriod !== period" style='--background:white; --color: blue; font-size: 1.6em;' (click)="setPeriod(period)">{{period}}</ion-fab-button>
-                </ion-col>
-            </ion-row>
-        </ion-fab>
         <div style="margin-bottom: 120px;">&nbsp;</div>
     </div>
     <!-- ======================================================================================================= -->
     <!-- ======================================================================================================= -->
     <!-- ======================================================================================================= -->
     <div *ngIf="currentRefereeIdx === 4">
-        <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-            <ion-fab-button (click)="newCoaching()" class="plusButton">+</ion-fab-button>
-        </ion-fab>
         <ion-list>
             <ion-item-group>
                 <ion-item-divider color="light">Coachings of the day</ion-item-divider>
