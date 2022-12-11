@@ -16,6 +16,11 @@
             <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
         </ion-buttons>
     </ion-toolbar>
+    <div *ngIf="coaching && coaching.dataStatus === 'NEW'" style="background-color: red; color: white; font-weight: bold; text-align: center; padding: 10px;">
+        Data are not saved!
+        <br>Please ensure to set the competition name
+        <br>and to select at least one referee to coach.
+    </div>
     <ion-segment #segment id="refereeSegment" *ngIf="coaching && coaching.referees.length > 0" [ngModel]="currentRefereeIdx" (ionChange)="refereeSelected()">
         <ion-segment-button value="3" style="--background-checked: gold;">
             <ion-icon name="settings-outline"></ion-icon>
