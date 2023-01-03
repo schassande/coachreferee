@@ -27,6 +27,7 @@ export class CoachingListPage implements OnInit {
   loading = false;
   today = false;
   currentYearOnly = true;
+  year: number;
 
   constructor(
     public alertCtrl: AlertController,
@@ -40,6 +41,7 @@ export class CoachingListPage implements OnInit {
 
   ngOnInit() {
     this.helpService.setHelp('coaching-list');
+    this.year = new Date().getFullYear();
     this.searchCoaching();
   }
   onToday() {

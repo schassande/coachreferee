@@ -9,6 +9,10 @@ import { ConnectedUserService } from 'src/app/service/ConnectedUserService';
 import { User } from 'src/app/model/user';
 import { NotificationService } from 'src/app/service/NotificationService';
 import { DateService } from 'src/app/service/DateService';
+import { CoachingService } from 'src/app/service/CoachingService';
+import { Coaching } from 'src/app/model/coaching';
+import { Competition } from 'src/app/model/competition';
+import { CompetitionService } from 'src/app/service/CompetitionService';
 
 
 @Component({
@@ -21,10 +25,14 @@ export class HomePage implements OnInit {
   showInstallBtn = false;
   deferredPrompt;
   notifications: Notification[] = [];
+  agenda: CoachingView[] = [];
+  defaultCompetition: Competition = null;
 
   constructor(
       private alertCtrl: AlertController,
       private connectedUserService: ConnectedUserService,
+      private competitionService: CompetitionService,
+      private coachingService: CoachingService,
       public dateService: DateService,
       private helpService: HelpService,
       private invitationService: InvitationService,
@@ -55,6 +63,11 @@ export class HomePage implements OnInit {
     this.notificationService.findMyNotitifications().subscribe((rn) => {
       this.notifications = rn.data;
     });
+    this.loadDayCoachings();
+
+    if (this.currentUser.defaultCompetitionId) {
+      this.competitionService.get(this.currentUser.defaultCompetitionId).subscribe((rc => this.defaultCompetition = rc.data));
+    }
   }
 
   addToHome() {
@@ -93,4 +106,39 @@ export class HomePage implements OnInit {
   closeNotification(notificationIdx: number) {
     this.notificationService.closeNotification(this.notifications.splice(notificationIdx)[0]).subscribe();
   }
+  loadDayCoachings() {
+    const begin = this.dateService.to00h00(new Date());
+    const end = this.dateService.nextDay(this.dateService.to00h00(new Date(begin)));
+    this.coachingService.getCoachingByRefereeCoachCompetition(this.currentUser.id, begin, end).subscribe((rcs) => {
+      if (rcs.data) {
+        this.agenda = this.extractPrevCurrAndNext(rcs.data);
+      } else {
+        this.agenda = [];
+      }
+    });
+  }
+  extractPrevCurrAndNext(coachings: Coaching[]): CoachingView[] {
+    if (!coachings || coachings.length === 0) {
+      return [];
+    }
+    const now = new Date().getTime();
+    coachings = this.coachingService.sortCoachings(coachings)
+    let nextIdx = coachings.findIndex(c => this.coachingService.getTimeSlotAsDate(c).getTime() > now);
+    if (nextIdx < 0) { //take the last
+      console.log('last');
+      return [this.toCoachingView(coachings[coachings.length-1])];
+    } else if (nextIdx === 0) { // take the first
+      console.log('first');
+      return [this.toCoachingView(coachings[0])];
+    } else { // take Curr and next
+      return coachings.splice(Math.max(nextIdx-1, 0), 2).map(this.toCoachingView);
+    }
+  }
+
+  toCoachingView(c: Coaching): CoachingView {
+    return {...c,  refereeShortNames: c.referees.map((ref) => ref.refereeShortName).join(', ') } as CoachingView;
+  }
+}
+export interface CoachingView extends Coaching {
+  refereeShortNames: string;
 }

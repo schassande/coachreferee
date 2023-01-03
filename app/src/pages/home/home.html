@@ -8,31 +8,56 @@
     </ion-toolbar>
 </ion-header>
 <ion-content>
+    <ion-card>
+        <ion-card-header color="light">
+            <ion-card-title style="font-size: 1.2em;">
+                <div style="float: right;">
+                    <mat-icon fontIcon="search" routerLink="/competition/list"></mat-icon>
+                    &nbsp;
+                    <mat-icon fontIcon="add_box" routerLink="/competition/-1/edit"></mat-icon>
+                </div>
+                <div>
+                    <div *ngIf="defaultCompetition" routerLink="/competition/{{defaultCompetition.id}}/edit">{{defaultCompetition.name}}</div>
+                    <div style="font-size: 1.3em; font-weight: bold;" *ngIf="!defaultCompetition">
+                        Competitions
+                    </div>
+                </div>
+                <div style="clear: both;"></div>
+            </ion-card-title>
+        </ion-card-header>
+    </ion-card>
+    <ion-card>
+        <ion-card-header color="light">
+            <ion-card-title style="font-size: 1.2em;">
+                <div style="float: right;">
+                    <mat-icon fontIcon="search" routerLink="/coaching/list"></mat-icon>
+                    &nbsp;
+                    <mat-icon fontIcon="add_box" routerLink="/coaching/create"></mat-icon>
+                </div>
+                <div style="font-size: 1.3em; font-weight: bold;">
+                    Coaching
+                </div>
+                <div style="clear: both;"></div>
+                <div *ngIf="agenda.length > 0">
+                    <div *ngFor="let coaching of agenda" class="coaching-item" routerLink="/coaching/edit/{{coaching.id}}">
+                        <span style="font-weight: bold;">{{coaching.timeSlot}}</span>: Field {{coaching.field}}<br> {{coaching.refereeShortNames}}
+                    </div>
+                </div>
+                <div *ngIf="agenda.length === 0">
+                    No coaching planified today
+                </div>
+            </ion-card-title>
+        </ion-card-header>
+    </ion-card>
+    <div style="margin: 5px auto; width: 100%;">
+        <app-home-entry name="Assess" link="/assessment/list" icon="playlist_add_check"></app-home-entry>
+        <app-home-entry name="Referees" link="/referee/list" icon="person"></app-home-entry>
+        <app-home-entry name="PRO Lib" link="/pro/list" icon="local_library"></app-home-entry>
+        <app-home-entry name="Coach XP" link="/xp/list" icon="history"></app-home-entry>
+        <app-home-entry name="Settings" link="/settings" icon="settings"></app-home-entry>
+        <app-home-entry name="Admin" link="/admin" icon="build"></app-home-entry>
+    </div>
     <ion-list>
-        <ion-item detail routerLink="/competition/list">
-            <ion-label class="menu-entry">Competitions</ion-label>
-        </ion-item>
-        <ion-item detail routerLink="/coaching/list">
-            <ion-label class="menu-entry">Coach a game</ion-label>
-        </ion-item>
-        <ion-item detail routerLink="/assessment/list">
-            <ion-label class="menu-entry">Assess</ion-label>
-        </ion-item>
-        <ion-item detail routerLink="/referee/list">
-            <ion-label class="menu-entry">Referees</ion-label>
-        </ion-item>
-        <ion-item detail routerLink="/pro/list">
-            <ion-label class="menu-entry">PROs</ion-label>
-        </ion-item>
-        <ion-item detail routerLink="/xp/list">
-            <ion-label class="menu-entry">Coach XP</ion-label>
-        </ion-item>
-        <ion-item detail routerLink="/settings">
-            <ion-label class="menu-entry">Settings</ion-label>
-        </ion-item>
-        <ion-item detail routerLink="/admin" *ngIf="isLevelAdmin()">
-            <ion-label class="menu-entry">Admin</ion-label>
-        </ion-item>
         <ion-item (click)="addToHome()" *ngIf="showInstallBtn">
             <ion-label class="menu-entry">Install on device</ion-label>
         </ion-item>
@@ -59,9 +84,9 @@
             </ion-card-content>
         </ion-card>
     </div>
-    <div style="text-align: center; margin-top: 20px;">
+    <div class="invite-zone">
         <div style="margin-bottom: 3px;"><a (click)="inviteCoach()">Invite a coach to use the app?</a></div>
         <div>Make sure you trust the people you invite.<br>You answer for him/her.</div>
     </div>
-    <div color="light" style="text-align: center; font-size: 0.8em; margin-top: 20px;">Connected as {{getShortName()}}.</div>
+    <div color="light" style="text-align: center; font-size: 0.8em; margin-top: 10px;">Connected as {{getShortName()}}.</div>
 </ion-content>

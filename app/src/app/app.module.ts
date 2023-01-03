@@ -109,7 +109,8 @@ import { RefereeSelectorService } from 'src/pages/referee/referee-selector-servi
 import { NotificationService } from './service/NotificationService';
 import { UserPreferenceService } from './service/UserPreferenceService';
 import { TextLimiterPipe } from 'src/pages/widget/TextLimiterPipe';
-
+import { HomeEntry } from 'src/pages/home/HomeEntry';
+import {MatIconModule} from '@angular/material/icon';
 
 @NgModule({
     declarations: [AppComponent,
@@ -120,7 +121,7 @@ import { TextLimiterPipe } from 'src/pages/widget/TextLimiterPipe';
         CompetitionCoachesPage, CompetitionHomePage, CompetitionRankingPage, CompetitionUpgradesPage, CompetitionRefereesPage,
         CompetitionRankingPage, CompetitionRankingBestOf2Page, CompetitionGamesPage, CompetitionRankingListComponent,
         CompetitionRankingNewComponent,
-        HomePage, HelpWidgetComponent,
+        HomePage, HomeEntry, HelpWidgetComponent,
         ProEditPage, ProListPage,
         RefereeListPage, RefereeViewPage, RefereeSelectPage, RefereeEditPage,
         SettingsPage,
@@ -146,6 +147,7 @@ import { TextLimiterPipe } from 'src/pages/widget/TextLimiterPipe';
         FormsModule,
         HttpClientModule,
         MarkdownModule.forRoot({ loader: HttpClient }),
+        MatIconModule,
         IonicModule.forRoot(),
         IonicStorageModule.forRoot(),
         ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })

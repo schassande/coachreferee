@@ -272,6 +272,14 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
       });
       return lists;
     }
+
+    public getTimeSlotAsDate(coaching: Coaching): Date {
+      const res = this.dateService.to00h00(new Date(coaching.date));
+      const timeSlotElems: string[] = coaching.timeSlot.split(TIME_SLOT_SEP);
+      res.setHours(Number.parseInt(timeSlotElems[0], 0));
+      res.setMinutes(Number.parseInt(timeSlotElems[1], 0));
+      return res;
+    }
   
 }
 export interface CoachingList {

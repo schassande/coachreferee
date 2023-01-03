@@ -29,7 +29,7 @@
         <ion-label style="display: inline-block; margin-left: 5px;">&nbsp;Today</ion-label>
 
         <ion-checkbox style="display: inline-block; margin-left: 10px;" [(ngModel)]="currentYearOnly" (ionChange)="doRefresh()"></ion-checkbox>
-        <ion-label style="display: inline-block; margin-left: 5px;">This year</ion-label>
+        <ion-label style="display: inline-block; margin-left: 5px;">{{year}}</ion-label>
 
         <div *ngIf="loading" style="margin: 20px auto; text-align: center;">
             <ion-spinner></ion-spinner>
@@ -38,7 +38,10 @@
             <ion-refresher-content></ion-refresher-content>
         </ion-refresher>
     </div>
-    <ion-list style="margin: 0px 0 60px 0;">
+    <ion-list style="margin: 0px 0 60px 0;" *ngIf="!loading">
+        <div *ngIf="!coachingLists || coachingLists.length === 0" style="text-align: center; margin-top: 20px;">
+            No coaching<span *ngIf="currentYearOnly">&nbsp;in {{year}}</span><span *ngIf="today">&nbsp;today</span>.
+        </div>
         <div *ngFor="let coachingList of coachingLists">
             <ion-item-group *ngIf="!today || coachingList.today">
                 <ion-item-divider color="light">
