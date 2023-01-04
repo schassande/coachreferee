@@ -4,3 +4,33 @@ ion-item,
 .past {
     background-color: burlywood;
 }
+
+.search-bar {
+    width: 100%;
+}
+
+.search-box {
+    display: inline-block;
+}
+
+.search-filter-item {
+    display: inline-block;
+}
+
+@media (max-width: 400px) {
+    .search-box {
+        width: 50%;
+    }
+}
+
+@media (min-width: 400px) and (max-width: 470px) {
+    .search-box {
+        width: 60%;
+    }
+}
+
+@media (min-width: 470px) {
+    .search-box {
+        width: 70%;
+    }
+}

@@ -111,7 +111,7 @@ import { UserPreferenceService } from './service/UserPreferenceService';
 import { TextLimiterPipe } from 'src/pages/widget/TextLimiterPipe';
 import { HomeEntry } from 'src/pages/home/HomeEntry';
 import {MatIconModule} from '@angular/material/icon';
-
+import {MatSelectModule} from '@angular/material/select';
 @NgModule({
     declarations: [AppComponent,
         AdminHomeComponent, UserManagerComponent, RefereeImportComponent, CoachingActivityPage,
@@ -147,7 +147,7 @@ import {MatIconModule} from '@angular/material/icon';
         FormsModule,
         HttpClientModule,
         MarkdownModule.forRoot({ loader: HttpClient }),
-        MatIconModule,
+        MatIconModule, MatSelectModule,
         IonicModule.forRoot(),
         IonicStorageModule.forRoot(),
         ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })

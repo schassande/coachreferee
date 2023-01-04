@@ -8,7 +8,7 @@
     <ion-toolbar>
         <ion-buttons slot="start">
             <ion-button routerLink="/home" detail>
-                <ion-icon name="arrow-back"></ion-icon>
+                <ion-icon name="home"></ion-icon>
             </ion-button>
         </ion-buttons>
         <ion-title style="text-align: center;">Game to coach</ion-title>
@@ -22,22 +22,25 @@
     <ion-fab vertical="bottom" horizontal="end" slot="fixed">
         <ion-fab-button (click)="newCoaching()" class="plusButton">+</ion-fab-button>
     </ion-fab>
-    <div>
-        <ion-searchbar style="width: 60%; display: inline-block;" [(ngModel)]="searchInput" [showCancelButton]="false" (ionChange)="onSearchBarInput()"></ion-searchbar>
-
-        <ion-checkbox style="display: inline-block;" [(ngModel)]="today" (ionChange)="onToday()"></ion-checkbox>
-        <ion-label style="display: inline-block; margin-left: 5px;">&nbsp;Today</ion-label>
-
-        <ion-checkbox style="display: inline-block; margin-left: 10px;" [(ngModel)]="currentYearOnly" (ionChange)="doRefresh()"></ion-checkbox>
-        <ion-label style="display: inline-block; margin-left: 5px;">{{year}}</ion-label>
-
-        <div *ngIf="loading" style="margin: 20px auto; text-align: center;">
-            <ion-spinner></ion-spinner>
+    <div class="search-bar">
+        <div class="search-filter-item">
+            <ion-select [(ngModel)]="year" [disabled]="today" (ionChange)="onSearchBarInput()" interface-options="popover">
+                <ion-select-option *ngFor="let y of years;" value="{{y}}">{{y}}</ion-select-option>
+            </ion-select>
         </div>
-        <ion-refresher (ionRefresh)="doRefresh($event)" closeDuration="700ms" slot="fixed">
-            <ion-refresher-content></ion-refresher-content>
-        </ion-refresher>
+        <ion-searchbar class="search-box" [(ngModel)]="searchInput" [showClearButton]="false" [showCancelButton]="false" (ionChange)="onSearchBarInput()"></ion-searchbar>
+        <div class="search-filter-item">
+            <ion-checkbox style="display: inline-block;" [(ngModel)]="today" (ionChange)="onToday()"></ion-checkbox>
+            <ion-label style="display: inline-block; margin-left: 5px;">&nbsp;Today</ion-label>
+        </div>
     </div>
+
+    <div *ngIf="loading" style="margin: 20px auto; text-align: center;">
+        <ion-spinner></ion-spinner>
+    </div>
+    <ion-refresher (ionRefresh)="doRefresh($event)" closeDuration="700ms" slot="fixed">
+        <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
     <ion-list style="margin: 0px 0 60px 0;" *ngIf="!loading">
         <div *ngIf="!coachingLists || coachingLists.length === 0" style="text-align: center; margin-top: 20px;">
             No coaching<span *ngIf="currentYearOnly">&nbsp;in {{year}}</span><span *ngIf="today">&nbsp;today</span>.

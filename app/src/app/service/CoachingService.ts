@@ -138,11 +138,10 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
         return array;
     }
 
-    public searchCoachings(text: string, currentYearOnly: boolean, 
+    public searchCoachings(text: string, year: number|undefined, 
           options: 'default' | 'server' | 'cache' = 'default'): Observable<ResponseWithData<Coaching[]>> {
         const str = text !== null && text && text.trim().length > 0 ? text.trim() : null;
-        const q: Observable<ResponseWithData<Coaching[]>> = currentYearOnly 
-            ? this.coachingThisYear(options) : this.all(options);
+        const q: Observable<ResponseWithData<Coaching[]>> = year ? this.coachingOfYear(year, options) : this.all(options);
         return str ?
             super.filter(q, (coaching: Coaching) => {
                 return this.stringContains(str, coaching.competition)
@@ -155,14 +154,20 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
             : q;
     }
 
-    private coachingThisYear(options: 'default' | 'server' | 'cache' = 'default'): Observable<ResponseWithData<Coaching[]>> {
-        const beginDate = this.dateService.to00h00(this.adjustDate(new Date(), this.dateService));
+    private coachingOfYear(year: number, options: 'default' | 'server' | 'cache' = 'default'): Observable<ResponseWithData<Coaching[]>> {
+        const beginDate = this.dateService.to00h00(new Date());
+        beginDate.setFullYear(year)
         beginDate.setMonth(0);
         beginDate.setDate(1);
+        const endDate = this.dateService.to00h00(new Date());
+        endDate.setFullYear(year+1)
+        endDate.setMonth(0);
+        endDate.setDate(1);
+        console.log('coachingOfYear: year='+ year, beginDate, endDate);
 
         return forkJoin([
-          this.query(query(this.getBaseQueryMyCoahchings(), where('date', '>=', beginDate)), options),
-          this.query(query(this.getBaseQuerySharedCoahchings(), where('date', '>=', beginDate)), options),
+          this.query(query(this.getBaseQueryMyCoahchings(), where('date', '>=', beginDate), where('date', '<', endDate)), options),
+          this.query(query(this.getBaseQuerySharedCoahchings(), where('date', '>=', beginDate), where('date', '<', endDate)), options),
         ]).pipe(
           map((list) => this.mergeObservables(list))
         );

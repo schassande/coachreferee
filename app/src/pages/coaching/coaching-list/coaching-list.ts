@@ -27,7 +27,8 @@ export class CoachingListPage implements OnInit {
   loading = false;
   today = false;
   currentYearOnly = true;
-  year: number;
+  year: string;
+  years: string[] = [];
 
   constructor(
     public alertCtrl: AlertController,
@@ -41,7 +42,9 @@ export class CoachingListPage implements OnInit {
 
   ngOnInit() {
     this.helpService.setHelp('coaching-list');
-    this.year = new Date().getFullYear();
+    const y = new Date().getFullYear();
+    this.year = '' + y;
+    for(let i = 0; i<5; i++) this.years.push('' + (y-i));
     this.searchCoaching();
   }
   onToday() {
@@ -52,7 +55,7 @@ export class CoachingListPage implements OnInit {
   }
   private searchCoaching(forceServer: boolean = false, event: any = null) {
     this.loading = true;
-    this.coachingService.searchCoachings(this.searchInput, this.currentYearOnly,
+    this.coachingService.searchCoachings(this.searchInput, this.currentYearOnly ? Number.parseInt(this.year) : undefined,
         forceServer ? 'server' : 'default')
       .subscribe((response: ResponseWithData<Coaching[]>) => {
         this.coachings = this.coachingService.sortCoachings(response.data, true);
