@@ -7,8 +7,11 @@
 <ion-header>
     <ion-toolbar>
         <ion-buttons slot="start">
-            <ion-button (click)="saveNback()">
-                <ion-icon name="arrow-back"></ion-icon>
+            <ion-button routerLink="/home">
+                <ion-icon name="home"></ion-icon>
+            </ion-button>
+            <ion-button routerLink="/coaching/list">
+                <mat-icon>search</mat-icon>
             </ion-button>
         </ion-buttons>
         <ion-title style="text-align: center;">Coaching</ion-title>
@@ -66,28 +69,25 @@
                     <ion-grid fixed="true" class="coachEditGrid">
                         <ion-row>
                             <ion-col size="4" align-self="flex-start">
-                                <ion-item button="true" id="open-coachdate-input">
-                                    <ion-label position="stacked">Date:</ion-label>
-                                    <ion-input readonly="true" type="text" style="text-align: center; width: 100%;">{{ date }}</ion-input>
-                                    <ion-popover trigger="open-coachdate-input" side="bottom" alignment="end" *ngIf="!readonly">
+                                <div id="open-coachdate-input">
+                                    <ion-input readonly="true" type="text" style="text-align: center; width: 100%;">Date: {{ date }}</ion-input>
+                                    <ion-popover trigger="{{readonly ? undefined : 'open-coachdate-input'}}" side="bottom" alignment="end">
                                         <ng-template>
                                             <ion-datetime #popoverCoachDate presentation="date" first-day-of-week="1" (ionChange)="date = popoverCoachDate.value"></ion-datetime>
                                         </ng-template>
                                     </ion-popover>
-                                </ion-item>
+                                </div>
                             </ion-col>
                             <ion-col size="4" align-self="flex-start">
-                                <ion-item button="true" id="open-timeslot-input">
-                                    <ion-label position="stacked">Slot:</ion-label>
-                                    <ion-input readonly="true" [ngxTimepicker]="fullTime" [format]="24" type="text" [value]="coaching.timeSlot" style="text-align: center; width: 100%;"></ion-input>
+                                <div>
+                                    <ion-input readonly="true" [ngxTimepicker]="fullTime" [format]="24" [disableClick]="readonly" type="text" [value]="coaching.timeSlot" style="text-align: center; width: 100%;"></ion-input>
                                     <ngx-material-timepicker #fullTime [minutesGap]="5" (timeChanged)="setTimeSlot($event)"></ngx-material-timepicker>
-                                </ion-item>
+                                </div>
                             </ion-col>
                             <ion-col size="4" align-self="flex-start">
-                                <ion-label position="stacked">Field:</ion-label>
                                 <ion-input *ngIf="readonly" type="text" [(ngModel)]="coaching.field" readonly="true" style="text-align: center;"></ion-input>
                                 <ion-select item-content *ngIf="!readonly" [(ngModel)]="coaching.field" style="text-align: center;" interface="action-sheet" (ionChange)="onCoachingChange()">
-                                    <ion-select-option *ngFor="let item of [].constructor(25); let i = index" value="{{i+1}}">{{i+1}}</ion-select-option>
+                                    <ion-select-option *ngFor="let item of [].constructor(25); let i = index" value="{{i+1}}">Field {{i+1}}</ion-select-option>
                                 </ion-select>
                             </ion-col>
                         </ion-row>
@@ -148,7 +148,7 @@
                     </ion-grid>
                 </ion-item>
             </ion-item-group>
-            <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;">
+            <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;" *ngIf="refereesLoaded">
                 <ion-item-divider color="light" style="text-align: center; font-size: 1.2em; padding: 10px;">
                     <ion-label>Coached referees</ion-label>
                 </ion-item-divider>
@@ -168,7 +168,7 @@
                     <ion-icon *ngIf="!readonly && !refereeName2" slot="end" name="search" (click)="searchReferee(2)"></ion-icon>
                 </ion-item>
             </ion-item-group>
-            <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;">
+            <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;" *ngIf="!readonly">
                 <ion-item-divider color="light" style="text-align: center; font-size: 1.2em; padding: 10px;">
                     <ion-label>Preferences</ion-label>
                 </ion-item-divider>
@@ -177,29 +177,6 @@
                     <ion-toggle [ngModel]="freeEditStyle"></ion-toggle>
                 </ion-item>
             </ion-item-group>
-            <ion-item>
-                <ion-grid>
-                    <ion-row style="text-align: center; margin-top: 10px;">
-                        <ion-col style="margin-right: 10px;" *ngIf="coaching.dataStatus !== 'NEW' && coachingOwner">
-                            <ion-button color="danger" shape="round" (click)="deleteCoaching()" style="width: 100%;">
-                                <ion-icon name="trash"></ion-icon>&nbsp;Delete
-                            </ion-button>
-                        </ion-col>
-                        <ion-col style="margin-right: 10px;" *ngIf="coaching.dataStatus !== 'NEW' && coachingOwner">
-                            <ion-button shape="round" (click)="switchLockCoaching()" style="width: 100%;">
-                                <span *ngIf="!closed"><ion-icon name="lock-closed-outline"></ion-icon>&nbsp;Lock</span>
-                                <span *ngIf="closed"><ion-icon name="lock-open-outline"></ion-icon>&nbsp;Unlock</span>
-                            </ion-button>
-                        </ion-col>
-                        <ion-col style="margin-right: 10px;" *ngIf="coaching.dataStatus !== 'NEW' && coachingOwner">
-                            <ion-button shape="round" (click)="sendCoaching()" [disabled]="sending" style="width: 100%;">
-                                <ion-spinner *ngIf="sending"></ion-spinner>
-                                <ion-icon name="send"></ion-icon>&nbsp;Email
-                            </ion-button>
-                        </ion-col>
-                    </ion-row>
-                </ion-grid>
-            </ion-item>
             <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;" *ngIf="coachingOwner">
                 <ion-item-divider color="light" style="text-align: center; font-size: 1.2em; padding: 10px;">
                     <ion-label>Coaching shared with</ion-label>
@@ -216,20 +193,44 @@
                     <ion-icon slot="end" name="trash" (click)="deleteSharedGroup(group)" *ngIf="coachingOwner"></ion-icon>
                 </ion-item>
             </ion-item-group>
+            <div color="light" style="text-align: center; font-size: 0.8em;">Coach by {{coachingCoach}}</div>
         </ion-list>
-        <div color="light" style="text-align: center; font-size: 0.8em;">Coach by {{coachingCoach}}</div>
+        <ion-grid>
+            <ion-row style="text-align: center; margin-top: 10px;">
+                <ion-col style="margin-right: 10px;" *ngIf="coaching.dataStatus !== 'NEW' && coachingOwner">
+                    <ion-button color="danger" shape="round" (click)="deleteCoaching()" style="width: 100%;">
+                        <ion-icon name="trash"></ion-icon>&nbsp;Delete
+                    </ion-button>
+                </ion-col>
+                <ion-col style="margin-right: 10px;" *ngIf="coaching.dataStatus !== 'NEW' && coachingOwner">
+                    <ion-button shape="round" (click)="switchLockCoaching()" style="width: 100%;">
+                        <span *ngIf="!closed"><ion-icon name="lock-closed-outline"></ion-icon>&nbsp;Lock</span>
+                        <span *ngIf="closed"><ion-icon name="lock-open-outline"></ion-icon>&nbsp;Unlock</span>
+                    </ion-button>
+                </ion-col>
+                <ion-col style="margin-right: 10px;" *ngIf="coaching.dataStatus !== 'NEW' && coachingOwner">
+                    <ion-button shape="round" (click)="sendCoaching()" [disabled]="sending" style="width: 100%;">
+                        <ion-spinner *ngIf="sending"></ion-spinner>
+                        <ion-icon name="send"></ion-icon>&nbsp;Email
+                    </ion-button>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
     </div>
     <!-- ======================================================================================================= -->
     <!-- ======================================================================================================= -->
     <!-- ======================================================================================================= -->
     <div *ngIf="currentReferee">
-        <div style="text-align: center;margin: 10px 0; font-size: 1.2em;">{{currentReferee.firstName}} {{currentReferee.lastName}}, {{currentReferee.referee.refereeLevel}}/{{currentReferee.referee.refereeCategory}}</div>
+        <div style="text-align: center;margin: 10px 0; font-size: 1.2em;" routerLink="/referee/view/{{coaching.referees[currentRefereeIdx].refereeId}}">
+            {{currentReferee.firstName}} {{currentReferee.lastName}}, {{currentReferee.referee.refereeLevel}}/{{currentReferee.referee.refereeCategory}}
+            <ion-icon name="eye-outline"></ion-icon>
+        </div>
         <ion-list>
             <ion-item-group *ngIf="freeEditStyle || (coaching.referees[currentRefereeIdx].comments && coaching.referees[currentRefereeIdx].comments.length > 1)">
                 <ion-item-divider color=" light ">Comment area</ion-item-divider>
                 <ion-textarea placeholder="Comment about the referee" rows="10" autoGrow="true" autofocus="true" inputmode="text" wrap="soft" [(ngModel)]="coaching.referees[currentRefereeIdx].comments" readonly="{{readonly}}" (ionChange)="onCoachingChange()" debounce="2000"></ion-textarea>
             </ion-item-group>
-            <ion-item-group *ngIf="!freeEditStyle || coaching.referees[currentRefereeIdx].positiveFeedbacks.length > 0">
+            <ion-item-group *ngIf="!freeEditStyle && (!readonly || coaching.referees[currentRefereeIdx].positiveFeedbacks.length > 0)">
                 <ion-item-divider color="light ">Positive points ({{coaching.referees[currentRefereeIdx].positiveFeedbacks.length}})</ion-item-divider>
                 <ion-item *ngFor="let positiveFeedback of coaching.referees[currentRefereeIdx].positiveFeedbacks; let idx=index " [ngClass]="{ 'period1' : positiveFeedback.period==1 , 'period2' : positiveFeedback.period==2 }">
                     <p (click)="selectPositiveFeedback(positiveFeedback, idx)" class="feedbackTxt">{{positiveFeedback.skillName}}</p>
@@ -237,18 +238,20 @@
                     <ion-badge slot="end" (click)="switchPeriod(positiveFeedback)" color="{{positiveFeedback.period===1 ? 'light' : 'primary'}}">{{positiveFeedback.period}}</ion-badge>
                     <ion-icon slot="end" *ngIf="!readonly" name="trash" (click)="deletePositiveFeedback(idx)"></ion-icon>
                 </ion-item>
-                <div *ngIf="coaching.referees[currentRefereeIdx].positiveFeedbacks.length==0 && !readonly " style="padding: 5px; ">No positive feedback, please click on green + to add one.</div>
+                <div *ngIf="coaching.referees[currentRefereeIdx].positiveFeedbacks.length==0 && !readonly " style="padding: 5px; font-size: 0.8em; text-align: center;">No positive feedback, click on
+                    <mat-icon style="color: green; vertical-align: bottom;">add_circle</mat-icon> to add one.</div>
             </ion-item-group>
-            <ion-item-group *ngIf="!freeEditStyle || coaching.referees[currentRefereeIdx].feedbacks.length > 0">
+            <ion-item-group *ngIf="!freeEditStyle && (!readonly || coaching.referees[currentRefereeIdx].feedbacks.length > 0)">
                 <ion-item-divider color="light ">Axis of improvment ({{coaching.referees[currentRefereeIdx].feedbacks.length}})</ion-item-divider>
                 <ion-item *ngFor="let feedback of coaching.referees[currentRefereeIdx].feedbacks; let idx=index " [ngClass]="{ 'period1' : feedback.period==1 , 'period2' : feedback.period==2 }">
                     <p (click)="selectFeedback(feedback, idx) " class="feedbackTxt ">{{feedback.problemShortDesc}}</p>
                     <ion-icon slot="end" name="paper-plane-outline" (click)="deliverFeedback(feedback, idx) " class="star" [ngClass]="{ 'yellowStar' : feedback.deliver}"></ion-icon>
-                    <ion-icon slot="end" name="{{feedback.appliedLater ? 'trending-up-outline' : 'trending-down-outline'}}" (click)="toggleAppliedLater(feedback)"></ion-icon>
+                    <ion-icon slot="end" name="{{feedback.appliedLater ? 'trending-up-outline' : 'remove-outline'}}" (click)="toggleAppliedLater(feedback)"></ion-icon>
                     <ion-badge slot="end" (click)="switchPeriod(feedback) " color="{{feedback.period===1 ? 'light' : 'primary'}} ">{{feedback.period}}</ion-badge>
                     <ion-icon slot="end" *ngIf="!readonly" name="trash" (click)="deleteFeedback(idx)"></ion-icon>
                 </ion-item>
-                <div *ngIf="coaching.referees[currentRefereeIdx].feedbacks.length==0 && !readonly" style="padding: 5px;">No feedback, please click on red + to add one.</div>
+                <div *ngIf="coaching.referees[currentRefereeIdx].feedbacks.length==0 && !readonly" style="padding: 5px; font-size: 0.8em; text-align: center;">No axis of improvment, click on
+                    <mat-icon style="color: red; vertical-align: bottom;">add_circle</mat-icon> to add one.</div>
             </ion-item-group>
             <ion-item-group>
                 <ion-item-divider color="light ">Misc</ion-item-divider>
@@ -281,16 +284,51 @@
                     </ion-col>
                 </ion-row>
             </ion-item-group>
+            <ion-item-group *ngIf="currentReferee.id && id2coachings.get(currentReferee.id) && id2coachings.get(currentReferee.id).length > 0">
+                <ion-item-divider color="light" (click)="openPreviousCoaching = !openPreviousCoaching">
+                    <ion-icon slot="start" name="chevron-down-outline" *ngIf="openPreviousCoaching"></ion-icon>
+                    <ion-icon slot="start" name="chevron-forward-outline" *ngIf="!openPreviousCoaching"></ion-icon>
+                    <span style="margin-left: 5px;">Other coachings at the same event</span>
+                </ion-item-divider>
+                <div *ngIf="openPreviousCoaching">
+                    <ion-item *ngFor="let c of id2coachings.get(currentReferee.id)">
+                        <div routerLink="/coaching/edit/{{c.id}}">
+                            <div>{{dateService.date2string(c.date)}} {{c.timeSlot}}</div>
+                            <div *ngIf="c.refereeCoaching.comments && c.refereeCoaching.comments.length > 1">{{c.refereeCoaching.comments}}</div>
+                            <div *ngFor="let feedback of c.refereeCoaching.positiveFeedbacks" class="feedbackTxt">
+                                + {{feedback.skillName}}
+                                <ion-badge color="{{feedback.period===1 ? 'light' : 'primary'}} ">{{feedback.period}}</ion-badge>
+                                <ion-icon name="paper-plane-outline" *ngIf="feedback.deliver" class="yellowStar" style="margin-left: 5px;"></ion-icon>
+                            </div>
+                            <div *ngFor="let feedback of c.refereeCoaching.feedbacks" class="feedbackTxt">
+                                - {{feedback.problemShortDesc}}
+                                <ion-badge color="{{feedback.period===1 ? 'light' : 'primary'}} ">{{feedback.period}}</ion-badge>
+                                <ion-icon name="paper-plane-outline" *ngIf="feedback.deliver" class="yellowStar" style="margin-left: 5px;"></ion-icon>
+                                <ion-icon name="trending-up-outline" *ngIf="feedback.appliedLater" style="margin-left: 5px;"></ion-icon>
+                            </div>
+                        </div>
+                    </ion-item>
+                    <ion-item *ngIf="!currentReferee.id || !id2coachings.get(currentReferee.id) || !id2coachings.get(currentReferee.id).length">
+                        <div style="font-size: 0.8em; text-align: center; width: 100%;">
+                            No other coaching found.
+                        </div>
+                    </ion-item>
+                </div>
+            </ion-item-group>
             <ion-item-group>
-                <ion-item-divider color="light">Assessements</ion-item-divider>
+                <ion-item-divider color="light">
+                    <ion-label>Assessements</ion-label>
+                    <ion-button shape="round" slot="end" (click)="assessReferee()">
+                        <mat-icon>playlist_add_check</mat-icon>&nbsp;Assess
+                    </ion-button>
+                </ion-item-divider>
                 <ion-item *ngFor="let assessment of id2assessments.get(currentReferee.id)">
                     {{assessment.competition}} - {{dateService.date2string(assessment.date)}} - {{assessment.profileName}}
                 </ion-item>
-                <ion-item>
-                    <span *ngIf="!currentReferee.id || !id2assessments.get(currentReferee.id) || !id2assessments.get(currentReferee.id).length ">
-                    No existing assessment.
-                </span>
-                    <ion-button slot="end " shape="round" (click)="assessReferee() ">Assess</ion-button>
+                <ion-item *ngIf="!currentReferee.id || !id2assessments.get(currentReferee.id) || !id2assessments.get(currentReferee.id).length ">
+                    <div style="font-size: 0.8em; text-align: center; width: 100%;">
+                        No assessment found.
+                    </div>
                 </ion-item>
             </ion-item-group>
         </ion-list>

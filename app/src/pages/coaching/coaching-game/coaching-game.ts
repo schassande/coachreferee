@@ -16,7 +16,7 @@ import { ResponseWithData } from '../../../app/service/response';
 import { CoachingService } from '../../../app/service/CoachingService';
 import { BookmarkService, Bookmark } from '../../../app/service/BookmarkService';
 import { Referee, User, UserGroup, UserPreference } from '../../../app/model/user';
-import { Coaching, PositiveFeedback, Feedback } from '../../../app/model/coaching';
+import { Coaching, PositiveFeedback, Feedback, RefereeCoaching } from '../../../app/model/coaching';
 import { DateService } from 'src/app/service/DateService';
 import { RefereeSelectorService } from 'src/pages/referee/referee-selector-service';
 import { CompetitionSelectorComponent } from 'src/pages/widget/competition-selector';
@@ -54,6 +54,7 @@ export class CoachingGamePage implements OnInit {
   currentReferee: Referee;
   id2referee: Map<string, Referee> = new Map<string, Referee>();
   id2assessments: Map<string, Assessment[]> = new Map<string, Assessment[]>();
+  id2coachings: Map<string, OtherCoaching[]> = new Map<string, OtherCoaching[]>();
   refereesLoaded = false;
   periods: number[] = [1, 2];
   currentPeriod = 1;
@@ -82,6 +83,7 @@ export class CoachingGamePage implements OnInit {
   refereeName2: string;
   agenda: AgendaItem[];
   freeEditStyle = false;
+  openPreviousCoaching = false;
 
   @ViewChild(IonSegment) segment: IonSegment;
 
@@ -129,12 +131,12 @@ export class CoachingGamePage implements OnInit {
       }),
       map(() => {
         this.clean(this.coaching);
-        this.computeRefereeNames();
         this.computeCoachingValues();
         this.loadingReferees();
         this.computeSharedWith();
         this.bookmarkPage();
         this.loadAssessments();
+        this.loadOtherCoachings();
         this.loadDayCoachings();
       })
     ).subscribe();
@@ -285,7 +287,7 @@ export class CoachingGamePage implements OnInit {
     }
     const referee: Referee = this.id2referee.get(refereeId);
     if (referee) {
-      return referee.firstName + ' (' + referee.shortName + ')';
+      return referee.firstName + ' ' + referee.lastName + ' (' + referee.shortName + ')';
     } else {
       return this.coaching.referees[idx].refereeShortName;
     }
@@ -310,6 +312,7 @@ export class CoachingGamePage implements OnInit {
       mergeMap( () => {
         // referee loaded
         this.refereesLoaded = true;
+        this.computeRefereeNames();
         return this.route.queryParamMap;
       }),
       map((queryParamMap) => {
@@ -331,6 +334,26 @@ export class CoachingGamePage implements OnInit {
       ).subscribe();
     });
   }
+  private loadOtherCoachings() {
+    this.coaching.refereeIds.forEach((refId) => {
+      this.coachingService.getCoachingByReferee(refId).pipe(
+        map((rcoachings) => {
+          if (rcoachings.data) {
+            const cs: Coaching[] = rcoachings.data
+              .filter(c => c.id !== this.coaching.id 
+                && (
+                  (this.coaching.competitionId && c.competitionId === this.coaching.competitionId)
+                  || (!this.coaching.competitionId && c.competition === this.coaching.competition)));
+            this.coachingService.sortCoachings(cs, true);
+            const ocs: OtherCoaching[] = cs.map(c => { 
+              return { ...c, refereeCoaching: c.referees.filter(r => r.refereeId === refId)[0] }; 
+            })
+            this.id2coachings.set(refId, ocs);
+          }
+        })
+      ).subscribe();
+    });
+  }
 
   private bookmarkPage() {
     const refereeNames: string[] = this.coaching.referees.map((referee) => referee.refereeShortName);
@@ -343,16 +366,7 @@ export class CoachingGamePage implements OnInit {
       id: 'coach' + this.coaching.id,
       label: 'Coach ' + datestring + ' ' + refereeNames.join(','),
       url: `/coaching/coach/${this.coaching.id}` });
-    const ctx: Bookmark[] = [];
-    this.coaching.referees.forEach((referee) => {
-      ctx.push(
-        {
-          id: 'referee' + referee.refereeId,
-          label: 'Referee ' + referee.refereeShortName,
-          url: `/referee/view/${referee.refereeId}` }
-      );
-    });
-    this.bookmarkService.setContext(ctx);
+    this.bookmarkService.setContext([]);
   }
 
   refereeSelected(refereeIndex = Number.parseInt(this.segment.value)) {
@@ -722,4 +736,8 @@ interface AgendaItem {
   color: string;
   date: string;
   refereeShortNames: string;
+}
+interface OtherCoaching extends Coaching {
+  refereeCoaching: RefereeCoaching;
+
 }

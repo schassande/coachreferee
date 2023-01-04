@@ -47,14 +47,15 @@ export interface Coaching extends PersistentData, SharedElement {
     closed?: boolean;
     currentPeriod?: number;
     refereeIds: string[];
-    referees: {
-        refereeId: string;
-        refereeShortName: string;
-        feedbacks: Feedback[];
-        positiveFeedbacks: PositiveFeedback[];
-        comments: string;
-        upgrade: Upgradable;
-        rank: number;
-    }[];
+    referees: RefereeCoaching[];
+}
+export interface RefereeCoaching {
+    refereeId: string;
+    refereeShortName: string;
+    feedbacks: Feedback[];
+    positiveFeedbacks: PositiveFeedback[];
+    comments: string;
+    upgrade: Upgradable;
+    rank: number;
 }
 
