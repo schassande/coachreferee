@@ -235,7 +235,7 @@
                 <ion-item *ngFor="let positiveFeedback of coaching.referees[currentRefereeIdx].positiveFeedbacks; let idx=index " [ngClass]="{ 'period1' : positiveFeedback.period==1 , 'period2' : positiveFeedback.period==2 }">
                     <p (click)="selectPositiveFeedback(positiveFeedback, idx)" class="feedbackTxt">{{positiveFeedback.skillName}}</p>
                     <ion-icon slot="end" name="paper-plane-outline" (click)="deliverPositiveFeedback(positiveFeedback, idx) " class="star" [ngClass]="{ 'yellowStar' : positiveFeedback.deliver} "></ion-icon>
-                    <ion-badge slot="end" (click)="switchPeriod(positiveFeedback)" color="{{positiveFeedback.period===1 ? 'light' : 'primary'}}">{{positiveFeedback.period}}</ion-badge>
+                    <ion-badge slot="end" (click)="switchPeriod(positiveFeedback)" color="{{positiveFeedback.period===1 ? 'light' : 'primary'}}" style="padding: 5px 10px; border-radius: 20px;">{{positiveFeedback.period}}</ion-badge>
                     <ion-icon slot="end" *ngIf="!readonly" name="trash" (click)="deletePositiveFeedback(idx)"></ion-icon>
                 </ion-item>
                 <div *ngIf="coaching.referees[currentRefereeIdx].positiveFeedbacks.length==0 && !readonly " style="padding: 5px; font-size: 0.8em; text-align: center;">No positive feedback, click on
@@ -247,7 +247,7 @@
                     <p (click)="selectFeedback(feedback, idx) " class="feedbackTxt ">{{feedback.problemShortDesc}}</p>
                     <ion-icon slot="end" name="paper-plane-outline" (click)="deliverFeedback(feedback, idx) " class="star" [ngClass]="{ 'yellowStar' : feedback.deliver}"></ion-icon>
                     <ion-icon slot="end" name="{{feedback.appliedLater ? 'trending-up-outline' : 'remove-outline'}}" (click)="toggleAppliedLater(feedback)"></ion-icon>
-                    <ion-badge slot="end" (click)="switchPeriod(feedback) " color="{{feedback.period===1 ? 'light' : 'primary'}} ">{{feedback.period}}</ion-badge>
+                    <ion-badge slot="end" (click)="switchPeriod(feedback) " color="{{feedback.period===1 ? 'light' : 'primary'}} " style="padding: 5px 10px; border-radius: 20px;">{{feedback.period}}</ion-badge>
                     <ion-icon slot="end" *ngIf="!readonly" name="trash" (click)="deleteFeedback(idx)"></ion-icon>
                 </ion-item>
                 <div *ngIf="coaching.referees[currentRefereeIdx].feedbacks.length==0 && !readonly" style="padding: 5px; font-size: 0.8em; text-align: center;">No axis of improvment, click on
@@ -297,12 +297,12 @@
                             <div *ngIf="c.refereeCoaching.comments && c.refereeCoaching.comments.length > 1">{{c.refereeCoaching.comments}}</div>
                             <div *ngFor="let feedback of c.refereeCoaching.positiveFeedbacks" class="feedbackTxt">
                                 + {{feedback.skillName}}
-                                <ion-badge color="{{feedback.period===1 ? 'light' : 'primary'}} ">{{feedback.period}}</ion-badge>
+                                <ion-badge color="{{feedback.period===1 ? 'light' : 'primary'}}" style="padding: 4px 8px;">{{feedback.period}}</ion-badge>
                                 <ion-icon name="paper-plane-outline" *ngIf="feedback.deliver" class="yellowStar" style="margin-left: 5px;"></ion-icon>
                             </div>
                             <div *ngFor="let feedback of c.refereeCoaching.feedbacks" class="feedbackTxt">
                                 - {{feedback.problemShortDesc}}
-                                <ion-badge color="{{feedback.period===1 ? 'light' : 'primary'}} ">{{feedback.period}}</ion-badge>
+                                <ion-badge color="{{feedback.period===1 ? 'light' : 'primary'}}" style="padding: 4px 8px;">{{feedback.period}}</ion-badge>
                                 <ion-icon name="paper-plane-outline" *ngIf="feedback.deliver" class="yellowStar" style="margin-left: 5px;"></ion-icon>
                                 <ion-icon name="trending-up-outline" *ngIf="feedback.appliedLater" style="margin-left: 5px;"></ion-icon>
                             </div>

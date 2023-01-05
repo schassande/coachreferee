@@ -23,6 +23,20 @@
                 <ion-icon name="save"></ion-icon>&nbsp;Save</ion-button>
         </ion-col>
     </ion-row>
+    <div *ngIf="coaching && !readonly" style="text-align: right;">
+        <span>Apply to: </span>
+        <span style="margin-left: 5%;">
+            <ion-checkbox [(ngModel)]="applyToAll"></ion-checkbox>
+            <ion-label style="margin-left: 5px;">All</ion-label>
+        </span>
+        <span style="margin-right: 10px;">
+            <span *ngFor="let ref of coaching.referees; let idx = index;" style="margin-left: 5%;">
+                <ion-checkbox [disabled]="applyToAll" [checked]="applyToReferee[idx]" (ionChange)="toggleApplyToReferee(idx)"></ion-checkbox>
+                <ion-label style="margin-left: 5px;">{{ref.refereeShortName}}</ion-label>
+            </span>
+        </span>
+    </div>
+
     <ion-list>
         <ion-searchbar *ngIf="!readonly" [(ngModel)]="searchInput" showCancelButton="never" (ionChange)="onSearchBarInput($event)" tabindex="1" inputmode="text" type="text" spellcheck="true" autocorrect="true"></ion-searchbar>
         <div *ngIf="pros && pros.length === 0" style="text-align: center; font-style: italic">No PRO found.</div>
@@ -33,7 +47,36 @@
         </ion-item-group>
 
         <ion-item-group *ngIf="feedback">
-            <ion-item-divider color="light">PRO</ion-item-divider>
+            <ion-item-divider color="light">Feedback</ion-item-divider>
+            <ion-item>
+                <ion-label fixed>Period</ion-label>
+                <ion-badge color="{{feedback.period == 1 ? 'primary' : 'light' }}" style="font-size: 1.5em; padding: 5px 10px; border-radius: 20px; margin-left: 10px;" (click)="feedback.period = 1">1</ion-badge>
+                <ion-badge color="{{feedback.period == 2 ? 'primary' : 'light' }}" style="font-size: 1.5em; padding: 5px 10px; border-radius: 20px; margin-left: 10px;" (click)="feedback.period = 2">2</ion-badge>
+                <ion-badge color="{{feedback.period == 3 ? 'primary' : 'light' }}" style="font-size: 1.5em; padding: 5px 10px; border-radius: 20px; margin-left: 10px;" (click)="feedback.period = 3">3</ion-badge>
+                <ion-badge color="{{feedback.period == 4 ? 'primary' : 'light' }}" style="font-size: 1.5em; padding: 5px 10px; border-radius: 20px; margin-left: 10px;" (click)="feedback.period = 4">4</ion-badge>
+            </ion-item>
+            <ion-item>
+                <ion-label fixed>
+                    <ion-icon name="paper-plane-outline" style="margin-right: 5px;"></ion-icon>Deliver
+                </ion-label>
+                <ion-input *ngIf="readonly" type="text" [readonly]="true" tabindex="9">{{feedback.deliver?'Yes':'No'}}</ion-input>
+                <ion-toggle *ngIf="!readonly" [(ngModel)]="feedback.deliver" tabindex="9"></ion-toggle>
+            </ion-item>
+            <ion-item>
+                <ion-label fixed>
+                    <ion-icon name="trending-up-outline" style="margin-right: 5px;"></ion-icon>Improve later
+                </ion-label>
+                <ion-input *ngIf="readonly" type="text" [readonly]="true" tabindex="6">{{feedback.appliedLater?'Yes':'No'}}</ion-input>
+                <ion-toggle *ngIf="!readonly" [(ngModel)]="feedback.appliedLater" tabindex="6"></ion-toggle>
+            </ion-item>
+        </ion-item-group>
+        <ion-item-group *ngIf="feedback">
+            <ion-item-divider color="light">
+                <span>PRO</span>
+                <ion-button shape="round" slot="end" (click)="newPro($event)" *ngIf="feedback && feedback.problemShortDesc">
+                    <mat-icon>playlist_add_check</mat-icon>&nbsp;Register in library
+                </ion-button>
+            </ion-item-divider>
             <ion-item>
                 <ion-label fixed>Name</ion-label>
                 <ion-input type="text" placeholder="Short description of the problem (Required)" [(ngModel)]="feedback.problemShortDesc" placeholder="short desc (required)" autocorrect="on" spellcheck="true" inputmode="text" [readonly]="readonly"></ion-input>
@@ -55,31 +98,5 @@
                 <ion-input type="text" [(ngModel)]="feedback.skillName" [readonly]="readonly" autocorrect="on" spellcheck="true" inputmode="text" tabindex="5"></ion-input>
             </ion-item>
         </ion-item-group>
-
-        <ion-item-group *ngIf="feedback">
-            <ion-item-divider color="light">Feedback</ion-item-divider>
-            <ion-item>
-                <ion-label fixed>Improve later</ion-label>
-                <ion-input *ngIf="readonly" type="text" [readonly]="true" tabindex="6">{{feedback.appliedLater?'Yes':'No'}}</ion-input>
-                <ion-toggle *ngIf="!readonly" [(ngModel)]="feedback.appliedLater" tabindex="6"></ion-toggle>
-            </ion-item>
-            <ion-item>
-                <ion-label fixed>Priority</ion-label>
-                <ion-input type="number" [(ngModel)]="feedback.priority" [readonly]="readonly" tabindex="7"></ion-input>
-            </ion-item>
-            <ion-item>
-                <ion-label fixed>Period</ion-label>
-                <ion-input type="number" [(ngModel)]="feedback.period" [readonly]="readonly" tabindex="8"></ion-input>
-            </ion-item>
-            <ion-item>
-                <ion-label fixed>Deliver</ion-label>
-                <ion-input *ngIf="readonly" type="text" [readonly]="true" tabindex="9">{{feedback.deliver?'Yes':'No'}}</ion-input>
-                <ion-toggle *ngIf="!readonly" [(ngModel)]="feedback.deliver" tabindex="9"></ion-toggle>
-            </ion-item>
-        </ion-item-group>
     </ion-list>
-    <div style="text-align: center; margin-bottom: 20px;">
-        <ion-button shape="round" (click)="newPro($event)" *ngIf="feedback && feedback.problemShortDesc">Register PRO in library</ion-button>
-        <ion-button shape="round" (click)="copyFeedbackToAnotherReferee()" *ngIf="!readonly && feedback && getOtherReferees().length > 0">Apply to others referees too</ion-button>
-    </div>
 </ion-content>

@@ -41,6 +41,8 @@ export class CoachingImprovmentFeedbackEditPage implements OnInit {
   searchInput: string;
   showProList = false;
   pros: PRO[];
+  applyToReferee: boolean[] = [];
+  applyToAll = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -65,6 +67,8 @@ export class CoachingImprovmentFeedbackEditPage implements OnInit {
       }),
       map( (resCoach) => {
         this.coaching = resCoach.data;
+        this.applyToReferee = this.coaching.referees.map((r,idx) => idx===this.refereeIndex);
+        this.applyToAll = false;
         if (this.feedbackIndex >= 0) {
           this.feedback = this.coaching.referees[this.refereeIndex].feedbacks[this.feedbackIndex];
         } else {
@@ -92,10 +96,8 @@ export class CoachingImprovmentFeedbackEditPage implements OnInit {
     this.navController.navigateRoot(`/coaching/coach/${this.coaching.id}?refereeIdx=${this.refereeIndex}`);
   }
   saveNback() {
-    console.log('Save and Back');
     this.save().subscribe((success) => {
       if (success) {
-        console.log('saved');
         this.back();
       }
     });
@@ -117,6 +119,11 @@ export class CoachingImprovmentFeedbackEditPage implements OnInit {
         console.log('Update improvment feedback \'', this.feedback.problemShortDesc, '\/', this.feedbackIndex,
           ' of the referee ', this.coaching.referees[this.refereeIndex].refereeShortName);
       }
+      this.coaching.referees.forEach((r,idx) => {
+        if (this.refereeIndex !== idx && (this.applyToAll || this.applyToReferee[idx])) {
+          r.feedbacks.push(this.clone(this.feedback));
+        }
+      });
       return this.coachingService.saveWithRetry(this.coaching, this.alertCtrl, 'Error during saving of the improvement feedback')
         .pipe(map(res => res.data !== null));
 
@@ -125,6 +132,7 @@ export class CoachingImprovmentFeedbackEditPage implements OnInit {
         ' of the referee ', this.coaching.referees[this.refereeIndex].refereeShortName);
       // remove it
       this.coaching.referees[this.refereeIndex].feedbacks.splice(this.feedbackIndex, 1);
+
       // save the coaching
       return this.coachingService.saveWithRetry(this.coaching, this.alertCtrl, 'Error during removing of the improvement feedback')
         .pipe(map(res => res.data !== null));
@@ -186,6 +194,11 @@ export class CoachingImprovmentFeedbackEditPage implements OnInit {
       // console.log('idx= ', idx, ' refereeIndex=', this.refereeIndex);
       return ref && ref.length > 0 && idx !== this.refereeIndex;
     });
+  }
+  toggleApplyToReferee(idx: number) {
+    if (!this.applyToAll) {
+      this.applyToReferee[idx] = !this.applyToReferee[idx];
+    }
   }
 
   copyFeedbackToAnotherReferee() {
