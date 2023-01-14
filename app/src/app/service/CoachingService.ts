@@ -225,7 +225,7 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
     }
 
     public loadingReferees(coaching: Coaching, id2referee: Map<string, Referee>): Observable<any> {
-        if (coaching) {
+        if (coaching && coaching.referees.length > 0) {
           const obs: Observable<Referee>[] = [];
           coaching.referees.forEach((ref) => {
             if (ref.refereeId !== null) {
