@@ -48,7 +48,6 @@ export class ProListPage implements OnInit {
     this.searchPro();
   }
   private searchPro() {
-    console.log('SearchPro', this.notCompleted);
     this.proService.searchPros(this.searchInput).subscribe((response: ResponseWithData<PersistentPRO[]>) => {
       if (response.data && this.notCompleted) {
         this.pros = response.data.filter((pro) => !pro.complete);
