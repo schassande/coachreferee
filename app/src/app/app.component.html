@@ -15,13 +15,13 @@
                     <ion-icon name="log-out" scope="start"></ion-icon>
                     <ion-button fill="clear" (click)="logout()">Log out</ion-button>
                 </ion-item>
-                <ion-item>
-                    <ion-icon name="refresh" scope="start"></ion-icon>
-                    <ion-button fill="clear" (click)="reloadPage()">Reload application</ion-button>
+                <ion-item (click)="route('/settings')">
+                    <mat-icon>settings</mat-icon>
+                    <ion-button fill="clear">Settings</ion-button>
                 </ion-item>
-                <ion-item *ngIf="appSetttings">
-                    <ion-icon name="sync" scope="start"></ion-icon>
-                    <ion-button fill="clear" (click)="onToggleForceOffline()">Switch {{ appSetttings.forceOffline ? 'online' : 'offline'}}</ion-button>
+                <ion-item *ngIf="this.connectedUserService.isAdmin()" (click)="route('/admin')">
+                    <mat-icon>build</mat-icon>
+                    <ion-button fill="clear">Admin</ion-button>
                 </ion-item>
                 <ion-item *ngIf="helpService.getHelp() | async">
                     <ion-icon name="{{helpService.entry.iconName}}" scope="start"></ion-icon>

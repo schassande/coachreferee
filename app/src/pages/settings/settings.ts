@@ -1,7 +1,7 @@
 import { ConnectedUserService } from './../../app/service/ConnectedUserService';
 import { COACH_LEVELS_EURO } from './coachLevelEuropean';
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { map, mergeMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { AlertController, ToastController, NavController } from '@ionic/angular';
 import { Observable, of, concat, forkJoin } from 'rxjs';
 import { UserService } from '../../app/service/UserService';
@@ -20,6 +20,7 @@ import { LEVELS_NZ } from './levelNZ';
 import { LEVELS_EURO } from './levelEuropean';
 import { environment } from '../../environments/environment';
 import * as csv from 'csvtojson';
+import { OfflinesService } from 'src/app/service/OfflineService';
 
 
 /**
@@ -51,6 +52,7 @@ export class SettingsPage implements OnInit {
     private coachingService: CoachingService,
     private connectedUserService: ConnectedUserService,
     private navController: NavController,
+    private offlinesService: OfflinesService,
     private proService: PROService,
     private refereeService: RefereeService,
     private skillProfileService: SkillProfileService,
@@ -315,6 +317,10 @@ export class SettingsPage implements OnInit {
       }).then( (alert) => alert.present());
   }
 
+  public onToggleForceOffline() {
+    this.offlinesService.switchOfflineMode().subscribe(s => this.settings.forceOffline = s.forceOffline);
+  }
+
   toggleDebugInfo() {
     this.showDebugInfo = ! this.showDebugInfo;
     console.log('this.showDebugInfo =', this.showDebugInfo);
@@ -323,11 +329,6 @@ export class SettingsPage implements OnInit {
   onNbPeriodChange() {
     this.settings.nbPeriod = Math.min(4, Math.max(this.settings.nbPeriod, 1));
     this.saveSettings(false);
-  }
-  runScript() {
-    this.coachingService.getCoachingByCompetition('XAOsU2ZC5bgRKG2aFLmV').pipe(
-      mergeMap((rcs) => forkJoin(rcs.data.map(c => this.coachingService.delete(c.id))))
-    ).subscribe();
   }
   addToHome() {
     // hide our user interface that shows our button
@@ -350,4 +351,5 @@ export class SettingsPage implements OnInit {
       this.navController.navigateRoot(`/home`);
     }
   }
+  
 }

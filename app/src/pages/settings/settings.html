@@ -7,8 +7,8 @@
 <ion-header>
     <ion-toolbar>
         <ion-buttons slot="start">
-            <ion-button (click)="saveSettings()">
-                <ion-icon name="arrow-back"></ion-icon>
+            <ion-button routerLink="/home" detail>
+                <ion-icon name="home"></ion-icon>
             </ion-button>
         </ion-buttons>
         <ion-title style="text-align: center;">Settings</ion-title>
@@ -31,6 +31,14 @@
         <ion-item (click)="addToHome()" *ngIf="showInstallBtn">
             <ion-label class="menu-entry">Install on device</ion-label>
         </ion-item>
+        <ion-item>
+            <ion-icon name="refresh" scope="start"></ion-icon>
+            <ion-button fill="clear" (click)="reloadPage()">Reload application</ion-button>
+        </ion-item>
+        <ion-item>
+            <ion-icon name="sync" scope="start"></ion-icon>
+            <ion-button fill="clear" (click)="onToggleForceOffline()">Switch {{ settings.forceOffline ? 'online' : 'offline'}}</ion-button>
+        </ion-item>
     </ion-list>
     <div style="text-align: center; margin-top: 10px;" *ngIf="!env.production">
         <span>
@@ -50,9 +58,6 @@
     </div>
     <div style="text-align: center; margin-top: 10px;" *ngIf="!env.production">
         <ion-button shape="round" (click)="importCoachLevelsEuro()">Import Euro Coach Levels</ion-button>
-    </div>
-    <div style="text-align: center; margin-top: 10px;" *ngIf="!env.production">
-        <ion-button shape="round" (click)="runScript()">Run Script</ion-button>
     </div>
 
     <p *ngFor="let m of msg" class="message">{{m}}</p>

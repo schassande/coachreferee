@@ -6,7 +6,6 @@ import { Bookmark, BookmarkService } from './service/BookmarkService';
 import { HelpService } from './service/HelpService';
 import { disableNetwork, enableNetwork, Firestore } from '@angular/fire/firestore';
 import { AppSettingsService } from './service/AppSettingsService';
-import { OfflinesService } from './service/OfflineService';
 import { UserService } from './service/UserService';
 import { ConnectedUserService } from './service/ConnectedUserService';
 
@@ -27,7 +26,6 @@ export class AppComponent {
     public bookmarkService: BookmarkService,
     public helpService: HelpService,
     public appSettingsService: AppSettingsService,
-    private offlinesService: OfflinesService,
     private userService: UserService,
     public connectedUserService: ConnectedUserService,
     private menu: MenuController,
@@ -65,16 +63,6 @@ export class AppComponent {
     this.menu.close();
   }
 
-  public reloadPage() {
-    window.location.reload();
-  }
-
-  public onToggleForceOffline() {
-    this.offlinesService.switchOfflineMode().subscribe((app) => {
-      this.appSetttings = app;
-      this.menu.close();
-    });
-  }
   public logout() {
     this.userService.logout();
     this.route('/user/login');
