@@ -18,6 +18,7 @@ import { DataRegion } from 'src/app/model/common';
 @Component({
   selector: 'app-competition-list',
   templateUrl: 'competition-list.html',
+  styleUrls: ['competition-list.scss']
 })
 export class CompetitionListPage implements OnInit {
 
@@ -26,8 +27,10 @@ export class CompetitionListPage implements OnInit {
   searchInput: string;
   loading = false;
   region: DataRegion;
-  withMe = true;
+  withMe = false;
   isAdmin = false;
+  year: string;
+  years: string[] = [];
 
   constructor(
     private alertCtrl: AlertController,
@@ -44,6 +47,9 @@ export class CompetitionListPage implements OnInit {
     this.helpService.setHelp('competition-list');
     this.isAdmin = this.connectedUserService.isAdmin();
     this.region = this.connectedUserService.getCurrentUser().region;
+    const y = new Date().getFullYear();
+    this.year = '' + y;
+    for(let i = 0; i<5; i++) this.years.push('' + (y-i));
     setTimeout(() => {
       this.doRefresh(null);
     }, 200);
@@ -61,7 +67,7 @@ export class CompetitionListPage implements OnInit {
     this.loading = true;
     this.competitions = [];
     // console.log('searchCompetition(' + this.searchInput + ')');
-    this.competitionService.searchCompetitions(this.searchInput, forceServer ? 'server' : 'default', this.region)
+    this.competitionService.searchCompetitions(this.searchInput, Number.parseInt(this.year), forceServer ? 'server' : 'default', this.region)
       .subscribe((response: ResponseWithData<Competition[]>) => {
         let cs = response.data;
         if (this.withMe || !this.isAdmin) {

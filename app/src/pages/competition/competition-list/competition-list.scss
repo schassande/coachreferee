@@ -1,3 +1,32 @@
-page-competition-list {
+.search-bar {
+    width: 100%;
+}
 
+.search-box {
+    display: inline-block;
+}
+
+.search-filter-item {
+    display: inline-block;
+}
+
+@media (max-width: 400px) {
+    .search-box {
+        width: 100%;
+    }
+    .search-filter-item {
+        margin-right: 10px;
+    }
+}
+
+@media (min-width: 400px) and (max-width: 470px) {
+    .search-box {
+        width: 40%;
+    }
+}
+
+@media (min-width: 470px) {
+    .search-box {
+        width: 50%;
+    }
 }
