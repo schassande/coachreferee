@@ -12,9 +12,9 @@
         <ion-card-header color="light">
             <ion-card-title style="font-size: 1.2em;">
                 <div style="float: right;">
-                    <mat-icon fontIcon="search" routerLink="/competition/list"></mat-icon>
+                    <mat-icon fontIcon="search" style="transform: scale(2); margin-right: 20px;" routerLink="/competition/list"></mat-icon>
                     &nbsp;
-                    <mat-icon fontIcon="add_box" routerLink="/competition/-1/edit"></mat-icon>
+                    <mat-icon fontIcon="add_box" style="transform: scale(2);" routerLink="/competition/-1/edit"></mat-icon>
                 </div>
                 <div>
                     <div *ngIf="defaultCompetition" routerLink="/competition/{{defaultCompetition.id}}/edit">{{defaultCompetition.name}}</div>
@@ -30,9 +30,9 @@
         <ion-card-header color="light">
             <ion-card-title style="font-size: 1.2em;">
                 <div style="float: right;">
-                    <mat-icon fontIcon="search" routerLink="/coaching/list"></mat-icon>
+                    <mat-icon fontIcon="search" style="transform: scale(2); margin-right: 20px;" routerLink="/coaching/list"></mat-icon>
                     &nbsp;
-                    <mat-icon fontIcon="add_box" routerLink="/coaching/create"></mat-icon>
+                    <mat-icon fontIcon="add_box" style="transform: scale(2);" routerLink="/coaching/create"></mat-icon>
                 </div>
                 <div style="font-size: 1.3em; font-weight: bold;">
                     Coaching
