@@ -694,7 +694,7 @@ export class CoachingGamePage implements OnInit {
             date: this.coachingService.getCoachingDateAsString(c),
             refereeShortNames: c.referees.map((ref) => ref.refereeShortName).join(', ')
           };
-        });
+        }).sort((a1,a2) => a1.coaching.timeSlot.localeCompare(a2.coaching.timeSlot));
       } else {
         this.agenda = [];
       }
