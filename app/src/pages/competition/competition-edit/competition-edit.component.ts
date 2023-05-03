@@ -4,11 +4,10 @@ import { HelpService } from './../../../app/service/HelpService';
 import { AlertController, ModalController, NavController } from '@ionic/angular';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, forkJoin, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 import { CompetitionService } from './../../../app/service/CompetitionService';
 import { DateService } from './../../../app/service/DateService';
-import { RefereeService } from './../../../app/service/RefereeService';
 import { UserService } from './../../../app/service/UserService';
 
 import { Competition, CompetitionCategories, GameAllocation } from './../../../app/model/competition';
@@ -43,7 +42,6 @@ export class CompetitionEditComponent implements OnInit {
     private helpService: HelpService,
     private modalController: ModalController,
     private navController: NavController,
-    private refereeService: RefereeService,
     private route: ActivatedRoute,
     private userService: UserService
     ) {
@@ -181,10 +179,12 @@ export class CompetitionEditComponent implements OnInit {
     this.isValid().pipe(
       mergeMap((valid) => {
         if (valid) {
+          const isNew = this.competition.dataStatus === 'NEW';
           return this.competitionService.save(this.competition).pipe(
             map((rcompetition) => {
               if (rcompetition.data) {
                 this.competition = rcompetition.data;
+                this.setUserDefaultCompetition(this.competition);
                 this.back();
               } else {
                 this.alertCtrl.create({ message: 'Error when saving the competition: ' + rcompetition.error.error })
@@ -197,6 +197,13 @@ export class CompetitionEditComponent implements OnInit {
         }
       })
     ).subscribe();
+  }
+
+  setUserDefaultCompetition(competition: Competition) {
+    const user = this.connectedUserService.getCurrentUser();
+    user.defaultCompetition = competition.name
+    user.defaultCompetitionId = competition.id;
+    this.userService.save(user).subscribe();
   }
 
   back() {
