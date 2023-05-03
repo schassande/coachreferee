@@ -1,7 +1,7 @@
 <ion-header>
     <ion-toolbar>
-        <span slot="start" style="margin-left: 10px;"><img src="assets/imgs/logo.png" height="30" /></span>
-        <ion-title style="text-align: center;">Coach Referee App</ion-title>
+        <span slot="start" style="margin-left: 10px;"><img src="assets/imgs/logo.png" height="30" alt="logo" /></span>
+        <ion-title style="text-align: center;">Coach Referee</ion-title>
         <ion-buttons slot="end">
             <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
         </ion-buttons>
@@ -17,7 +17,7 @@
                     <mat-icon fontIcon="add_box" style="transform: scale(2);" routerLink="/competition/-1/edit"></mat-icon>
                 </div>
                 <div>
-                    <div *ngIf="defaultCompetition" routerLink="/competition/{{defaultCompetition.id}}/edit">{{defaultCompetition.name}}</div>
+                    <div *ngIf="defaultCompetition" routerLink="/competition/{{defaultCompetition.id}}/home">{{defaultCompetition.name}}</div>
                     <div style="font-size: 1.3em; font-weight: bold;" *ngIf="!defaultCompetition">
                         Competitions
                     </div>
@@ -34,7 +34,7 @@
                     &nbsp;
                     <mat-icon fontIcon="add_box" style="transform: scale(2);" routerLink="/coaching/create"></mat-icon>
                 </div>
-                <div style="font-size: 1.3em; font-weight: bold;">
+                <div style="font-size: 1.3em; font-weight: bold;" routerLink="/coaching/list">
                     Coaching
                 </div>
                 <div style="clear: both;"></div>
@@ -43,7 +43,7 @@
                         <span style="font-weight: bold;">{{coaching.timeSlot}}</span>: Field {{coaching.field}}<br> {{coaching.refereeShortNames}}
                     </div>
                 </div>
-                <div *ngIf="agenda.length === 0">
+                <div *ngIf="agenda.length === 0" routerLink="/coaching/list">
                     No coaching planified today
                 </div>
             </ion-card-title>
