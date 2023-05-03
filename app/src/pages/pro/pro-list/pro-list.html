@@ -11,7 +11,7 @@
                 <ion-icon name="home"></ion-icon>
             </ion-button>
         </ion-buttons>
-        <ion-title style="text-align: center;">PRO library</ion-title>
+        <ion-title style="text-align: center;">My PRO library<span *ngIf="pros && pros.length"> ({{pros.length}})</span></ion-title>
         <ion-buttons slot="end">
             <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
         </ion-buttons>
@@ -26,6 +26,7 @@
     </ion-item>
     <ion-list style="margin-bottom: 40px;">
         <ion-item *ngFor="let pro of pros">
+            <ion-icon slot="start" name="{{pro.complete ? 'checkmark-outline' : 'create-outline'}}"></ion-icon>
             <ion-label ion-item (click)="proSelected(pro)" style="border: none;">{{pro.problemShortDesc}}</ion-label>
             <ion-icon slot="end" name="trash" (click)="deletePRO(pro)"></ion-icon>
         </ion-item>
