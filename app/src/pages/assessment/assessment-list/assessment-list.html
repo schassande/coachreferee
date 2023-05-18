@@ -23,15 +23,24 @@
     </div>
     <ion-list>
         <ion-item-group style="margin-top: 20px;" *ngFor="let assessmentList of assessmentLists">
-            <ion-item-divider color="light">{{assessmentList.competitionName}} - {{assessmentList.day}}</ion-item-divider>
-            <ion-item *ngFor="let assessment of assessmentList.assessments" [color]="isPast(assessment) ? '' : 'burlywood'">
-                <ion-icon slot="start" name="checkmark-outline" *ngIf="assessment.competency === 'YES'"></ion-icon>
-                <ion-icon slot="start" name="close-outline" *ngIf="assessment.competency === 'NO'"></ion-icon>
-                <ion-label style="border: none;" class="listItemButton" (click)="assessmentSelected($event, assessment)">
-                    <p>{{assessment.profileType == 'REFEREE_COACH' ? 'Coach' : 'Referee'}}/{{assessment.profileName}}: {{assessment.refereeShortName}}<br>{{getAssessmentDate(assessment)}}</p>
-                </ion-label>
-                <ion-icon slot="end" name="trash" (click)="deleteAssessment(assessment)"></ion-icon>
-            </ion-item>
+            <ion-item-divider color="light">
+                <span (click)="toggleCoachingListVisibility(assessmentList)" style="width: 100%; vertical-align: middle;">
+                    <ion-icon  style="display: inline-block; vertical-align: middle;" name="{{ assessmentList.visible ? 'remove' : 'add'}}"></ion-icon> &nbsp;
+                    <div style="display: inline-block; vertical-align: middle;">{{assessmentList.competitionName}}<br>{{assessmentList.day}}</div>
+                </span>
+                <ion-icon name="lock-closed-outline" slot="end" (click)="lockAssessments(assessmentList)" style="margin-right: 15px;"></ion-icon>
+            
+            </ion-item-divider>
+            <div *ngIf="assessmentList.visible">
+                <ion-item *ngFor="let assessment of assessmentList.assessments" [color]="isPast(assessment) ? '' : 'burlywood'">
+                    <ion-icon slot="start" name="checkmark-outline" *ngIf="assessment.competency === 'YES'"></ion-icon>
+                    <ion-icon slot="start" name="close-outline" *ngIf="assessment.competency === 'NO'"></ion-icon>
+                    <ion-label style="border: none;" class="listItemButton" (click)="assessmentSelected($event, assessment)">
+                        <p>{{assessment.profileType == 'REFEREE_COACH' ? 'Coach' : 'Referee'}}/{{assessment.profileName}}: {{assessment.refereeShortName}}<br>{{getAssessmentDate(assessment)}}</p>
+                    </ion-label>
+                    <ion-icon slot="end" name="trash" (click)="deleteAssessment(assessment)"></ion-icon>
+                </ion-item>
+            </div>
         </ion-item-group>
     </ion-list>
     <ion-fab vertical="bottom" horizontal="end" slot="fixed">

@@ -15,6 +15,7 @@ export interface AssessmentList {
   day: string;
   competitionName: string;
   assessments: Assessment[];
+  visible: boolean;
 }
 
 @Component({
@@ -101,11 +102,29 @@ export class AssessmentListPage implements OnInit {
         lists[currentIndex].assessments.push(c);
       } else {
         currentIndex ++;
-        lists.push({ day: cd, competitionName: c.competition, assessments : [c]});
+        lists.push({ day: cd, competitionName: c.competition, assessments : [c], visible: false});
       }
     });
+    if (lists.length > 0) {
+      lists[0].visible = true;
+    }
     return lists;
   }
+  toggleCoachingListVisibility(assessmentList: AssessmentList) {
+    assessmentList.visible = !assessmentList.visible;
+    this.changeDetectorRef.detectChanges();
+  }
+
+  lockAssessments(assessmentList: AssessmentList) {
+    assessmentList.assessments.forEach((assessment) => {
+      if (!assessment.closed) {
+        assessment.closed = true;
+        console.log('Lock assessment', assessment.coachId);
+        this.assessmentService.save(assessment).subscribe();
+      }
+    });
+  }
+
   onSwipe(event) {
     // console.log('onSwipe', event);
     if (event.direction === 4) {
