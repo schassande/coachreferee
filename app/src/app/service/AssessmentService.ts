@@ -11,6 +11,7 @@ import { Assessment } from './../model/assessment';
 import { from, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ToastController } from '@ionic/angular';
+import { DateService } from './DateService';
 
 const TIME_SLOT_SEP = ':';
 const DATE_SEP = '-';
@@ -26,6 +27,7 @@ export class AssessmentService extends RemotePersistentDataService<Assessment> {
         db: Firestore,
         protected refereeService: RefereeService,
         private connectedUserService: ConnectedUserService,
+        private dateService: DateService,
         private angularFireFunctions: Functions,
         toastController: ToastController
     ) {
@@ -58,6 +60,12 @@ export class AssessmentService extends RemotePersistentDataService<Assessment> {
         return this.query(this.getBaseQueryMyAssessments());
     }
 
+    public findByYear(year: number): Observable<ResponseWithData<Assessment[]>> {
+        const begin = this.dateService.to00h00(this.dateService.string2date(year+'-01-01', null));
+        const end = this.dateService.to00h00(this.dateService.string2date((year+1) +'-01-01', null));
+        return this.query(query(this.getBaseQueryMyAssessments(), where('date', '>=', begin), where('date', '<', end)));
+    }
+
     /** Query basis for coaching limiting access to the coachings of the user */
     private getBaseQueryMyAssessments(): Query {
         return query(this.getCollectionRef(), where('coachId', '==', this.connectedUserService.getCurrentUser().id));
@@ -70,17 +78,18 @@ export class AssessmentService extends RemotePersistentDataService<Assessment> {
         return array;
     }
 
-    public searchAssessments(text: string): Observable<ResponseWithData<Assessment[]>> {
+    public searchAssessments(text: string, year: number = undefined): Observable<ResponseWithData<Assessment[]>> {
         const str = text !== null && text && text.trim().length > 0 ? text.trim() : null;
+        const obs = year ? this.findByYear(year) : this.all();
         return str
-            ?  super.filter(this.all(), (assessment: Assessment) => {
+            ?  super.filter(obs, (assessment: Assessment) => {
                 return this.stringContains(str, assessment.competition)
                         || this.stringContains(str, assessment.refereeShortName)
                         || this.stringContains(str, assessment.profileName)
                         || this.stringContains(str, assessment.field)
                         || this.stringContains(str, this.getAssessmentDateAsString(assessment));
                 })
-            : this.all();
+            : obs;
     }
 
     public compareDate(day1: Date, day2: Date): number {

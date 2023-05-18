@@ -20,6 +20,8 @@ export interface AssessmentList {
 @Component({
   selector: 'page-assessment-list',
   templateUrl: 'assessment-list.html',
+  styleUrls: ['assessment-list.scss']
+  
 })
 export class AssessmentListPage implements OnInit {
 
@@ -27,6 +29,8 @@ export class AssessmentListPage implements OnInit {
   assessmentLists: AssessmentList[];
   error: any;
   searchInput: string;
+  year: string;
+  years: string[] = [];
 
   constructor(
     private alertCtrl: AlertController,
@@ -37,11 +41,14 @@ export class AssessmentListPage implements OnInit {
   }
 
   ngOnInit() {
+    const y = new Date().getFullYear();
+    this.year = '' + y;
+    for(let i = 0; i<5; i++) this.years.push('' + (y-i));
     this.searchAssessment();
   }
 
   private searchAssessment() {
-    this.assessmentService.searchAssessments(this.searchInput).subscribe((response: ResponseWithData<Assessment[]>) => {
+    this.assessmentService.searchAssessments(this.searchInput, Number.parseInt(this.year)).subscribe((response: ResponseWithData<Assessment[]>) => {
       this.assessments = this.assessmentService.sortAssessments(response.data, true);
       this.assessmentLists = this.computeAssessmentLists(this.assessments);
       this.error = response.error;
