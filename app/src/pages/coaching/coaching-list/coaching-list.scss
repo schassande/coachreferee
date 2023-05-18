@@ -1,5 +1,3 @@
-page-coaching-list {}
-
 ion-item,
 .past {
     background-color: burlywood;
@@ -9,12 +7,11 @@ ion-item,
     width: 100%;
 }
 
-.search-box {
-    display: inline-block;
-}
 
+.search-box,
 .search-filter-item {
     display: inline-block;
+    vertical-align: middle;
 }
 
 @media (max-width: 400px) {
