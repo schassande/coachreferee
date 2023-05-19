@@ -707,6 +707,7 @@ export class CoachingGamePage implements OnInit {
       : (delta > 0 ? 'warning' : 'normal');
   }
   getDateTime(coaching: Coaching): Date {
+    if (!coaching) return new Date();
     const [hours, minutes] = coaching.timeSlot.split(":");
     const date = new Date(coaching.date);
     date.setHours(Number.parseInt(hours, 10));
