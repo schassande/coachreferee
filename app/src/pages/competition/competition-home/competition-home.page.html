@@ -47,5 +47,10 @@
             <ion-label class="menu-entry">Delete</ion-label>
         </ion-item>
     </ion-list>
+    <div style="text-align: center;">
+        <ion-button shape="round" (click)="newCoaching()">
+            <mat-icon>school</mat-icon>&nbsp;Coach
+        </ion-button>
+    </div>
     <div *ngIf="owner" style="font-size:0.7em; text-align: center;"><br>Own by {{owner}}</div>
 </ion-content>

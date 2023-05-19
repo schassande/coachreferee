@@ -102,4 +102,12 @@ export class CompetitionHomePage implements OnInit {
       ]
     }).then( (alert) => alert.present() );
   }
+
+  newCoaching() {
+    this.navController.navigateRoot('/coaching/create',
+      { queryParams : { 
+        competitionId: this.competition.id,
+        competitionName: this.competition.name,
+      }});
+  }
 }
