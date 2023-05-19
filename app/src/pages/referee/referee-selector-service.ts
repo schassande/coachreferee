@@ -21,7 +21,7 @@ export class RefereeSelectorService {
             componentProps: {
             competitionId,
             role: 'REFEREE',
-            region: competitionId ? null : region,
+            region: region,
             allowToCreateReferee : true
             }
         }).then(modal => {

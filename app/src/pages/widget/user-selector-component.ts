@@ -37,43 +37,56 @@ import { ToolService } from 'src/app/service/ToolService';
     </ion-fab-button>
   </ion-fab>
   <ion-list>
+    <ion-item>
+      <ion-label>Name</ion-label>
+      <ion-searchbar [(ngModel)]="searchInput" [showCancelButton]="false" (ionChange)="loadUser()"></ion-searchbar>
+    </ion-item>
     <ion-item-group style="width: 100%;">
-        <ion-item-divider color="light">Filtering criteria</ion-item-divider>
-        <ion-item>
-          <ion-label>Name</ion-label>
-          <ion-searchbar [(ngModel)]="searchInput" [showCancelButton]="false" (ionChange)="loadUser()"></ion-searchbar>
-        </ion-item>
-        <ion-item>
-            <ion-label>Country</ion-label>
-            <ion-select [(ngModel)]="country" interface="action-sheet" (ionChange)="loadUser()">
-              <ion-select-option value="">All</ion-select-option>
-              <ion-select-option *ngFor="let c of constantes.countries" value="{{c[0]}}">{{c[1]}}</ion-select-option>
-            </ion-select>
-        </ion-item>
-        <ion-item>
-            <ion-label>Region</ion-label>
-            <ion-select [(ngModel)]="region" interface="action-sheet" (ionChange)="loadUser()">
+        <ion-item-divider color="light">
+          <span (click)="toggleFilterVisibility()" style="width: 100%; vertical-align: middle; font-weight: bold;">
+            <ion-icon  style="display: inline-block; vertical-align: middle;" name="{{ filterVisibility ? 'remove' : 'add'}}"></ion-icon> &nbsp;
+            <div style="display: inline-block; vertical-align: middle;">Advanced filtering criteria</div>
+          </span>          
+        </ion-item-divider>
+        <div *ngIf="filterVisibility">
+          <ion-item *ngIf="competitionId && this.role === 'REFEREE'">
+              <ion-label>Only competition referee</ion-label>
+              <ion-checkbox slot="end" [(ngModel)]="filterByCompetition" (ionChange)="loadUser()"></ion-checkbox>
+          </ion-item>
+          <ion-item>
+              <ion-label>Country</ion-label>
+              <ion-select [(ngModel)]="country" interface="action-sheet" (ionChange)="loadUser()">
                 <ion-select-option value="">All</ion-select-option>
-                <ion-select-option *ngFor="let r of constantes.regions" value="{{r}}">{{r}}</ion-select-option>
-            </ion-select>
-        </ion-item>
-        <ion-item *ngIf="showFilterRefereeLevel">
-          <ion-label>Referee Level</ion-label>
-          <ion-select [(ngModel)]="refereeLevel" interface="action-sheet" (ionChange)="loadUser()">
-            <ion-select-option value="">All</ion-select-option>
-            <ion-select-option *ngFor="let level of constantes.refereeLevels" value="{{level}}">{{level}}</ion-select-option>
-          </ion-select>
-        </ion-item>
-        <ion-item *ngIf="showFilterRefereeCoachLevel">
-          <ion-label>Referee coach Level</ion-label>
-          <ion-select [(ngModel)]="refereeCoachLevel" interface="action-sheet" (ionChange)="loadUser()">
+                <ion-select-option *ngFor="let c of constantes.countries" value="{{c[0]}}">{{c[1]}}</ion-select-option>
+              </ion-select>
+          </ion-item>
+          <ion-item>
+              <ion-label>Region</ion-label>
+              <ion-select [(ngModel)]="region" interface="action-sheet" (ionChange)="loadUser()">
+                  <ion-select-option value="">All</ion-select-option>
+                  <ion-select-option *ngFor="let r of constantes.regions" value="{{r}}">{{r}}</ion-select-option>
+              </ion-select>
+          </ion-item>
+          <ion-item *ngIf="showFilterRefereeLevel">
+            <ion-label>Referee Level</ion-label>
+            <ion-select [(ngModel)]="refereeLevel" interface="action-sheet" (ionChange)="loadUser()">
               <ion-select-option value="">All</ion-select-option>
-              <ion-select-option *ngFor="let level of constantes.refereeCoachLevels" value="{{level}}">{{level}}</ion-select-option>
-          </ion-select>
-        </ion-item>
+              <ion-select-option *ngFor="let level of constantes.refereeLevels" value="{{level}}">{{level}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item *ngIf="showFilterRefereeCoachLevel">
+            <ion-label>Referee coach Level</ion-label>
+            <ion-select [(ngModel)]="refereeCoachLevel" interface="action-sheet" (ionChange)="loadUser()">
+                <ion-select-option value="">All</ion-select-option>
+                <ion-select-option *ngFor="let level of constantes.refereeCoachLevels" value="{{level}}">{{level}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
       </ion-item-group>
       <ion-item-group style="width: 100%;">
-        <ion-item-divider color="light">Search result</ion-item-divider>
+        <ion-item-divider color="light">
+          <span style="font-weight: bold;">Search result</span>
+        </ion-item-divider>
         <div *ngIf="loading" style="margin: 20px; text-align: center;"><ion-spinner></ion-spinner></div>
         <div *ngIf="!loading && (users === null || users.length === 0)" style="margin: 10px; text-align: center;">Empty result.</div>
         <div *ngIf="!loading && users">
@@ -117,9 +130,11 @@ export class UserSelectorComponent implements OnInit {
   searchInput: string;
   showFilterRefereeLevel = false;
   showFilterRefereeCoachLevel = false;
+  filterByCompetition = false;
   constantes = CONSTANTES;
   loading = false;
   userCreated: User = null;
+  filterVisibility = false;
 
     constructor(
       public userService: UserService,
@@ -135,12 +150,13 @@ export class UserSelectorComponent implements OnInit {
       }
       this.showFilterRefereeLevel = this.role === 'REFEREE';
       this.showFilterRefereeCoachLevel = this.role === 'REFEREE_COACH';
+      this.filterByCompetition = (this.competitionId && this.role === 'REFEREE');
       this.loadUser();
     }
 
     loadUser() {
       this.loading = true;
-      if (this.competitionId && this.role === 'REFEREE') {
+      if (this.filterByCompetition && this.competitionId && this.role === 'REFEREE') {
         this.getCompetitionReferees().subscribe((us) => {
           this.users = this.userService.sortUsers(us.filter(user => {
             if (this.toolService.isValidString(this.region) && user.region !== this.region) {
@@ -166,6 +182,7 @@ export class UserSelectorComponent implements OnInit {
           this.loading = false;
         });
       } else {
+        console.log('Search a ' + this.role + ' from ' + this.country + '/' + this.region + ' with refereeLevel=' + this.refereeLevel + ', refereeCoachLevel=' + this.refereeCoachLevel);
         const criteria: UserSearchCriteria = {
           role : this.role,
           region : this.region,
@@ -173,7 +190,7 @@ export class UserSelectorComponent implements OnInit {
           text : this.searchInput,
           refereeLevel : this.refereeLevel,
           refereeCoachLevel : this.refereeCoachLevel
-        };
+        };        
         this.userService.searchUsers(criteria).subscribe((response: ResponseWithData<User[]>) => {
           this.users = this.userService.sortUsers(response.data);
           this.error = response.error;
@@ -206,6 +223,9 @@ export class UserSelectorComponent implements OnInit {
           }),
           map(() => refereesDatabase)
         );
+    }
+    public toggleFilterVisibility() {
+      this.filterVisibility = ! this.filterVisibility;
     }
     public userSelected(user: User) {
       this.modalCtrl.dismiss({users : [user], groups: []});
