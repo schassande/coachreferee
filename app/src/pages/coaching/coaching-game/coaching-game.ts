@@ -20,7 +20,7 @@ import { Coaching, PositiveFeedback, Feedback, RefereeCoaching } from '../../../
 import { DateService } from 'src/app/service/DateService';
 import { RefereeSelectorService } from 'src/pages/referee/referee-selector-service';
 import { CompetitionSelectorComponent } from 'src/pages/widget/competition-selector';
-import { GameAllocation } from 'src/app/model/competition';
+import { Competition, GameAllocation } from 'src/app/model/competition';
 import { SharedWith } from 'src/app/model/common';
 import { UserGroupService } from 'src/app/service/UserGroupService';
 import { UserSelectorComponent } from 'src/pages/widget/user-selector-component';
@@ -587,6 +587,7 @@ export class CoachingGamePage implements OnInit {
         this.id2referee.set(referee.id, referee);
         this.computeRefereeNames();
         this.onCoachingChange();
+        this.addRefereeToCompetition(referee);
       });
   }
   deleteReferee(idx: number) {
@@ -730,6 +731,28 @@ export class CoachingGamePage implements OnInit {
       }
     };
     this.navController.navigateRoot('/coaching/create', params);
+  }
+  addRefereeToCompetition(referee: Referee) {
+    if (this.coaching.competitionId && referee) {
+      this.competitionService.get(this.coaching.competitionId).pipe(
+        mergeMap((rcomp) => {
+          if (!rcomp.data) {
+            // Competition does not exist any more
+            return of('');
+          }
+          const competition: Competition = rcomp.data;
+          const ref = competition.referees.find(ref => ref.refereeId === referee.id);
+          if (ref) {
+            // referee already belongs the competition => nothing to do
+            return of('');
+          } else {
+            // add the referee to the competition
+            competition.referees.push({ refereeId: referee.id, refereeShortName: referee.shortName});
+            return this.competitionService.save(competition);
+          }
+        })
+      ).subscribe();
+    } // else the coaching is not linked to a competition 
   }
 }
 interface AgendaItem {
