@@ -8,7 +8,7 @@
                 <mat-icon>search</mat-icon>
             </ion-button>
         </ion-buttons>
-        <ion-title style="text-align: center;">Competition Home</ion-title>
+        <ion-title style="text-align: center;">Competition</ion-title>
         <ion-buttons slot="end">
             <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
         </ion-buttons>
@@ -16,41 +16,127 @@
 </ion-header>
 
 <ion-content *ngIf="competition && !loading">
-    <div style="margin: 20px 0; text-align: center;">
-        <span style="font-size: 1.4em;">{{competition.name}}</span>
-        <br>{{dateService.date2string(competition.date)}} <span *ngIf="competition.allocations.length">over {{competition.allocations.length}} day(s)</span>
-        <br>in {{competition.country}} / {{competition.region}}
-    </div>
-    <ion-list>
-        <ion-item detail routerLink="/competition/{{competition.id}}/edit">
-            <ion-label class="menu-entry">Edit general infos</ion-label>
-        </ion-item>
-        <ion-item detail routerLink="/competition/{{competition.id}}/referees">
-            <ion-label class="menu-entry">Referees ({{competition.referees.length}})</ion-label>
-        </ion-item>
-        <ion-item detail routerLink="/competition/{{competition.id}}/coaches">
-            <ion-label class="menu-entry">Referee Coaches ({{competition.refereeCoaches.length}})</ion-label>
-        </ion-item>
-        <ion-item detail routerLink="/competition/{{competition.id}}/games" *ngIf="competition.allocations.length">
-            <ion-label class="menu-entry">Games ({{competition.allocations.length}})</ion-label>
-        </ion-item>
-        <ion-item detail routerLink="/competition/{{competition.id}}/upgrades" *ngIf="competition.referees.length">
-            <ion-label class="menu-entry">Upgrades</ion-label>
-        </ion-item>
-        <ion-item detail routerLink="/competition/{{competition.id}}/ranking" *ngIf="competition.referees.length">
-            <ion-label class="menu-entry">Ranking</ion-label>
-        </ion-item>
-        <ion-item detail routerLink="/competition/import">
-            <ion-label class="menu-entry">Import</ion-label>
-        </ion-item>
-        <ion-item (click)="onDelete()">
-            <ion-label class="menu-entry">Delete</ion-label>
-        </ion-item>
-    </ion-list>
-    <div style="text-align: center;">
-        <ion-button shape="round" (click)="newCoaching()">
-            <mat-icon>school</mat-icon>&nbsp;Coach
-        </ion-button>
-    </div>
-    <div *ngIf="owner" style="font-size:0.7em; text-align: center;"><br>Own by {{owner}}</div>
+    <ion-row style="margin: 0 10px 0 10px;">
+        <ion-col col="12" style="text-align: center;">
+            <ion-card>
+                <ion-card-header color="light">
+                    <ion-card-title style="font-size: 1.2em;">
+                        <span style="font-weight: bold;">{{competition.name}}</span>
+                        <div style="float: right; vertical-align: top;"  routerLink="/competition/{{competition.id}}/edit">
+                            <mat-icon>edit</mat-icon>
+                        </div>
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content>
+                    <div *ngFor="let d of competition.days; let idx = index">Day {{idx+1}}:{{dateService.date2string(d)}}</div>
+                    <div>in {{competition.country}} / {{competition.region}}</div>
+                    <div *ngIf="refereePanelDirector">Referee Panel director: {{refereePanelDirector}}</div>
+                    <div *ngIf="owner">Own by {{owner}}</div>
+                </ion-card-content>
+            </ion-card>
+        </ion-col>
+    </ion-row>
+    <ion-row style="margin: 0 10px 0 10px;">
+        <ion-col col="4">
+            <ion-button shape="round" color="danger" (click)="onDelete()" style="width: 100%;">
+                <mat-icon>delete</mat-icon>&nbsp;Delete
+            </ion-button>
+        </ion-col>
+        <ion-col col="4">
+            <ion-button shape="round" routerLink="/competition/{{competition.id}}/upgrades" style="width: 100%;">
+                <mat-icon>school</mat-icon>&nbsp;Upgrade
+            </ion-button>
+        </ion-col>
+        <ion-col col="4">
+            <ion-button shape="round" routerLink="/competition/{{competition.id}}/ranking" style="width: 100%;">
+                <mat-icon>format_list_numbered</mat-icon>&nbsp;Rank
+            </ion-button>
+        </ion-col>
+    </ion-row>
+
+    <ion-row style="text-align: center;">
+        <ion-col col="6">
+            <ion-card style="vertical-align: top;" routerLink="/competition/{{competition.id}}/coaches">
+                <ion-card-header color="light">
+                    <ion-card-title style="font-size: 1.2em;">
+                        Coaches ({{competition.refereeCoaches.length}})
+                        <div style="float: right; vertical-align: top;">
+                            <mat-icon>edit</mat-icon>
+                        </div>
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content style="text-align: left;">
+                    <ul>
+                        <li *ngFor="let coach of competition.refereeCoaches| slice:0:3">{{coach.coachShortName}}</li>
+                        <li *ngIf="competition.refereeCoaches.length > 3">...</li>
+                    </ul>
+                </ion-card-content>
+        </ion-card>
+        </ion-col>
+        <ion-col col="6">
+            <ion-card style="vertical-align: top;" routerLink="/competition/{{competition.id}}/referees">
+                <ion-card-header color="light">
+                    <ion-card-title style="font-size: 1.2em;">
+                        Referees ({{competition.referees.length}})
+                        <div style="float: right; vertical-align: top;">
+                            <mat-icon>edit</mat-icon>
+                        </div>
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content style="text-align: left;">
+                    <ul>
+                        <li *ngFor="let referee of competition.referees| slice:0:3">{{referee.refereeShortName}}</li>
+                        <li *ngIf="competition.referees.length > 3">...</li>
+                    </ul>
+                </ion-card-content>
+        </ion-card>
+        </ion-col>
+    </ion-row>
+    <ion-row style="text-align: center;">
+        <ion-col col="12">
+            <ion-card style="vertical-align: top;">
+                <ion-card-header color="light">
+                    <ion-card-title style="font-size: 1.2em;" (click)="navToCoaching($event)">
+                        My Coaching ({{coachings.length}})
+                        <div style="float: right;">
+                            <mat-icon fontIcon="add_box" style="transform: scale(1.6);" (click)="newCoaching($event)"></mat-icon>
+                        </div>
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content style="text-align: left;">
+                    <ion-item *ngFor="let coaching of coachings| slice:0:3">
+                        <ion-label style="border: none;" class="listItemButton" (click)="coachingSelected(coaching)">
+                            <p>{{getCoachingDate(coaching)}} {{coaching.timeSlot}}: Field {{coaching.field}}, {{coaching.gameCategory}}<br> Referees: {{getRefereeShortNames(coaching)}}</p>
+                        </ion-label>
+                    </ion-item>
+                    <ion-item *ngIf="coachings.length > 3">...</ion-item>
+                </ion-card-content>
+            </ion-card>
+        </ion-col>
+    </ion-row>
+    <ion-row style="text-align: center;">
+        <ion-col col="12">
+            <ion-card style="vertical-align: top;" routerLink="/competition/{{competition.id}}/import">
+                <ion-card-header color="light">
+                    <ion-card-title style="font-size: 1.2em;">
+                        Allocations ({{competition.allocations.length}})
+                        <div style="float: right; vertical-align: top;">
+                            <mat-icon>edit</mat-icon>
+                        </div>
+                    </ion-card-title>
+                </ion-card-header>
+                <ion-card-content style="text-align: left;">
+                    <ion-item *ngFor="let alloc of competition.allocations| slice:0:3">
+                        <ion-label>
+                            {{dateService.date2string(alloc.date)}} {{alloc.timeSlot}} Field:{{alloc.field}} Cat:{{alloc.gameCategory}}
+                            <span *ngIf="alloc.id"><br>GameId: {{alloc.id}}</span>
+                            <br>Referees:<span *ngFor="let ref of alloc.referees"> {{ref.refereeShortName}}</span>
+                            <br>Coaches:<span *ngFor="let coach of alloc.refereeCoaches"> {{coach.coachShortName}}</span>
+                        </ion-label>
+                    </ion-item>
+                    <ion-item *ngIf="competition.allocations.length > 3">...</ion-item>
+                </ion-card-content>
+            </ion-card>
+        </ion-col>
+    </ion-row>
 </ion-content>

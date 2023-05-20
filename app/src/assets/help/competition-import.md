@@ -2,7 +2,7 @@
 
 This page permits to import a competition from a .csv file descriptor. Each ligne of the CSV file is a game of the competition. Each line describes the minimal information of a game with the referee coaching concern.
 
-On a first step you select a file from your device. The application analyses your file. If a competition with the same name already exists, the application will merge the data. For each game the referees and the coaches are analysed. If the coach are an user this app, a coaching will be created automatically.
+On a first step you select a file from your device. The application analyses your file. If a competition with the same name already exists, the application will merge the data. For each game the referees and the coaches are analysed. If the coach is an user this app, a coaching will be created automatically for him/her.
 
 This feature is very useful in a tournament because after your allocation of the referee coches you can send them their allocation via the application.
 

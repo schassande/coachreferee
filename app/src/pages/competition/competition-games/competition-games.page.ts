@@ -1,69 +1,45 @@
-import { ConnectedUserService } from './../../../app/service/ConnectedUserService';
-import { Observable, of } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
-import { NavController } from '@ionic/angular';
-import { HelpService } from './../../../app/service/HelpService';
 import { DateService } from './../../../app/service/DateService';
-import { CompetitionService } from './../../../app/service/CompetitionService';
-import { Competition, GameAllocation } from './../../../app/model/competition';
-import { Component, OnInit } from '@angular/core';
-import { ToolService } from 'src/app/service/ToolService';
-import { mergeMap, map, catchError } from 'rxjs/operators';
+import { Competition } from './../../../app/model/competition';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-competition-games',
-  templateUrl: './competition-games.page.html',
-  styleUrls: ['./competition-games.page.scss'],
+  template: `
+  <ion-list *ngIf="competition">
+    <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;">
+      <ion-item-divider color="light" style="text-align: left; font-size: 1.2em; padding: 10px;">
+        <span (click)="toggleVisibility()" style="width: 100%; vertical-align: middle;">
+            <ion-icon *ngIf="competition.allocations.length > 0" style="display: inline-block; vertical-align: middle;" name="{{ visible ? 'remove' : 'add'}}"></ion-icon> &nbsp;
+            <div style="display: inline-block; vertical-align: middle;">{{competition.allocations.length}} Game(s)</div>
+        </span>
+      </ion-item-divider>
+      <div *ngIf="visible">
+        <ion-item *ngFor="let alloc of competition.allocations">
+            <ion-label>
+                {{dateService.date2string(alloc.date)}} {{alloc.timeSlot}} Field:{{alloc.field}} Cat:{{alloc.gameCategory}}
+                <span *ngIf="alloc.id"><br>GameId: {{alloc.id}}</span>
+                <br>Referees:<span *ngFor="let ref of alloc.referees"> {{ref.refereeShortName}}</span>
+                <br>Coaches:<span *ngFor="let coach of alloc.refereeCoaches"> {{coach.coachShortName}}</span>
+            </ion-label>
+        </ion-item>
+      </div>
+    </ion-item-group>
+  </ion-list>`
 })
-export class CompetitionGamesPage implements OnInit {
+export class CompetitionGamesPage {
 
+  @Input()
   competition: Competition;
-  loading = false;
-  errors: string[] = [];
+  visible = true;
+
   constructor(
-    private competitionService: CompetitionService,
-    private connectedUserService: ConnectedUserService,
-    public dateService: DateService,
-    private helpService: HelpService,
-    private navController: NavController,
-    private route: ActivatedRoute,
-    private toolService: ToolService
+    public dateService: DateService
   ) { }
 
-  ngOnInit() {
-    this.helpService.setHelp('competition-edit');
-    this.loadCompetition().subscribe();
+  toggleVisibility() {
+    this.visible = !this.visible;
   }
 
-  private loadCompetition(): Observable<Competition> {
-    this.loading = true;
-    // load id from url path
-    return this.route.paramMap.pipe(
-      // load competition from the id
-      mergeMap( (paramMap) => this.competitionService.get(paramMap.get('id'))),
-      map( (rcompetition) => {
-        this.competition = rcompetition.data;
-        if (!this.competition) {
-          // the competition has not been found => create it
-          this.navController.navigateRoot('/competition/list');
-        } else if (!this.connectedUserService.isAdmin()
-            && !this.competitionService.authorized(this.competition, this.connectedUserService.getCurrentUser().id)) {
-          // the coach is not allowed to access to this competition
-          this.navController.navigateRoot('/competition/list');
-        }
-        return this.competition;
-      }),
-      catchError((err) => {
-        console.log('loadCompetition error: ', err);
-        this.loading = false;
-        return of(this.competition);
-      }),
-      map (() => {
-        this.loading = false;
-        return this.competition;
-      })
-    );
-  }
   downloadGames() {
     const SEP = ',';
     const headers = '"gameId", "competition", "date", "timeSlot", "field", "category", "referee1", "referee2", "referee3", "refereeCoach1", "refereeCoach2", "refereeCoach3"\r\n';
@@ -90,14 +66,5 @@ export class CompetitionGamesPage implements OnInit {
     a.click();
     window.URL.revokeObjectURL(url);
     a.remove();
-  }
-  back() {
-    if (this.competition.id) {
-      this.navController.navigateRoot(`/competition/${this.competition.id}/home`);
-    } else {
-      this.navController.navigateRoot(`/competition/list`);
-    }
-  }
-  allocSelected(alloc: GameAllocation) {
   }
 }

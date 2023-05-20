@@ -17,6 +17,7 @@ import { UserService } from '../../../app/service/UserService';
 import { ResponseWithData } from '../../../app/service/response';
 
 import * as csv from 'csvtojson';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-competition-import',
@@ -31,9 +32,11 @@ export class CompetitionImportComponent implements OnInit {
   importStatus: 'NONE' | 'IMPORTING' | 'IMPORTED' = 'NONE';
   showImportButton = false;
   nbError = 0;
-  updateExisting = true;
+  updateExisting = false;
   removeUnreferenced = false;
   importedGames = 0;
+  competitionId: string = undefined;
+  competition: Competition = undefined;
 
   constructor(
     private coachingService: CoachingService,
@@ -43,6 +46,7 @@ export class CompetitionImportComponent implements OnInit {
     private helpService: HelpService,
     private navController: NavController,
     private refereeService: RefereeService,
+    private route: ActivatedRoute,
     private userService: UserService
   ) { }
 
@@ -50,6 +54,23 @@ export class CompetitionImportComponent implements OnInit {
     this.analysisStatus = 'NONE';
     this.importStatus = 'NONE';
     this.helpService.setHelp('competition-import');
+    this.route.paramMap.pipe(
+      // load competition from the id
+      mergeMap((paramMap) => {
+        this.competitionId = paramMap.get('id');
+        if (this.competitionId) {
+          return this.competitionService.get(this.competitionId);
+        } else {
+          return of({data: null, error: null})
+        }
+      }),
+      map((rcomp) => {
+        this.competition = rcomp.data;
+        if (this.competition) {
+          this.updateExisting = true;
+        }
+      })
+    ).subscribe();
   }
 
   loadFile() {
@@ -633,6 +654,18 @@ export class CompetitionImportComponent implements OnInit {
   isNewCoach(coachId): boolean {
     return this.importedDatas.dataFromDB
       && this.importedDatas.dataFromDB.refereeCoaches.filter((refco) => refco.coachId === coachId).length === 0;
+  }
+
+  downloadCSVExemple() {
+    const content = this.coachingService.getCsvExemple(this.competition)
+    const oMyBlob = new Blob([content], {type : 'text/csv'});
+    const url = URL.createObjectURL(oMyBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Exemple_CoachReferee_export_games_${this.competition.name}_${this.dateService.date2string(this.competition.date)}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
   }
 }
 

@@ -14,8 +14,7 @@ import { of, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-competition-ranking-list',
-  templateUrl: './competition-ranking-list.component.html',
-  styleUrls: ['./competition-ranking-list.component.scss'],
+  templateUrl: './competition-ranking-list.component.html'
 })
 export class CompetitionRankingListComponent implements OnInit {
 

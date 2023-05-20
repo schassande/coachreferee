@@ -5,7 +5,7 @@
                 <ion-icon name="arrow-back"></ion-icon>
             </ion-button>
         </ion-buttons>
-        <ion-title style="text-align: center;">List of Ranking List</ion-title>
+        <ion-title style="text-align: center;">Your rankings</ion-title>
         <ion-buttons slot="end">
             <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
         </ion-buttons>
@@ -13,6 +13,9 @@
 </ion-header>
 
 <ion-content>
+    <p>This page is the list of your rankings for the competition.
+        <span *ngIf="!competitionRankingLists || competitionRankingLists.length === 0">To create a ranking use the + button (bottom right).</span>
+    </p>
     <ion-item *ngFor="let list of competitionRankingLists">
         <ion-label (click)="listSelected(list)">{{list.listName}}</ion-label>
         <ion-icon slot="end" name="trash" (click)="deleteList(list)"></ion-icon>

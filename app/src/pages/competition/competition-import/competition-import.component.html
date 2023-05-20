@@ -1,35 +1,45 @@
 <ion-header>
     <ion-toolbar>
         <ion-buttons slot="start">
-            <ion-button routerLink="/competition/list" detail>
+            <ion-button routerLink="/home">
+                <ion-icon name="home"></ion-icon>
+            </ion-button>
+            <ion-button routerLink="/competition/list" *ngIf="!competition">
+                <mat-icon>search</mat-icon>
+            </ion-button>
+            <ion-button routerLink="/competition/{{competition.id}}/home" *ngIf="competition">
                 <ion-icon name="arrow-back"></ion-icon>
             </ion-button>
         </ion-buttons>
-        <ion-title style="text-align: center;">Import Competition</ion-title>
+        <ion-title style="text-align: center;">Allocations</ion-title>
         <ion-buttons slot="end">
             <ion-menu-button autoHide="false" menu="main"></ion-menu-button>
         </ion-buttons>
     </ion-toolbar>
 </ion-header>
 <ion-content>
-    <p style="padding: 10px 10px 0 10px; text-align: justify">This page permits to import the referee and referee coach allocation of a competition. The import format is CSV.<br>Download a <a href="assets/referee_allocations.csv">template of the expected CSV file</a>.
-        <br>Choose import options before picking a file:</p>
+    <app-competition-games [competition]="competition"  *ngIf="competition && competition.allocations"></app-competition-games>
     <ion-list>
-        <ion-item>
-            <ion-label>Existing games<br>(true: update/ false: replace)</ion-label>
-            <ion-checkbox [(ngModel)]="updateExisting" scope="end" [disabled]="analysisStatus !== 'NONE'"></ion-checkbox>
-        </ion-item>
-        <ion-item>
-            <ion-label>Remove unreferenced games</ion-label>
-            <ion-checkbox [(ngModel)]="removeUnreferenced" scope="end" [disabled]="analysisStatus !== 'NONE'"></ion-checkbox>
-        </ion-item>
+        <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;">
+            <ion-item-divider color="light" style="text-align: left; font-size: 1.2em; padding: 10px;">Importing games</ion-item-divider>
+            <p style="margin: 10px;">Download a <a style="text-decoration: underline; cursor: pointer;" (click)="downloadCSVExemple()">template of the expected CSV file</a>. See help if required.
+            <br>Before providing your file, please choose an import option:</p>
+            <ion-item>
+                <ion-label>Update existing games (otherwise replace)</ion-label>
+                <ion-checkbox [(ngModel)]="updateExisting" scope="end" [disabled]="analysisStatus !== 'NONE'"></ion-checkbox>
+            </ion-item>
+            <ion-item>
+                <ion-label>Remove existing games not in the provided file</ion-label>
+                <ion-checkbox [(ngModel)]="removeUnreferenced" scope="end" [disabled]="analysisStatus !== 'NONE'"></ion-checkbox>
+            </ion-item>
+            <div style="text-align: right">
+                <span>
+                <input type="file" #inputCompetition accept="*.csv" style="display: none;" (change)="importCompetitionFromCsv($event)" />
+                <ion-button shape="round" (click)="loadFile()" [disabled]="analysisStatus == 'ANALYSING'">Browse file</ion-button>
+            </span>
+            </div>
+            </ion-item-group>
     </ion-list>
-    <div style="text-align: center">
-        <span>
-          <input type="file" #inputCompetition accept="*.csv" style="display: none;" (change)="importCompetitionFromCsv($event)" />
-          <ion-button shape="round" (click)="loadFile()" [disabled]="analysisStatus == 'ANALYSING'">Browse file</ion-button>
-      </span>
-    </div>
     <div *ngIf="analysisStatus === 'ANALYSING'" style="text-align: center; margin: 10px;">
         <ion-spinner></ion-spinner>
         Analysing...

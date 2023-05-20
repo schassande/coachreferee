@@ -9,6 +9,8 @@ import { HelpService } from './../../../app/service/HelpService';
 import { DateService } from './../../../app/service/DateService';
 import { Competition } from './../../../app/model/competition';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { CoachingService } from 'src/app/service/CoachingService';
+import { Coaching } from 'src/app/model/coaching';
 
 @Component({
   selector: 'app-competition-home',
@@ -18,13 +20,17 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 export class CompetitionHomePage implements OnInit {
 
   competition: Competition;
+  coachings: Coaching[] = [];
   loading = false;
   owner: string;
+  refereePanelDirector: string;
+  days: string;
 
   constructor(
     private alertCtrl: AlertController,
     private changeDetectorRef: ChangeDetectorRef,
     private connectedUserService: ConnectedUserService,
+    private coachingService: CoachingService,
     private competitionService: CompetitionService,
     public dateService: DateService,
     private helpService: HelpService,
@@ -36,6 +42,7 @@ export class CompetitionHomePage implements OnInit {
   ngOnInit() {
     this.helpService.setHelp('competition-list');
     this.loadCompetition().subscribe(() => {
+      this.loadCoachings();
       this.changeDetectorRef.detectChanges();
     });
   }
@@ -56,23 +63,28 @@ export class CompetitionHomePage implements OnInit {
           // the coach is not allowed to access to this competition
           this.navController.navigateRoot('/competition/list');
         }
+        this.days = this.competition.days.map(d => this.dateService.date2string(d)).join(', ');
         return this.competition;
       }),
       // load competition owner info
       mergeMap( () => {
         this.owner = '';
-        console.log('competition.ownerId=' + this.competition.ownerId);
         if (this.competition && this.competition.ownerId) {
-          return this.userService.get(this.competition.ownerId).pipe(
-            map( (ruser) => {
-              if (ruser.data) {
-                this.owner = ruser.data.firstName + ' ' + ruser.data.lastName + '(' + ruser.data.shortName + ')';
-              }
-              return this.owner;
-            })
+          return this.getUserById(this.competition.ownerId).pipe(
+            map( (name) => this.owner = name)
           );
         }
         return of(this.owner);
+      }),
+      mergeMap( () => {
+        this.refereePanelDirector = '';
+        
+        if (this.competition && this.competition.refereePanelDirectorId) {
+          return this.getUserById(this.competition.refereePanelDirectorId).pipe(
+            map( (name) => this.refereePanelDirector = name)
+          );
+        }
+        return of(this.refereePanelDirector);
       }),
       catchError((err) => {
         console.log('loadCompetition error: ', err);
@@ -84,6 +96,34 @@ export class CompetitionHomePage implements OnInit {
         return this.competition;
       })
     );
+  }
+
+  private getUserById(userId:string): Observable<string> {
+    return this.userService.get(userId).pipe(
+      map( (ruser) => {
+        if (ruser.data) {
+          return ruser.data.firstName + ' ' + ruser.data.lastName + '(' + ruser.data.shortName + ')';
+        }
+        return "";
+      })
+    );
+}
+  private loadCoachings() {
+    this.coachingService.getCoachingByCoachNCompetition(
+      this.connectedUserService.getCurrentUser().id, this.competition.id).subscribe((rcoaching) => {
+        if (rcoaching.data) {
+          this.coachings = this.coachingService.sortCoachings(rcoaching.data, true);
+        }
+    })
+  }
+  getCoachingDate(coaching: Coaching) {
+    return this.coachingService.getCoachingDateAsString(coaching);
+  }
+  getRefereeShortNames(coaching: Coaching) {
+    return coaching.referees.map((ref) => ref.refereeShortName).join(', ');
+  }
+  coachingSelected(coaching: Coaching) {
+    this.navController.navigateRoot('/coaching/coach/' + coaching.id);
   }
   onDelete() {
     this.deleteCompetition(this.competition);
@@ -103,7 +143,16 @@ export class CompetitionHomePage implements OnInit {
     }).then( (alert) => alert.present() );
   }
 
-  newCoaching() {
+  navToCoaching($event) {
+    $event.stopPropagation();
+    if (this.coachings.length > 0) {
+      this.navController.navigateRoot('/coaching/coach/' + this.coachings[0].id);
+    } else {
+      this.newCoaching($event);
+    }
+  }
+  newCoaching($event) {
+    $event.stopPropagation();
     this.navController.navigateRoot('/coaching/create',
       { queryParams : { 
         competitionId: this.competition.id,

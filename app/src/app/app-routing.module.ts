@@ -61,10 +61,10 @@ const routes: Routes = [
 
   { path: 'competition/list', component: CompetitionListPage, canActivate: [AuthGuard] },
   { path: 'competition/import', component: CompetitionImportComponent, canActivate: [AuthGuard] },
+  { path: 'competition/:id/import', component: CompetitionImportComponent, canActivate: [AuthGuard] },
   { path: 'competition/:id/home', component: CompetitionHomePage, canActivate: [AuthGuard] },
   { path: 'competition/:id/edit', component: CompetitionEditComponent, canActivate: [AuthGuard] },
   { path: 'competition/:id/coaches', component: CompetitionCoachesPage, canActivate: [AuthGuard] },
-  { path: 'competition/:id/games', component: CompetitionGamesPage, canActivate: [AuthGuard] },
   { path: 'competition/:id/ranking', component: CompetitionRankingListComponent, canActivate: [AuthGuard] },
   { path: 'competition/:id/ranking/:listId', component: CompetitionRankingPage, canActivate: [AuthGuard] },
   { path: 'competition/:id/referees', component: CompetitionRefereesPage, canActivate: [AuthGuard] },

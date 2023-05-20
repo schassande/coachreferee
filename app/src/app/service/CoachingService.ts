@@ -6,7 +6,7 @@ import { Referee } from './../model/user';
 import { RefereeService } from './RefereeService';
 import { ResponseWithData } from './response';
 import { Observable, of, forkJoin, from } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { RemotePersistentDataService } from './RemotePersistentDataService';
 import { Coaching } from './../model/coaching';
@@ -14,9 +14,12 @@ import { ToastController } from '@ionic/angular';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { DataRegion } from '../model/common';
 import { ToolService } from './ToolService';
+import { UserService } from './UserService';
+import { Competition } from '../model/competition';
 
 const TIME_SLOT_SEP = ':';
 const DATE_SEP = '-';
+export const CSV_HEADER = 'gameId,competition	date,timeSlot,field,category,referee1,referee2,referee3,refereeCoach1,refereeCoach2,refereeCoach3';
 
 @Injectable()
 export class CoachingService extends RemotePersistentDataService<Coaching> {
@@ -29,7 +32,8 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
       private angularFireFunctions: Functions,
       private dateService: DateService,
       toastController: ToastController,
-      private toolService: ToolService
+      private toolService: ToolService,
+      private userService: UserService
     ) {
         super(appSettingsService, db, toastController);
     }
@@ -86,6 +90,12 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
           where('coachId', '==', coachId),
           where('date', '>=', this.dateService.to00h00(this.adjustDate(beginDate, this.dateService))),
           where('date', '<=', this.dateService.to00h00(this.adjustDate(endDate, this.dateService)))
+        ));
+    }
+    getCoachingByCoachNCompetition(coachId: string, competitionId: string): Observable<ResponseWithData<Coaching[]>> {
+      return this.query(query(this.getBaseQuery(),
+          where('competitionId', '==', competitionId),
+          where('coachId', '==', coachId)
         ));
     }
 
@@ -210,11 +220,14 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
         return (nb < 10 ? '0' : '') + nb;
     }
     public getCoachingDateAsString(coaching: Coaching) {
-        return coaching.date.getFullYear()
-          + DATE_SEP + this.to2Digit(coaching.date.getMonth() + 1)
-          + DATE_SEP + this.to2Digit(coaching.date.getDate());
+        return this.getDateAsString(coaching.date);
     }
-    public setStringDate(coaching: Coaching, dateStr: string) {
+    public getDateAsString(date: Date) {
+      return date.getFullYear()
+        + DATE_SEP + this.to2Digit(date.getMonth() + 1)
+        + DATE_SEP + this.to2Digit(date.getDate());
+  }
+  public setStringDate(coaching: Coaching, dateStr: string) {
         const elements = dateStr.split(DATE_SEP);
         if (!coaching.date) {
             coaching.date = new Date();
@@ -285,7 +298,91 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
       res.setMinutes(Number.parseInt(timeSlotElems[1], 0));
       return res;
     }
-  
+
+    public exportCoachingAsGames(competitionId: string): Observable<string> {
+      return this.getCoachingByCompetition(competitionId).pipe(
+        mergeMap(rcoachings => {
+          if (!rcoachings.data || rcoachings.data.length === 0) {
+            console.log('No coaching for the competition ' + competitionId);
+            return of('');
+          }
+          // console.log(rcoachings.data.length + ' coachings for the competition ' + competitionId);
+          // Step 1 : Group coaching by game
+          const game2coachings = new Map();
+          rcoachings.data.forEach(c => {
+            let key = c.importGameId;
+            if (!key) {
+              key = c.date.getTime() + '-' + c.timeSlot + '-' + c.field;
+            }
+            let cs: Coaching[] = game2coachings.get(key);
+            if (cs) {
+              cs.push(c)
+            } else {
+              game2coachings.set(key, [c]);
+            }
+          });
+
+          // array of coaching grouped by game
+          const css = Array.from(game2coachings.values());
+
+          // Step 2 :  Sort coachings by date, field, timeslot
+          css.sort((cs1, cs2) => this.compareCoaching(cs1[0], cs2[0]));
+          
+          // Step 3 :  Fetch Coaches
+          const id2coach = new Map();
+          id2coach.set(this.connectedUserService.getCurrentUser().id, this.connectedUserService.getCurrentUser());
+          const obs = [of(null)];
+          css.forEach((cs: Coaching[]) => {
+            cs.forEach(c => {
+              let coach = id2coach.get(c.coachId);
+              if (coach) {
+                console.log('Coach ' + coach.shortName + ' already found.');
+              } else {
+                obs.push(this.userService.get(c.coachId).pipe(
+                  map(ruser => {
+                    if (ruser.data) {
+                      console.log('Add Coach ' + coach.shortName);
+                      id2coach.set(ruser.data.id, ruser.data);
+                    }
+                  })
+                ));
+              }
+            })
+          });
+
+          // Step 4:  compute csv lines
+          return forkJoin(obs).pipe(
+            map(() => {
+              return CSV_HEADER + '\n' + css.map((cs: Coaching[]) => {
+                const nbMissingRef = 3 - cs[0].referees.length;
+                let missingRef = '';
+                for(let i=0; i<nbMissingRef; i++) {
+                  missingRef += ',';
+                }
+                let csv = (cs[0].importGameId ? cs[0].importGameId : '')
+                  +  ',' + cs[0].competition
+                  +  ',' + this.getCoachingDateAsString(cs[0])
+                  +  ',' + cs[0].timeSlot
+                  +  ',' + cs[0].field
+                  + cs[0].referees.map(ref => ',' + ref.refereeShortName).join('')
+                  + missingRef
+                  + cs.map(c => {
+                    const coach = id2coach.get(c.coachId);
+                    return coach ? ',' + coach.shortName : ''; 
+                  });
+                return csv;
+              }).join('\n');    
+            })
+          );
+        })
+      );
+    }
+    public getCsvExemple(competition: Competition) {
+      return CSV_HEADER + '\n'
+        + '"1","' + competition.name 
+        +'","' + this.getDateAsString(competition.date) 
+        + '","10:00","1","REF1","REF2","REF3","COACH1","COACH2","COACH3"';
+    }
 }
 export interface CoachingList {
   day: string;
