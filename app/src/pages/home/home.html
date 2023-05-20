@@ -10,44 +10,44 @@
 <ion-content>
     <ion-card>
         <ion-card-header color="light">
-            <ion-card-title style="font-size: 1.2em;">
+            <ion-card-title routerLink="/competition/list">
                 <div style="float: right;">
-                    <mat-icon fontIcon="search" style="transform: scale(2); margin-right: 20px;" routerLink="/competition/list"></mat-icon>
+                    <mat-icon fontIcon="search" style="transform: scale(1.6); margin-right: 20px;"></mat-icon>
                     &nbsp;
-                    <mat-icon fontIcon="add_box" style="transform: scale(2);" routerLink="/competition/-1/edit"></mat-icon>
+                    <mat-icon fontIcon="add_box" style="transform: scale(1.6);" (click)="navToNewCompetition($event)"></mat-icon>
                 </div>
                 <div>
-                    <div *ngIf="defaultCompetition" routerLink="/competition/{{defaultCompetition.id}}/home">{{defaultCompetition.name}}</div>
-                    <div style="font-size: 1.3em; font-weight: bold;" *ngIf="!defaultCompetition">
-                        Competitions
-                    </div>
+                    <div style="font-weight: bold;">Competitions</div>
                 </div>
                 <div style="clear: both;"></div>
             </ion-card-title>
         </ion-card-header>
+        <ion-card-content style="text-align: left;" style="padding-top: 5px;">
+            <div *ngIf="defaultCompetition" class="coaching-item" style="width: 95%;" routerLink="/competition/{{defaultCompetition.id}}/home">{{defaultCompetition.name}}</div>
+        </ion-card-content>
     </ion-card>
     <ion-card>
         <ion-card-header color="light">
-            <ion-card-title style="font-size: 1.2em;">
+            <ion-card-title>
                 <div style="float: right;">
-                    <mat-icon fontIcon="search" style="transform: scale(2); margin-right: 20px;" routerLink="/coaching/list"></mat-icon>
+                    <mat-icon fontIcon="search" style="transform: scale(1.6); margin-right: 20px;" routerLink="/coaching/list"></mat-icon>
                     &nbsp;
-                    <mat-icon fontIcon="add_box" style="transform: scale(2);" routerLink="/coaching/create"></mat-icon>
+                    <mat-icon fontIcon="add_box" style="transform: scale(1.6);" routerLink="/coaching/create"></mat-icon>
                 </div>
-                <div style="font-size: 1.3em; font-weight: bold;" routerLink="/coaching/list">
-                    Coaching
-                </div>
+                <div style="font-weight: bold;" routerLink="/coaching/list">Coaching</div>
                 <div style="clear: both;"></div>
-                <div *ngIf="agenda.length > 0">
-                    <div *ngFor="let coaching of agenda" class="coaching-item" routerLink="/coaching/edit/{{coaching.id}}">
-                        <span style="font-weight: bold;">{{coaching.timeSlot}}</span>: Field {{coaching.field}}<br> {{coaching.refereeShortNames}}
-                    </div>
-                </div>
-                <div *ngIf="agenda.length === 0" routerLink="/coaching/list">
-                    No coaching planified today
-                </div>
             </ion-card-title>
         </ion-card-header>
+        <ion-card-content style="text-align: left;" style="padding-top: 5px;">
+            <div *ngIf="agenda.length > 0">
+                <div *ngFor="let coaching of agenda" class="coaching-item" routerLink="/coaching/edit/{{coaching.id}}">
+                    <span style="font-weight: bold;">{{coaching.timeSlot}}</span>: Field {{coaching.field}}<br> {{coaching.refereeShortNames}}
+                </div>
+            </div>
+            <div *ngIf="agenda.length === 0" routerLink="/coaching/list">
+                No coaching planified today
+            </div>
+    </ion-card-content>
     </ion-card>
     <div style="margin: 5px auto; width: 100%;">
         <app-home-entry name="Assess" link="/assessment/list" icon="playlist_add_check"></app-home-entry>

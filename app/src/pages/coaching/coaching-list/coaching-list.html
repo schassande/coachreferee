@@ -47,7 +47,7 @@
         </div>
         <div *ngFor="let coachingList of coachingLists">
             <ion-item-group *ngIf="!today || coachingList.today">
-                <ion-item-divider color="light">
+                <ion-item-divider color="light" style="padding: 5px 0 5px 10px">
                     <span (click)="toggleCoachingListVisibility(coachingList)" style="width: 100%; vertical-align: middle;">
                         <ion-icon  style="display: inline-block; vertical-align: middle;" name="{{ coachingList.visible ? 'remove' : 'add'}}"></ion-icon> &nbsp;
                         <div style="display: inline-block; vertical-align: middle;">{{coachingList.competitionName}}<br>{{coachingList.day}}</div>

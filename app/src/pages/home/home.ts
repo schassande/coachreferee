@@ -1,5 +1,5 @@
 import { Notification } from 'src/app/model/notification';
-import { AlertController } from '@ionic/angular';
+import { AlertController, NavController } from '@ionic/angular';
 import { InvitationService } from './../../app/service/InvitationService';
 import { HelpService } from 'src/app/service/HelpService';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
@@ -36,6 +36,7 @@ export class HomePage implements OnInit {
       public dateService: DateService,
       private helpService: HelpService,
       private invitationService: InvitationService,
+      private navController: NavController,
       private notificationService: NotificationService,
       private changeDetectorRef: ChangeDetectorRef) {
   }
@@ -137,6 +138,10 @@ export class HomePage implements OnInit {
 
   toCoachingView(c: Coaching): CoachingView {
     return {...c,  refereeShortNames: c.referees.map((ref) => ref.refereeShortName).join(', ') } as CoachingView;
+  }
+  navToNewCompetition($event) {
+    $event.stopPropagation();
+    this.navController.navigateRoot('/competition/-1/edit');    
   }
 }
 export interface CoachingView extends Coaching {

@@ -101,6 +101,7 @@ export class CompetitionEditComponent implements OnInit {
   }
 
   private createCompetition() {
+    const d = new Date();
     this.competition = {
       id: null,
       version: 0,
@@ -108,20 +109,24 @@ export class CompetitionEditComponent implements OnInit {
       lastUpdate : new Date(),
       dataStatus: 'NEW',
       name: '',
-      date: new Date(),
-      days: [],
+      date: d,
+      days: [d],
       ownerId: this.connectedUserService.getCurrentUser().id,
       year: new Date().getFullYear(),
       region : this.connectedUserService.getCurrentUser().region,
-      country : '',
+      country : this.connectedUserService.getCurrentUser().country,
       referees: [],
-      refereeCoaches: [],
+      refereeCoaches: [
+        { 
+          coachId: this.connectedUserService.getCurrentUser().id, 
+          coachShortName: this.connectedUserService.getCurrentUser().shortName
+        }],
+      refereePanelDirectorId: this.connectedUserService.getCurrentUser().id,
       allocations: [],
       category: 'C1',
       categorySenior: 'C1',
       completed: false
     };
-    this.competition.days.push(this.competition.date);
     this.readonly = false;
   }
 
