@@ -9,7 +9,6 @@ import * as sendInvitationLib          from './send-invitation';
 import * as sendNewAccountToAdminLib   from './send-new-account-to-admin';
 import * as sendNewAccountToUserLib    from './send-new-account-to-user';
 import * as sendValidationRequiredLib  from './send-validation-required';
-import * as voteAndUpgradeReminderLib  from './vote-and-upgrade-reminder';
 import * as newCompetitionEventLib  from './new-competition-event';
 import { Competition } from './model/competition';
 import { collectionCompetition } from './common';
@@ -24,13 +23,13 @@ const ctx = {
 };
 // ===================================================================
 // Scheduled functions
-exports.voteAndUpgradeReminder = func.pubsub.schedule('4 00 * * 1')
-    .timeZone('Europe/London')
-    .onRun(async (context) => {
-        console.log('voteAndUpgradeReminder BEGIN ' + context.timestamp);
-        await voteAndUpgradeReminderLib.func(ctx);
-        console.log('voteAndUpgradeReminder END ' + context.timestamp);
-    });
+// exports.voteAndUpgradeReminder = func.pubsub.schedule('4 00 * * 1')
+//    .timeZone('Europe/London')
+//    .onRun(async (context) => {
+//        console.log('voteAndUpgradeReminder BEGIN ' + context.timestamp);
+//        await voteAndUpgradeReminderLib.func(ctx);
+//        console.log('voteAndUpgradeReminder END ' + context.timestamp);
+//    });
 
 // ===================================================================
 // Triggered functions
