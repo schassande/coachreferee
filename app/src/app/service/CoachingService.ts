@@ -344,6 +344,7 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
                       console.log('Add Coach ' + coach.shortName);
                       id2coach.set(ruser.data.id, ruser.data);
                     }
+                    return null;
                   })
                 ));
               }
