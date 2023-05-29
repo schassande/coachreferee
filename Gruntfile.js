@@ -1,19 +1,16 @@
 module.exports = function(grunt) {
     // Project configuration.
+    grunt.pkgVer = 'x.x.x';
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
         exec: {
             'app-serve': { cwd: 'app', cmd: 'ionic serve' },
-            'app-version-patch': { cwd: 'app', cmd: 'npm version patch' },
-            'app-version-minor': { cwd: 'app', cmd: 'npm version minor' },
-            'app-version-major': { cwd: 'app', cmd: 'npm version major' },
-            'app-version-patch-root': { cwd: '.', cmd: 'npm version patch' },
-            'app-version-minor-root': { cwd: '.', cmd: 'npm version minor' },
-            'app-version-major-root': { cwd: '.', cmd: 'npm version major' },
+            'app-version-patch-root': { cwd: '.', cmd: 'npm version --no-git-tag-version --allow-same-version patch' },
+            'app-version-minor-root': { cwd: '.', cmd: 'npm version --no-git-tag-version --allow-same-version minor' },
+            'app-version-major-root': { cwd: '.', cmd: 'npm version --no-git-tag-version --allow-same-version major' },
+            'app-version-fromroot': { cwd: 'app', cmd: 'npm version --no-git-tag-version --allow-same-version <%= grunt.pkgVer %>' },
             'app-apply-version': { cwd: 'app', cmd: 'node ./replace.build.js' },
             'app-clean-apikey': { cwd: 'app', cmd: 'node ./clean.apikey.js' },
-            'commit-version': { cwd: 'app', cmd: 'git commit -a -m "version"' },
-            'git-tag': { cwd: 'app', cmd: 'git tag' },
+            'commit-version': { cwd: 'app', cmd: 'git commit -a -m "version <%= grunt.pkgVer %>"' },
             'app-build': { cwd: 'app', cmd: 'ionic build --prod --service-worker' },
             'function-build': { cwd: 'functions', cmd: 'npm run build' },
             'deploy-app': { cwd: '.', cmd: 'firebase deploy' },
@@ -23,7 +20,8 @@ module.exports = function(grunt) {
             'deploy-function': { cwd: 'functions', cmd: 'firebase deploy --only functions' },
             'delete-help': { cwd: '.', cmd: 'rm -rf html' },
             'show-function-env': { cwd: 'functions', cmd: 'firebase functions:config:get' },
-            'set-function-env': { cwd: 'functions', cmd: 'firebase functions:config:set gmail.email=coachreferee@gmail.com' }
+            'set-function-env': { cwd: 'functions', cmd: 'firebase functions:config:set gmail.email=coachreferee@gmail.com' },
+            'version': { cwd: 'app', cmd: "echo Version is <%= pkg.version %>" }
         },
         markdown: {
             'www-help-build': { files: [{ expand: true, src: 'app/src/assets/help/*.md', dest: 'html/', ext: '.html' }] }
@@ -49,53 +47,64 @@ module.exports = function(grunt) {
                 expand: true
             }
         },
+        gitcommit: {
+            task: {
+                options: {
+                    message: 'Version <%= grunt.pkgVer %>'
+                },
+                files: {
+                    src: ['**']
+                }
+            }
+        },
+        gittag: {
+            tagVersion: {
+                options: {
+                    tag: '<%= grunt.pkgVer %>',
+                    force: true
+                }
+            }
+        }
     });
     grunt.loadNpmTasks('grunt-exec');
     grunt.loadNpmTasks('grunt-markdown');
     grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-git-tag');
+    grunt.loadNpmTasks('grunt-git');
 
+    grunt.registerTask('version', 'Version of the application', ['exec:version']);
     grunt.registerTask('app-serve', 'Build the app', ['exec:app-serve']);
     grunt.registerTask('app-build', 'Build the app', ['exec:app-build']);
-
+    grunt.registerTask('loadVersionFromPackage', function () {
+        grunt.pkgVer = grunt.file.readJSON('package.json').version;
+    }); 
+    grunt.registerTask('showVersion', function () {
+        grunt.log.writeln('=> ' + grunt.pkgVer);
+    }); 
+    grunt.registerTask('app-deploy-xxx', 'build, deploy, commit and tag', [
+        'loadVersionFromPackage',
+        'exec:app-version-fromroot',
+        'exec:app-apply-version',
+        'exec:app-build',
+        'exec:set-target-deploy-app',
+        'exec:deploy-app',
+        'exec:set-target-deploy-www',
+        'exec:deploy-www',
+        'exec:set-target-deploy-app',
+        'exec:app-clean-apikey',
+        'exec:commit-version',
+        'exec:commit-tag'
+    ]);
     grunt.registerTask('app-deploy-patch', 'Upgrade to next patch version, commit, build, deploy the app only', [
-        'exec:app-version-patch-root',
-        'exec:app-version-patch',
-        'exec:app-apply-version',
-        'exec:app-build',
-        'exec:set-target-deploy-app',
-        'exec:deploy-app',
-        'exec:set-target-deploy-www',
-        'exec:deploy-www',
-        'exec:set-target-deploy-app',
-        'exec:app-clean-apikey',
-        'exec:commit-version'
+        grunt.task.run('exec:app-version-patch-root'),
+        grunt.task.run('app-deploy-xxx')
     ]);
-    grunt.registerTask('app-deploy-minor', 'Upgrade to next minor version, commit, build, deploy the app only', [
-        'exec:app-version-minor-root',
-        'exec:app-version-minor',
-        'exec:app-apply-version',
-        'exec:app-build',
-        'exec:set-target-deploy-app',
-        'exec:deploy-app',
-        'exec:set-target-deploy-www',
-        'exec:deploy-www',
-        'exec:set-target-deploy-app',
-        'exec:app-clean-apikey',
-        'exec:commit-version'
+    grunt.registerTask('app-deploy-minor', 'Upgrade to next patch version, commit, build, deploy the app only', [
+        grunt.task.run('exec:app-version-minor-root'),
+        grunt.task.run('app-deploy-xxx')
     ]);
-    grunt.registerTask('app-deploy-major', 'Upgrade to next major version, commit, build, deploy the app only', [
-        'exec:app-version-major-root',
-        'exec:app-version-major',
-        'exec:app-apply-version',
-        'exec:app-build',
-        'exec:set-target-deploy-app',
-        'exec:deploy-app',
-        'exec:set-target-deploy-www',
-        'exec:deploy-www',
-        'exec:set-target-deploy-app',
-        'exec:app-clean-apikey',
-        'exec:commit-version'
+    grunt.registerTask('app-deploy-major', 'Upgrade to next patch version, commit, build, deploy the app only', [
+        grunt.task.run('exec:app-version-major-root'),
+        grunt.task.run('app-deploy-xxx')
     ]);
     grunt.registerTask('function-deploy', 'Deploy the backend function only', [
         'exec:function-build',
