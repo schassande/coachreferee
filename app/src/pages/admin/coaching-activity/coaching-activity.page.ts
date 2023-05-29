@@ -53,6 +53,14 @@ export class CoachingActivityPage implements OnInit {
     this.endDate = this.dateService.string2date(dateStr, this.endDate);
   }
 
+  onBeginDateChange(value) {
+    this.beginD = value[0];
+    this.loadData();
+  }
+  onEndDateChange(value) {
+    this.endD = value[0];
+    this.loadData();
+  }
   public loadData() {
     this.coachingService.allFromAllUsers(this.beginDate, this.endDate, this.region).subscribe((rcoaching) => {
       if (rcoaching.data) {

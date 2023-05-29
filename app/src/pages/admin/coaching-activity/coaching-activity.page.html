@@ -19,7 +19,7 @@
             <ion-text slot="end">{{ dateService.date2string(this.beginDate) }}</ion-text>
             <ion-popover trigger="open-begindate-input" side="bottom" alignment="end">
                 <ng-template>
-                    <ion-datetime #popoverBeginDate presentation="date" first-day-of-week="1" (ionChange)="beginD = popoverBeginDate.value; loadData()"></ion-datetime>
+                    <ion-datetime #popoverBeginDate presentation="date" first-day-of-week="1" (ionChange)="onBeginDateChange(popoverBeginDate.value)"></ion-datetime>
                 </ng-template>
             </ion-popover>
         </ion-item>
@@ -28,7 +28,7 @@
             <ion-text slot="end">{{ dateService.date2string(this.endDate) }}</ion-text>
             <ion-popover trigger="open-enddate-input" side="bottom" alignment="end">
                 <ng-template>
-                    <ion-datetime #popoverEndDate presentation="date" first-day-of-week="1" (ionChange)="endD = popoverEndDate.value; loadData()"></ion-datetime>
+                    <ion-datetime #popoverEndDate presentation="date" first-day-of-week="1" (ionChange)="onEndDateChange(popoverEndDate.value)"></ion-datetime>
                 </ng-template>
             </ion-popover>
         </ion-item>
