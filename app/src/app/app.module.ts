@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Injectable } from '@angular/core';
 // Module dependencies
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -181,6 +181,7 @@ import {MatSelectModule} from '@angular/material/select';
         { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig },
         { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
     ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
     bootstrap: [AppComponent]
 })
 export class AppModule {}

@@ -18,9 +18,10 @@
     </ion-toolbar>
 </ion-header>
 <ion-content *ngIf="user">
-    <ion-slides centeredSlides="false" loop="true" pager="true" paginationType="bullets" effect="slide" styles="height:inherit;">
-        <ion-slide>
-            <ion-list style="width: 100%;">
+    <swiper-container [loop]="true" [pagination]="true">
+        <!-- centeredSlides="false" loop="true" pager="true" paginationType="bullets" effect="slide" styles="height:inherit;" -->
+        <swiper-slide>
+            <ion-list style="width: 100%;margin-bottom: 30px;">
                 <ion-item-group style="width: 100%;">
                     <ion-item-divider color="light">General info</ion-item-divider>
                     <ion-item>
@@ -101,8 +102,8 @@
                     </ion-item>
                 </ion-item-group>
             </ion-list>
-        </ion-slide>
-        <ion-slide>
+        </swiper-slide>
+        <swiper-slide>
             <ion-item-group>
                 <ion-item-divider color="light">Data privacy</ion-item-divider>
                 <form #form="ngForm" style="margin-bottom: 50px;">
@@ -136,15 +137,15 @@
                     </ion-item>
                 </form>
             </ion-item-group>
-        </ion-slide>
-    </ion-slides>
+        </swiper-slide>
+    </swiper-container>
     <div round *ngIf="error.length > 0" class="alert alert-danger">
         Please fix the following problem(s):
         <ul>
             <li *ngFor="let er of error">{{er}}</li>
         </ul>
     </div>
-    <div style="text-align: center;">
+    <div style="text-align: center; margin-top: 10px;">
         <ion-button shape="round" color="danger" (click)="deleteAccount()" *ngIf="user.dataStatus !== 'NEW' && !saving">Delete Account</ion-button>
         <ion-button shape="round" (click)="newUser($event)" [disabled]="firstName.invalid && lastName.invalid && !saving">Save</ion-button>
     </div>
