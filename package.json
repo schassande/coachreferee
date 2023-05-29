@@ -26,5 +26,8 @@
         "grunt-contrib-jshint": "^3.2.0",
         "grunt-exec": "^3.0.0",
         "grunt-markdown": "^0.7.0"
+    },
+    "dependencies": {
+        "grunt-git": "^1.1.1"
     }
 }
