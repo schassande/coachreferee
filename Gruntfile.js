@@ -52,7 +52,7 @@ module.exports = function(grunt) {
     });
     grunt.loadNpmTasks('grunt-exec');
     grunt.loadNpmTasks('grunt-markdown');
-    grunt.loadNpmTasks('grunt-copy');
+    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-git-tag');
 
     grunt.registerTask('app-serve', 'Build the app', ['exec:app-serve']);
