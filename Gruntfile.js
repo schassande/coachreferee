@@ -84,29 +84,27 @@ module.exports = function(grunt) {
         'loadVersionFromPackage',
         'exec:app-version-fromroot',
         'exec:app-apply-version',
-/*
         'exec:app-build',
         'exec:set-target-deploy-app',
         'exec:deploy-app',
         'exec:set-target-deploy-www',
         'exec:deploy-www',
         'exec:set-target-deploy-app',
-*/
         'exec:app-clean-apikey',
         'exec:commit-version',
         'gittag:tagVersion'
     ]);
-    grunt.registerTask('app-deploy-patch', 'Upgrade to next patch version, commit, build, deploy the app only', [
-        grunt.task.run('exec:app-version-patch-root'),
-        grunt.task.run('app-deploy-xxx')
+    grunt.registerTask('app-deploy-patch', 'Upgrade to next patch version, build, deploy, commit and tag', [
+        'exec:app-version-patch-root',
+        'app-deploy-xxx'
     ]);
-    grunt.registerTask('app-deploy-minor', 'Upgrade to next patch version, commit, build, deploy the app only', [
-        grunt.task.run('exec:app-version-minor-root'),
-        grunt.task.run('app-deploy-xxx')
+    grunt.registerTask('app-deploy-minor', 'Upgrade to next patch version, build, deploy, commit and tag', [
+        'exec:app-version-minor-root',
+        'app-deploy-xxx'
     ]);
-    grunt.registerTask('app-deploy-major', 'Upgrade to next patch version, commit, build, deploy the app only', [
-        grunt.task.run('exec:app-version-major-root'),
-        grunt.task.run('app-deploy-xxx')
+    grunt.registerTask('app-deploy-major', 'Upgrade to next patch version, build, deploy, commit and tag', [
+        'exec:app-version-major-root',
+        'app-deploy-xxx'
     ]);
     grunt.registerTask('function-deploy', 'Deploy the backend function only', [
         'exec:function-build',
@@ -129,9 +127,6 @@ module.exports = function(grunt) {
         'exec:set-target-deploy-app'
     ]);
 
-    grunt.registerTask('gitag', 'Commit and tag', [
-        'git_tag'
-    ]);
     grunt.registerTask('help', 'Generate Help on web site', [
         'markdown:www-help-build'
     ]);
