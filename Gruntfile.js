@@ -84,12 +84,14 @@ module.exports = function(grunt) {
         'loadVersionFromPackage',
         'exec:app-version-fromroot',
         'exec:app-apply-version',
+/*
         'exec:app-build',
         'exec:set-target-deploy-app',
         'exec:deploy-app',
         'exec:set-target-deploy-www',
         'exec:deploy-www',
         'exec:set-target-deploy-app',
+*/
         'exec:app-clean-apikey',
         'exec:commit-version',
         'exec:commit-tag'
