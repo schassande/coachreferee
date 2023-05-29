@@ -8,6 +8,9 @@ import { disableNetwork, enableNetwork, Firestore } from '@angular/fire/firestor
 import { AppSettingsService } from './service/AppSettingsService';
 import { UserService } from './service/UserService';
 import { ConnectedUserService } from './service/ConnectedUserService';
+import { register } from 'swiper/element/bundle';
+
+register();
 
 @Component({
   selector: 'app-root',

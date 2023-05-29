@@ -36,7 +36,7 @@
                                 <ion-input>{{ dateService.date2string(assessment.date) }}</ion-input>
                                 <ion-popover trigger="open-assdate-input" side="bottom" alignment="end" *ngIf="!readonly">
                                     <ng-template>
-                                        <ion-datetime #popoverAssDate presentation="date" first-day-of-week="1" (ionChange)="date = popoverAssDate.value"></ion-datetime>
+                                        <ion-datetime #popoverAssDate presentation="date" first-day-of-week="1" (ionChange)="date = popoverAssDate.value[0]"></ion-datetime>
                                     </ng-template>
                                 </ion-popover>
                             </ion-item>
@@ -47,7 +47,7 @@
                                 <ion-input>{{ assessment.timeSlot }}</ion-input>
                                 <ion-popover trigger="open-timeslot-input" side="bottom" alignment="end" *ngIf="!readonly">
                                     <ng-template>
-                                        <ion-datetime #popoverTimeSlot hour-cycle="h23" minuteValues="0,5,10,15,20,25,30,35,40,45,50,55" presentation="time" (ionChange)="assessment.timeSlot = popoverTimeSlot.value"></ion-datetime>
+                                        <ion-datetime #popoverTimeSlot hour-cycle="h23" minuteValues="0,5,10,15,20,25,30,35,40,45,50,55" presentation="time" (ionChange)="assessment.timeSlot = popoverTimeSlot.value[0]"></ion-datetime>
                                     </ng-template>
                                 </ion-popover>
                             </ion-item>

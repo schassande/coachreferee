@@ -73,7 +73,7 @@
                                     <ion-input readonly="true" type="text" style="text-align: center; width: 100%;">Date: {{ date }}</ion-input>
                                     <ion-popover trigger="{{readonly ? undefined : 'open-coachdate-input'}}" side="bottom" alignment="end">
                                         <ng-template>
-                                            <ion-datetime #popoverCoachDate presentation="date" first-day-of-week="1" (ionChange)="date = popoverCoachDate.value"></ion-datetime>
+                                            <ion-datetime #popoverCoachDate presentation="date" first-day-of-week="1" (ionChange)="date = popoverCoachDate.value[0]"></ion-datetime>
                                         </ng-template>
                                     </ion-popover>
                                 </div>
