@@ -94,7 +94,7 @@ module.exports = function(grunt) {
 */
         'exec:app-clean-apikey',
         'exec:commit-version',
-        'exec:commit-tag'
+        'gittag:tagVersion'
     ]);
     grunt.registerTask('app-deploy-patch', 'Upgrade to next patch version, commit, build, deploy the app only', [
         grunt.task.run('exec:app-version-patch-root'),
