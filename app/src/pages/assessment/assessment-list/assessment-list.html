@@ -19,7 +19,7 @@
                 <ion-select-option *ngFor="let y of years;" value="{{y}}">{{y}}</ion-select-option>
             </ion-select>
         </div>
-        <ion-searchbar class="search-box" [(ngModel)]="searchInput" showClearButton="never" showCancelButton="never" (ionChange)="onSearchBarInput()"></ion-searchbar>
+        <ion-searchbar class="search-box" [(ngModel)]="searchInput" showClearButton="never" showCancelButton="never" (ionInput)="onSearchBarInput()" animated="true" debounce="500"></ion-searchbar>
     </div>
     <ion-list>
         <ion-item-group style="margin-top: 20px;" *ngFor="let assessmentList of assessmentLists">

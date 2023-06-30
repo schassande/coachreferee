@@ -45,7 +45,7 @@
                 <ion-label (click)="proLinkSelected($event, pro)" text-wrap><span innerHTML="{{pro.problemShortDesc}}"></span></ion-label>
                 <ion-icon slot="end" name="trash" (click)="deletePro(pro)"></ion-icon>
             </ion-item>
-            <ion-searchbar [(ngModel)]="searchInput" [showCancelButton]="false" debounce="300" (ionChange)="onSearchBarInput($event)"></ion-searchbar>
+            <ion-searchbar [(ngModel)]="searchInput" [showCancelButton]="false" debounce="500" (ionInput)="onSearchBarInput($event)"></ion-searchbar>
             <ion-list>
                 <ion-item *ngFor="let pro of searchPros" text-wrap>
                     <ion-label (click)="proSelected($event, pro)">

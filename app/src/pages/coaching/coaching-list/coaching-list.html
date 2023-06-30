@@ -28,7 +28,7 @@
                 <ion-select-option *ngFor="let y of years;" value="{{y}}">{{y}}</ion-select-option>
             </ion-select>
         </div>
-        <ion-searchbar class="search-box" [(ngModel)]="searchInput" showClearButton="never" showCancelButton="never" (ionChange)="onSearchBarInput()"></ion-searchbar>
+        <ion-searchbar class="search-box" [(ngModel)]="searchInput" showClearButton="never" showCancelButton="never" (ionInput)="onSearchBarInput()" animated="true" debounce="500"></ion-searchbar>
         <div class="search-filter-item">
             <ion-checkbox style="display: inline-block;" [(ngModel)]="today" (ionChange)="onToday()"></ion-checkbox>
             <ion-label style="display: inline-block; margin-left: 5px;">&nbsp;Today</ion-label>

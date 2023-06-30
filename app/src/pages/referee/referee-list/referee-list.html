@@ -59,7 +59,7 @@
                     <ion-select-option *ngFor="let level of constantes.refereeLevels" value="{{level}}">{{level}}</ion-select-option>
                 </ion-select>
             </ion-item>
-            <ion-searchbar [(ngModel)]="searchInput" (ionChange)="searchReferee()" animated="true" debounce="500" inputmode="text" type="text" showCancelButton="never" showClearButton="never" placeholder="Referee name" searchIcon="search-outline"></ion-searchbar>
+            <ion-searchbar [(ngModel)]="searchInput" (ionInput)="searchReferee()" [animated]="true" [debounce]="500" inputmode="text" type="text" showCancelButton="never" showClearButton="never" placeholder="Referee name" searchIcon="search-outline"></ion-searchbar>
         </ion-item-group>
         <ion-item>
             <ion-label>Sort by</ion-label>
@@ -68,7 +68,8 @@
                 <ion-select-option value="level">Level</ion-select-option>
             </ion-select>
         </ion-item>
-        <ion-item-group style="width: 100%;">
+        <div *ngIf="!this.searchInput || this.searchInput.trim().length === 0" style="margin: 10px; text-align: center;">Write a referee name.</div>
+        <ion-item-group style="width: 100%;" *ngIf="searchInput && searchInput.trim().length > 0">
             <ion-item-divider color="light">Search result<span *ngIf="!loading && referees">&nbsp;({{referees.length}})</span></ion-item-divider>
             <div *ngIf="loading" style="margin: 20px; text-align: center;">
                 <ion-spinner></ion-spinner>

@@ -52,7 +52,9 @@ export class RefereeListPage implements OnInit {
   }
 
   public searchReferee() {
-    console.log('searchReferee()');
+    if (!this.searchInput || this.searchInput.trim().length === 0) {
+      return;
+    } 
     const criteria: UserSearchCriteria = {
       role : 'REFEREE',
       region : this.region,

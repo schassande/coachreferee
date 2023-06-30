@@ -19,7 +19,7 @@
 </ion-header>
 
 <ion-content (swipe)="onSwipe($event)">
-    <ion-searchbar [(ngModel)]="searchInput" [showCancelButton]="false" (ionChange)="onSearchBarInput()"></ion-searchbar>
+    <ion-searchbar [(ngModel)]="searchInput" [showCancelButton]="false" (ionInput)="onSearchBarInput()" animated="true" debounce="500"></ion-searchbar>
     <ion-item>
         <ion-label>Show only not completed</ion-label>
         <ion-checkbox slot="end" [(ngModel)]="notCompleted" (ionChange)="onSearchBarInput()"></ion-checkbox>

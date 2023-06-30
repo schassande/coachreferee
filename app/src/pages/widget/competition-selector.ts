@@ -45,7 +45,7 @@ export interface CompetitionInfo {
                 <ion-select-option *ngFor="let y of years;" value="{{y}}">{{y}}</ion-select-option>
             </ion-select>
         </div>
-        <ion-searchbar [(ngModel)]="name" class="search-box" [showCancelButton]="false" (ionChange)="onSearchBarInput()"></ion-searchbar>
+        <ion-searchbar [(ngModel)]="name" class="search-box" [showCancelButton]="false" (ionInput)="onSearchBarInput()" [animated]="true" [debounce]="500"></ion-searchbar>
     </div>
     <div *ngIf="competitions && competitions.length === 0" style="text-align: center; font-style: italic">No competitions found.</div>
     <div *ngIf="error" style="text-align: center; font-style: italic">{{error}}</div>

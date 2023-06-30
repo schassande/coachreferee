@@ -79,7 +79,7 @@
                 </ion-select>
             </ion-item>
             <ion-item>
-                <ion-searchbar [(ngModel)]="searchInput" (ionChange)="onSearchBarInput()" animated="true" debounce="500" inputmode="text" type="text" showCancelButton="never" showClearButton="never" placeholder="user name" searchIcon="search-outline"></ion-searchbar>
+                <ion-searchbar [(ngModel)]="searchInput" (ionInput)="onSearchBarInput()" animated="true" debounce="500" inputmode="text" type="text" showCancelButton="never" showClearButton="never" placeholder="user name" searchIcon="search-outline"></ion-searchbar>
             </ion-item>
             <div style="margin: 20px; text-align: right;" *ngIf="filteredUsers">{{filteredUsers.length}} user(s) found.</div>
             <ion-item *ngFor="let user of filteredUsers">

@@ -40,7 +40,7 @@
             <ion-checkbox style="display: inline-block;" [(ngModel)]="withMe" (ionChange)="onSearchBarInput()"></ion-checkbox>
             <ion-label style="display: inline-block; margin-left: 5px;">&nbsp;me</ion-label>
         </div>
-        <ion-searchbar class="search-box" [(ngModel)]="searchInput" [showCancelButton]="false" (ionChange)="onSearchBarInput()"></ion-searchbar>
+        <ion-searchbar class="search-box" [(ngModel)]="searchInput" [showCancelButton]="false" (ionInput)="onSearchBarInput()" animated="true" debounce="500"></ion-searchbar>
     </div>
     <div *ngIf="loading" style="margin: 20px auto; text-align: center;">
         <ion-spinner></ion-spinner>

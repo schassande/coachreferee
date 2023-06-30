@@ -39,7 +39,7 @@ import { ToolService } from 'src/app/service/ToolService';
   <ion-list>
     <ion-item>
       <ion-label>Name</ion-label>
-      <ion-searchbar [(ngModel)]="searchInput" [showCancelButton]="false" (ionChange)="loadUser()"></ion-searchbar>
+      <ion-searchbar [(ngModel)]="searchInput" [showCancelButton]="false" (ionInput)="loadUser()" [animated]="true" [debounce]="500"></ion-searchbar>
     </ion-item>
     <ion-item-group style="width: 100%;">
         <ion-item-divider color="light">

@@ -38,7 +38,7 @@
     </div>
 
     <ion-list>
-        <ion-searchbar *ngIf="!readonly" [(ngModel)]="searchInput" showCancelButton="never" (ionChange)="onSearchBarInput($event)" tabindex="1" inputmode="text" type="text" spellcheck="true" autocorrect="true"></ion-searchbar>
+        <ion-searchbar *ngIf="!readonly" [(ngModel)]="searchInput" showCancelButton="never" (ionInput)="onSearchBarInput($event)" tabindex="1" inputmode="text" type="text" spellcheck="true" autocorrect="off"  animated="true" debounce="500"></ion-searchbar>
         <div *ngIf="pros && pros.length === 0" style="text-align: center; font-style: italic">No PRO found.</div>
         <ion-item-group *ngIf="!readonly && showProList" style="margin: 0 10px 25px 50px; border: 1px solid lightgray;">
             <ion-item *ngFor="let pro of pros">
