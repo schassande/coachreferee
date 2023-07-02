@@ -22,8 +22,7 @@
 <ion-content (swipe)="onSwipe($event)">
     <ion-list *ngIf="settings">
         <ion-item>
-            <ion-label>NB Period</ion-label>
-            <ion-input type="number" min="1" max="4" [(ngModel)]="settings.nbPeriod" (ionChange)="onNbPeriodChange()"></ion-input>
+            <ion-input label="Nb Period" type="number" min="1" max="4" [(ngModel)]="settings.nbPeriod" (ionChange)="onNbPeriodChange()"></ion-input>
         </ion-item>
         <ion-item detail routerLink="/user/edit/{{currentUser.id}}">
             <ion-label class="menu-entry">My account</ion-label>

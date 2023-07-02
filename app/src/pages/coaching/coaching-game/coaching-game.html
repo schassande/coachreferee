@@ -60,9 +60,9 @@
                 <ion-item-divider color="light" style="text-align: center; font-size: 1.2em; padding: 10px;">
                     <ion-label>Game information</ion-label>
                 </ion-item-divider>
-                <ion-item>
-                    <ion-label position="fixed">Competition:</ion-label>
-                    <span *ngIf="!readonly"><a (click)="onClickCompetition()">{{coaching.competition ? coaching.competition : 'Click here'}}</a></span>
+                <ion-item (click)="onClickCompetition()">
+                    <span>Competition:&nbsp;</span>
+                    <span *ngIf="!readonly"><a>{{coaching.competition ? coaching.competition : 'Click here'}}</a></span>
                     <span *ngIf="readonly">{{coaching.competition}}</span>
                 </ion-item>
                 <ion-item>
@@ -70,23 +70,23 @@
                         <ion-row>
                             <ion-col size="4" align-self="flex-start">
                                 <div id="open-coachdate-input">
-                                    <ion-input readonly="true" type="text" style="text-align: center; width: 100%;">Date: {{ date }}</ion-input>
+                                    <ion-input readonly="true"  label="Date" labelPlacement="stacked" type="text" [value]="date" style="text-align: center;"></ion-input>
                                     <ion-popover trigger="{{readonly ? undefined : 'open-coachdate-input'}}" side="bottom" alignment="end">
                                         <ng-template>
-                                            <ion-datetime #popoverCoachDate presentation="date" first-day-of-week="1" (ionChange)="date = popoverCoachDate.value[0]"></ion-datetime>
+                                            <ion-datetime #popoverCoachDate presentation="date" first-day-of-week="1" (ionChange)="date = popoverCoachDate.value"></ion-datetime>
                                         </ng-template>
                                     </ion-popover>
                                 </div>
                             </ion-col>
                             <ion-col size="4" align-self="flex-start">
                                 <div>
-                                    <ion-input readonly="true" [ngxTimepicker]="fullTime" [format]="24" [disableClick]="readonly" type="text" [value]="coaching.timeSlot" style="text-align: center; width: 100%;"></ion-input>
+                                    <ion-input label="Time" labelPlacement="stacked" readonly="true" [ngxTimepicker]="fullTime" [format]="24" [disableClick]="readonly" type="text" [value]="coaching.timeSlot" style="text-align: center;"></ion-input>
                                     <ngx-material-timepicker #fullTime [minutesGap]="5" (timeChanged)="setTimeSlot($event)"></ngx-material-timepicker>
                                 </div>
                             </ion-col>
                             <ion-col size="4" align-self="flex-start">
-                                <ion-input *ngIf="readonly" type="text" [(ngModel)]="coaching.field" readonly="true" style="text-align: center;"></ion-input>
-                                <ion-select item-content *ngIf="!readonly" [(ngModel)]="coaching.field" style="text-align: center;" interface="action-sheet" (ionChange)="onCoachingChange()">
+                                <ion-input label="Field" labelPlacement="stacked" *ngIf="readonly" type="text" [(ngModel)]="coaching.field" readonly="true" style="text-align: center;"></ion-input>
+                                <ion-select label="Field" labelPlacement="stacked" item-content *ngIf="!readonly" [(ngModel)]="coaching.field" style="text-align: center;" interface="action-sheet" (ionChange)="onCoachingChange()">
                                     <ion-select-option *ngFor="let item of [].constructor(25); let i = index" value="{{i+1}}">Field {{i+1}}</ion-select-option>
                                 </ion-select>
                             </ion-col>
@@ -97,27 +97,24 @@
                     <ion-grid fixed="true" class="coachEditGrid">
                         <ion-row>
                             <ion-col size="4" align-self="flex-start">
-                                <ion-label position="stacked">Speed:</ion-label>
-                                <ion-input *ngIf="readonly" type="text" [(ngModel)]="coaching.gameSpeed" readonly="true" style="text-align: center;"></ion-input>
-                                <ion-select *ngIf="!readonly" [(ngModel)]="coaching.gameSpeed" class="stackedSelect" style="text-align: center;" interface="action-sheet" (ionChange)="onCoachingChange()">
+                                <ion-input label="Speed" labelPlacement="stacked" *ngIf="readonly" type="text" [(ngModel)]="coaching.gameSpeed" readonly="true" style="text-align: center;"></ion-input>
+                                <ion-select label="Speed" labelPlacement="stacked" *ngIf="!readonly" [(ngModel)]="coaching.gameSpeed" class="stackedSelect" style="text-align: center;" interface="action-sheet" (ionChange)="onCoachingChange()">
                                     <ion-select-option value="Low">Low</ion-select-option>
                                     <ion-select-option value="Medium">Medium</ion-select-option>
                                     <ion-select-option value="High">High</ion-select-option>
                                 </ion-select>
                             </ion-col>
                             <ion-col size="4" align-self="flex-start">
-                                <ion-label position="stacked">Skill:</ion-label>
-                                <ion-input *ngIf="readonly" type="text" [(ngModel)]="coaching.gameSkill" readonly="true" style="text-align: center;"></ion-input>
-                                <ion-select *ngIf="!readonly" [(ngModel)]="coaching.gameSkill" class="stackedSelect" style="text-align: center;" interface="action-sheet" (ionChange)="onCoachingChange()">
+                                <ion-input label="Skill" labelPlacement="stacked" *ngIf="readonly" type="text" [(ngModel)]="coaching.gameSkill" readonly="true" style="text-align: center;"></ion-input>
+                                <ion-select label="Skill" labelPlacement="stacked" *ngIf="!readonly" [(ngModel)]="coaching.gameSkill" class="stackedSelect" style="text-align: center;" interface="action-sheet" (ionChange)="onCoachingChange()">
                                     <ion-select-option value="Low">Low</ion-select-option>
                                     <ion-select-option value="Medium">Medium</ion-select-option>
                                     <ion-select-option value="High">High</ion-select-option>
                                 </ion-select>
                             </ion-col>
                             <ion-col size="4" align-self="flex-start">
-                                <ion-label position="stacked">Category:</ion-label>
-                                <ion-input *ngIf="readonly" type="text" [(ngModel)]="coaching.gameCategory" readonly="true" style="text-align: center;"></ion-input>
-                                <ion-select *ngIf="!readonly" [(ngModel)]="coaching.gameCategory" class="stackedSelect" style="text-align: center;" interface="action-sheet" (ionChange)="onCoachingChange()">
+                                <ion-input  label="Category" labelPlacement="stacked" *ngIf="readonly" type="text" [(ngModel)]="coaching.gameCategory" readonly="true" style="text-align: center;"></ion-input>
+                                <ion-select  label="Category" labelPlacement="stacked"*ngIf="!readonly" [(ngModel)]="coaching.gameCategory" class="stackedSelect" style="text-align: center;" interface="action-sheet" (ionChange)="onCoachingChange()">
                                     <ion-select-option value="OPEN">OPEN</ion-select-option>
                                     <ion-select-option value="XO">XO</ion-select-option>
                                     <ion-select-option value="MO">MO</ion-select-option>
@@ -173,8 +170,7 @@
                     <ion-label>Preferences</ion-label>
                 </ion-item-divider>
                 <ion-item (click)="toggleEditStyle()">
-                    <ion-label>Free edit style:</ion-label>
-                    <ion-toggle [ngModel]="freeEditStyle"></ion-toggle>
+                    <ion-toggle justify="end" [ngModel]="freeEditStyle">Free edit style</ion-toggle>
                 </ion-item>
             </ion-item-group>
             <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;" *ngIf="coachingOwner">
@@ -257,23 +253,19 @@
                 <ion-item-divider color="light ">Misc</ion-item-divider>
                 <ion-row>
                     <ion-col col="6">
-                        <ion-item>
-                            <ion-label>Rank:</ion-label>
-                            <ion-input type="number" *ngIf="readonly" [value]="coaching.referees[currentRefereeIdx].rank " readonly="true" (change)="saveCoaching()" style="text-align: center;"></ion-input>
-                            <ion-select *ngIf="!readonly" [(ngModel)]="coaching.referees[currentRefereeIdx].rank" (ionChange)="saveCoaching()">
-                                <ion-select-option value="0">No</ion-select-option>
-                                <ion-select-option value="1">1</ion-select-option>
-                                <ion-select-option value="2">2</ion-select-option>
-                                <ion-select-option value="3">3</ion-select-option>
-                            </ion-select>
-                        </ion-item>
+                        <div style="font-size: 0.8em;">Rank:</div>
+                        <app-rank-selector 
+                            [maxRank]="this.coaching.refereeIds.length"
+                            [rank]="coaching.referees[currentRefereeIdx].rank"
+                            (changeEvent)="coaching.referees[currentRefereeIdx].rank = $event;saveCoaching()"
+                            style="display: inline-block;">
+                        </app-rank-selector>
                     </ion-col>
                     <ion-col col="6">
                         <ion-item>
-                            <ion-label>Upgrade:</ion-label>
-                            <ion-input *ngIf="!lookingForUpgrade() " type="text " readonly="true " style="text-align: center; " value="N/A "></ion-input>
-                            <ion-input *ngIf="readonly && lookingForUpgrade()" type="text" [value]="coaching.referees[currentRefereeIdx].upgrade" readonly="true" style="text-align: center;"></ion-input>
-                            <ion-select *ngIf="!readonly && lookingForUpgrade()" [(ngModel)]="coaching.referees[currentRefereeIdx].upgrade" (ionChange)="saveCoaching()" slot="end" style="max-width: 100%;">
+                            <ion-input label="Upgrade" labelPlacement="stacked"  *ngIf="!lookingForUpgrade() " type="text " readonly="true " style="text-align: center; " value="N/A "></ion-input>
+                            <ion-input label="Upgrade" labelPlacement="stacked" *ngIf="readonly && lookingForUpgrade()" type="text" [value]="coaching.referees[currentRefereeIdx].upgrade" readonly="true" style="text-align: center;"></ion-input>
+                            <ion-select label="Upgrade" labelPlacement="stacked"  *ngIf="!readonly && lookingForUpgrade()" [(ngModel)]="coaching.referees[currentRefereeIdx].upgrade" (ionChange)="saveCoaching()" slot="end" style="max-width: 100%;">
                                 <ion-select-option value="DNS">Do Not See</ion-select-option>
                                 <ion-select-option value="DNSE">Do Not See Enough</ion-select-option>
                                 <ion-select-option value="No">No</ion-select-option>

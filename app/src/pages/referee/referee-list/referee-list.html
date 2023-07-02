@@ -39,22 +39,21 @@
         <ion-item-group style="width: 100%;">
             <ion-item-divider color="light">Filtering criteria</ion-item-divider>
             <ion-item>
-                <ion-label>Region</ion-label>
-                <ion-select [(ngModel)]="region" interface="action-sheet" (ionChange)="searchReferee()">
+                <ion-select label="Region" [(ngModel)]="region" interface="action-sheet" (ionChange)="searchReferee()">
                     <ion-select-option value="">All</ion-select-option>
                     <ion-select-option *ngFor="let r of constantes.regions" value="{{r}}">{{r}}</ion-select-option>
                 </ion-select>
             </ion-item>
             <ion-item>
-                <ion-label>Country</ion-label>
-                <ion-select [(ngModel)]="country" interface="action-sheet" (ionChange)="searchReferee()">
+                <ion-label></ion-label>
+                <ion-select label="Country" [(ngModel)]="country" interface="action-sheet" (ionChange)="searchReferee()">
                     <ion-select-option value="">All</ion-select-option>
                     <ion-select-option *ngFor="let c of constantes.countries" value="{{c[0]}}">{{c[1]}}</ion-select-option>
                 </ion-select>
             </ion-item>
             <ion-item>
-                <ion-label>Referee Level</ion-label>
-                <ion-select [(ngModel)]="refereeLevel" interface="action-sheet" (ionChange)="searchReferee()">
+                <ion-label></ion-label>
+                <ion-select label="Referee Level" [(ngModel)]="refereeLevel" interface="action-sheet" (ionChange)="searchReferee()">
                     <ion-select-option value="">All</ion-select-option>
                     <ion-select-option *ngFor="let level of constantes.refereeLevels" value="{{level}}">{{level}}</ion-select-option>
                 </ion-select>
@@ -62,13 +61,13 @@
             <ion-searchbar [(ngModel)]="searchInput" (ionInput)="searchReferee()" [animated]="true" [debounce]="500" inputmode="text" type="text" showCancelButton="never" showClearButton="never" placeholder="Referee name" searchIcon="search-outline"></ion-searchbar>
         </ion-item-group>
         <ion-item>
-            <ion-label>Sort by</ion-label>
-            <ion-select [(ngModel)]="sortBy" (ionChange)="searchReferee()">
+            <ion-label></ion-label>
+            <ion-select label="Sort by" [(ngModel)]="sortBy" (ionChange)="searchReferee()">
                 <ion-select-option value="shortName">Short name</ion-select-option>
                 <ion-select-option value="level">Level</ion-select-option>
             </ion-select>
         </ion-item>
-        <div *ngIf="!this.searchInput || this.searchInput.trim().length === 0" style="margin: 10px; text-align: center;">Write a referee name.</div>
+        <div *ngIf="!this.searchInput || this.searchInput.trim().length === 0" style="margin: 50px 0; 10px; text-align: center;">Write a part of a referee name to show a list of referees.</div>
         <ion-item-group style="width: 100%;" *ngIf="searchInput && searchInput.trim().length > 0">
             <ion-item-divider color="light">Search result<span *ngIf="!loading && referees">&nbsp;({{referees.length}})</span></ion-item-divider>
             <div *ngIf="loading" style="margin: 20px; text-align: center;">

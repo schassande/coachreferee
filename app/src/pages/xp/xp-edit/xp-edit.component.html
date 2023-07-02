@@ -19,12 +19,10 @@
             <a (click)="onClickCompetition()">{{xp.eventName ? xp.eventName : 'Click here'}}</a>
         </ion-item>
         <ion-item>
-            <ion-label>Event class:</ion-label>
-            <ion-input type="text" [(ngModel)]="xp.eventClass"></ion-input>
+            <ion-input label="Event class" type="text" [(ngModel)]="xp.eventClass"></ion-input>
         </ion-item>
         <ion-item *ngIf="coach">
-            <ion-label>Coach:</ion-label>
-            <ion-input type="text" readonly="true">&nbsp;{{coach.shortName}}</ion-input>
+            <ion-input label="Coach" type="text" [value]="coach.shortName" readonly="true"></ion-input>
         </ion-item>
     </ion-list>
     <div style="margin: 10px 10px 0 30px;" *ngFor="let cd of xp.days; let i = index">
@@ -32,36 +30,25 @@
             <ion-label>Day {{i + 1}}</ion-label>
             <ion-icon slot="end" name="trash" [ngStyle]="{ color: 'red' }" class="group-competency" (click)="delete(i)" style="margin-right: 5px;"></ion-icon>
         </ion-item-divider>
-        <ion-item button="true" id="open-xpdate-input{{i}}">
-            <ion-label position="fixed" style="min-width: 60%;">Date</ion-label>
-            <ion-input>{{ getCDDate(cd) }}</ion-input>
-            <ion-popover trigger="open-xpdate-input{{i}}" side="bottom" alignment="end">
-                <ng-template>
-                    <ion-datetime #popoverXpDate presentation="date" first-day-of-week="1" (ionChange)="setCDDate(cd, popoverXpDate.value[0])"></ion-datetime>
-                </ng-template>
-            </ion-popover>
+        <app-item-date-selector [dateValue]="cd.coachingDate" (dateChangeEvent)="setCoachingDate(cd, $event)"></app-item-date-selector>
+        <ion-item>
+            <ion-row>
+                <ion-col><ion-input label="Game" type="number" [(ngModel)]="cd.nbGames" helperText="Number of games" (ionChange)="onGameDataChange(cd)"></ion-input></ion-col>
+                <ion-col><ion-input label="x" type="number" [(ngModel)]="cd.gameDuration" helperText="Duration in minutes" (ionChange)="onGameDataChange(cd)"></ion-input></ion-col>
+            </ion-row>
         </ion-item>
         <ion-item>
-            <ion-label position="fixed" style="min-width: 60%;">Game duration (min)</ion-label>
-            <ion-input type="number" [(ngModel)]="cd.gameDuration" (ionChange)="onGameDataChange(cd)"></ion-input>
+            <ion-input label="Total Coaching (min)" type="number" [(ngModel)]="cd.coachingDuration"></ion-input>
         </ion-item>
         <ion-item>
-            <ion-label position="fixed" style="min-width: 60%;">Nb games</ion-label>
-            <ion-input type="number" [(ngModel)]="cd.nbGames" (ionChange)="onGameDataChange(cd)"></ion-input>
-        </ion-item>
-        <ion-item>
-            <ion-label position="fixed" style="min-width: 60%;">Total Coaching (min)</ion-label>
-            <ion-input type="number" [(ngModel)]="cd.coachingDuration"></ion-input>
-        </ion-item>
-        <ion-item>
-            <ion-label position="fixed" style="min-width: 60%;">Referee allocation</ion-label>
-            <ion-select item-content [(ngModel)]="cd.refereeAllocation" style="text-align: center;">
+            <ion-select [(ngModel)]="cd.refereeAllocation" label="Referee allocation" style="text-align: center;">
                 <ion-select-option value="No">No</ion-select-option>
                 <ion-select-option value="Contribute">Contribute</ion-select-option>
                 <ion-select-option value="Yes">Yes</ion-select-option>
             </ion-select>
         </ion-item>
     </div>
+    <div style="margin-bottom: 100px;"></div>
     <ion-fab vertical="bottom" horizontal="start" slot="fixed">
         <ion-fab-button style='--background:red; font-size: 1.6em; margin-bottom: 10px;' (click)="deleteXp()" *ngIf="xpId">
             <ion-icon name="trash"></ion-icon>

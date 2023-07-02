@@ -38,29 +38,25 @@
             <app-camera-icon-comp (photo)="onImage($event)" slot="end" alert="true"></app-camera-icon-comp>
         </ion-item>
         <ion-item>
-            <ion-label fixed>First name</ion-label>
-            <ion-input type="text" [(ngModel)]="referee.firstName" id="firstName" name="firstName" min="3" max="15" #firstName="ngModel" required autofocus tabindex="1" (ionBlur)="updateShortName()"></ion-input>
+            <ion-input label="First name" type="text" [(ngModel)]="referee.firstName" id="firstName" name="firstName" min="3" max="15" #firstName="ngModel" required autofocus tabindex="1" (ionBlur)="updateShortName()"></ion-input>
         </ion-item>
         <ion-item no-lines *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)" class="alert alert-danger">
             <div *ngIf="firstName.errors.required">A value is required.</div>
         </ion-item>
         <ion-item>
-            <ion-label fixed>Last name</ion-label>
-            <ion-input type="text" [(ngModel)]="referee.lastName" id="lastName" name="lastName" min="3" max="15" #lastName="ngModel" required tabindex="2" (ionBlur)="updateShortName()"></ion-input>
+            <ion-input label="Last Name" type="text" [(ngModel)]="referee.lastName" id="lastName" name="lastName" min="3" max="15" #lastName="ngModel" required tabindex="2" (ionBlur)="updateShortName()"></ion-input>
         </ion-item>
         <ion-item no-lines *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="alert alert-danger">
             <div *ngIf="lastName.errors.required">A value is required.</div>
         </ion-item>
         <ion-item>
-            <ion-label fixed>Short Name</ion-label>
-            <ion-input type="text" [(ngModel)]="referee.shortName" id="shortName" name="shortName" min="3" max="5" #shortName="ngModel" required tabindex="3"></ion-input>
+            <ion-input label="Short Name" type="text" [(ngModel)]="referee.shortName" id="shortName" name="shortName" min="3" max="5" #shortName="ngModel" required tabindex="3"></ion-input>
         </ion-item>
         <ion-item no-lines *ngIf="shortName.invalid && (shortName.dirty || shortName.touched)" class="alert alert-danger">
             <div *ngIf="shortName.errors.required">A value is required.</div>
         </ion-item>
         <ion-item>
-            <ion-label>Gender</ion-label>
-            <ion-select [(ngModel)]="referee.gender">
+            <ion-select label="Gender" [(ngModel)]="referee.gender">
                 <ion-select-option value="F">Female</ion-select-option>
                 <ion-select-option value="M">Male</ion-select-option>
             </ion-select>
@@ -68,29 +64,26 @@
         <ion-item-group>
             <ion-item-divider color="light">Referee</ion-item-divider>
             <ion-item>
-                <ion-label>Referee Level</ion-label>
-                <ion-select [(ngModel)]="referee.referee.refereeLevel">
+                <ion-select label="Referee Level" [(ngModel)]="referee.referee.refereeLevel">
                     <ion-select-option *ngFor="let refereeLevel of constantes.refereeLevels" value="{{refereeLevel}}">{{refereeLevel}}</ion-select-option>
                 </ion-select>
             </ion-item>
             <ion-item>
-                <ion-label>Referee category</ion-label>
-                <ion-select [(ngModel)]="referee.referee.refereeCategory">
+                <ion-select label="Referee category" [(ngModel)]="referee.referee.refereeCategory">
                     <ion-select-option value="JUNIOR">Junior</ion-select-option>
                     <ion-select-option value="OPEN">Open</ion-select-option>
                     <ion-select-option value="SENIOR">Senior</ion-select-option>
                 </ion-select>
             </ion-item>
             <ion-item>
-                <ion-label>Looking for upgrade?</ion-label>
-                <ion-select [(ngModel)]="referee.referee.nextRefereeLevel">
+                <ion-select label="Looking for upgrade?" [(ngModel)]="referee.referee.nextRefereeLevel">
                     <ion-select-option value="">No</ion-select-option>
                     <ion-select-option *ngFor="let refereeLevel of constantes.refereeLevels" value="{{refereeLevel}}">{{refereeLevel}}</ion-select-option>
                 </ion-select>
             </ion-item>
             <ion-item>
-                <ion-label>Referee coach Level</ion-label>
-                <ion-select [(ngModel)]="referee.refereeCoach.refereeCoachLevel">
+                <ion-label></ion-label>
+                <ion-select label="Referee coach Level" [(ngModel)]="referee.refereeCoach.refereeCoachLevel">
                     <ion-select-option *ngFor="let refereeCoachLevel of constantes.refereeCoachLevels" value="{{refereeCoachLevel}}">{{refereeCoachLevel}}</ion-select-option>
                 </ion-select>
             </ion-item>
@@ -98,24 +91,20 @@
         <ion-item-group>
             <ion-item-divider color="light">Other</ion-item-divider>
             <ion-item>
-                <ion-label>Speaking languages</ion-label>
-                <ion-select [(ngModel)]="referee.speakingLanguages" multiple="true">
+                <ion-select label="Speaking languages" [(ngModel)]="referee.speakingLanguages" multiple="true">
                     <ion-select-option *ngFor="let lang of constantes.languages" value="{{lang[0]}}">{{lang[1]}}</ion-select-option>
                 </ion-select>
             </ion-item>
             <ion-item>
-                <ion-label>Country</ion-label>
-                <ion-select [(ngModel)]="referee.country">
+                <ion-select label="Country" [(ngModel)]="referee.country">
                     <ion-select-option *ngFor="let country of constantes.countries" value="{{country[0]}}">{{country[1]}}</ion-select-option>
                 </ion-select>
             </ion-item>
             <ion-item>
-                <ion-label fixed>Email</ion-label>
-                <ion-input type="text" [(ngModel)]="referee.email" id="email" name="email" min="3" max="30" #email="ngModel"></ion-input>
+                <ion-input label="Email" type="text" [(ngModel)]="referee.email" id="email" name="email" min="3" max="30" #email="ngModel"></ion-input>
             </ion-item>
             <ion-item>
-                <ion-label fixed>Mobile phones</ion-label>
-                <ion-input type="phone" [(ngModel)]="referee.mobilePhones"></ion-input>
+                <ion-input label="Mobile" type="phone" [(ngModel)]="referee.mobilePhones"></ion-input>
             </ion-item>
         </ion-item-group>
         <ion-item-group>

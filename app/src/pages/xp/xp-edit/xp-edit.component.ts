@@ -83,12 +83,8 @@ export class XpEditComponent implements OnInit {
   public onCDDate(cd: CoachingDay, event) {
     cd.coachingDate = new Date(event.detail.value);
   }
-  public getCDDate(cd: CoachingDay): string {
-    return this.dateService.date2string(cd.coachingDate);
-  }
-
-  public setCDDate(cd: CoachingDay, dateStr: string) {
-    cd.coachingDate = this.dateService.string2date(dateStr, cd.coachingDate);
+  public setCoachingDate(cd: CoachingDay, date: Date) {
+    cd.coachingDate = date;
   }
 
   saveNback() {

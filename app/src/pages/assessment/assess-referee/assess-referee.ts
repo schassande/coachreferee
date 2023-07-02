@@ -36,6 +36,7 @@ export class AssessRefereePage implements OnInit {
   openedGroups: boolean[] = [];
   referee: Referee;
   id2referee: Map<string, Referee> = new Map<string, Referee>();
+  loading = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -46,10 +47,12 @@ export class AssessRefereePage implements OnInit {
   }
 
   ngOnInit() {
+    this.loading = true;
     this.bookmarkService.clearContext();
     this.loadAssessment().pipe(
       mergeMap(() => this.loadReferee()),
-      mergeMap(() => this.loadProfile())
+      mergeMap(() => this.loadProfile()),
+      map(() => this.loading = false)
     ).subscribe(this.bookmarkPage.bind(this));
   }
 
@@ -180,9 +183,6 @@ export class AssessRefereePage implements OnInit {
       return points as number;
     }
   }
-  public saveNback() {
-    this.save().pipe(map(() => this.back())).subscribe();
-  }
 
   saveAssessment() {
     this.save().subscribe();
@@ -190,10 +190,6 @@ export class AssessRefereePage implements OnInit {
 
   save(): Observable<any> {
     return this.assessmentService.save(this.assessment).pipe(map(() => console.log('Assessment saved')));
-  }
-
-  back() {
-    this.navController.navigateRoot(`/assessment/edit/${this.assessment.id}`);
   }
 
   private setCompetentFromPoint(evaluation: Evaluation, hasRequiredPoint: HasRequiredPoint) {
@@ -206,7 +202,7 @@ export class AssessRefereePage implements OnInit {
         evaluation.competency = nbYes === nbTot ? 'YES' : 'NO';
         break;
         case 'MAJORITY_REQUIRED':
-        evaluation.competency = (nbYes * 100 / nbTot) >= 50 ? 'YES' : 'NO';
+        evaluation.competency = (nbYes * 100 / nbTot) > 50 ? 'YES' : 'NO';
         break;
     }
   }

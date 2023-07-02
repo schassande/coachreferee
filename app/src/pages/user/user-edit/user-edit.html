@@ -29,41 +29,40 @@
                         <ion-avatar item-start *ngIf="user.photo && user.photo.url"><img src="{{user.photo.url}}"></ion-avatar>
                         <app-camera-icon-comp (photo)="onImage($event)" slot="end" alert="true"></app-camera-icon-comp>
                     </ion-item>
+
                     <ion-item>
-                        <ion-label fixed>First name</ion-label>
-                        <ion-input type="text" [(ngModel)]="user.firstName" (ionBlur)="updateShortName()" id="firstName" name="firstName" min="3" max="15" #firstName="ngModel" required autofocus tabindex="1"></ion-input>
+                        <ion-input label="First name" type="text" [(ngModel)]="user.firstName" (ionBlur)="updateShortName()" id="firstName" name="firstName" min="3" max="15" #firstName="ngModel" required autofocus tabindex="1"></ion-input>
                     </ion-item>
                     <ion-item no-lines *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)" class="alert alert-danger">
                         <div *ngIf="firstName.errors.required">A value is required.</div>
                     </ion-item>
+
                     <ion-item>
-                        <ion-label fixed>Last name</ion-label>
-                        <ion-input type="text" [(ngModel)]="user.lastName" (ionBlur)="updateShortName()" id="lastName" name="lastName" min="3" max="25" #lastName="ngModel" required tabindex="2"></ion-input>
+                        <ion-input label="Last name" type="text" [(ngModel)]="user.lastName" (ionBlur)="updateShortName()" id="lastName" name="lastName" min="3" max="25" #lastName="ngModel" required tabindex="2"></ion-input>
                     </ion-item>
                     <ion-item no-lines *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="alert alert-danger">
                         <div *ngIf="lastName.errors.required">A value is required.</div>
                     </ion-item>
+
                     <ion-item>
-                        <ion-label fixed>Short Name</ion-label>
-                        <ion-input type="text" [(ngModel)]="user.shortName" id="shortName" name="shortName" min="3" max="5" #shortName="ngModel" required tabindex="3"></ion-input>
+                        <ion-input label="Short Name" type="text" [(ngModel)]="user.shortName" id="shortName" name="shortName" min="3" max="5" #shortName="ngModel" required tabindex="3"></ion-input>
                     </ion-item>
                     <ion-item no-lines *ngIf="shortName.invalid && (shortName.dirty || shortName.touched)" class="alert alert-danger">
                         <div *ngIf="shortName.errors.required">A value is required.</div>
                     </ion-item>
+
                     <ion-item>
-                        <ion-label fixed>Email</ion-label>
-                        <ion-input type="text" [(ngModel)]="user.email" id="email" name="email" min="3" max="30" #email="ngModel" required tabindex="4"></ion-input>
+                        <ion-input label="Email" type="text" [(ngModel)]="user.email" id="email" name="email" min="3" max="30" #email="ngModel" required tabindex="4"></ion-input>
                     </ion-item>
                     <ion-item no-lines *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-danger">
                         <div *ngIf="email.errors.required">A value is required.</div>
                     </ion-item>
+
                     <ion-item>
-                        <ion-label fixed>Password</ion-label>
-                        <ion-input type="password" [(ngModel)]="user.password" max="15" tabindex="5"></ion-input>
+                        <ion-input label="Password" type="password" [(ngModel)]="user.password" max="15" tabindex="5"></ion-input>
                     </ion-item>
                     <ion-item>
-                        <ion-label>Region</ion-label>
-                        <ion-select [(ngModel)]="user.region" interface="action-sheet" required="true">
+                        <ion-select label="Region" [(ngModel)]="user.region" interface="action-sheet" required="true">
                             <ion-select-option value="Europe">Europe</ion-select-option>
                             <ion-select-option value="Australia">Australia</ion-select-option>
                             <ion-select-option value="New Zealand">New Zealand</ion-select-option>
@@ -72,31 +71,26 @@
                         </ion-select>
                     </ion-item>
                     <ion-item>
-                        <ion-label>Country</ion-label>
-                        <ion-select [(ngModel)]="user.country" interface="action-sheet" required="true">
+                        <ion-select label="Country" [(ngModel)]="user.country" interface="action-sheet" required="true">
                             <ion-select-option *ngFor="let country of constantes.countries" value="{{country[0]}}">{{country[1]}}</ion-select-option>
                         </ion-select>
                     </ion-item>
                     <ion-item>
-                        <ion-label>Referee coach Level</ion-label>
-                        <ion-select [(ngModel)]="user.refereeCoach.refereeCoachLevel" interface="action-sheet">
+                        <ion-select label="Referee coach Level" [(ngModel)]="user.refereeCoach.refereeCoachLevel" interface="action-sheet">
                             <ion-select-option *ngFor="let l of constantes.refereeCoachLevels" value="{{l}}">{{l}}</ion-select-option>
                         </ion-select>
                     </ion-item>
                     <ion-item>
-                        <ion-label>Gender</ion-label>
-                        <ion-select [(ngModel)]="user.gender">
+                        <ion-select label="Gender" [(ngModel)]="user.gender">
                             <ion-select-option value="F">Female</ion-select-option>
                             <ion-select-option value="M">Male</ion-select-option>
                         </ion-select>
                     </ion-item>
                     <ion-item>
-                        <ion-label fixed>Mobile phones</ion-label>
-                        <ion-input type="phone" [(ngModel)]="user.mobilePhones"></ion-input>
+                        <ion-input label="Mobile phones" type="phone" [(ngModel)]="user.mobilePhones"></ion-input>
                     </ion-item>
                     <ion-item>
-                        <ion-label>Speaking languages</ion-label>
-                        <ion-select [(ngModel)]="user.speakingLanguages" multiple="true" interface="action-sheet">
+                        <ion-select label="Speaking languages"[(ngModel)]="user.speakingLanguages" multiple="true" interface="action-sheet">
                             <ion-select-option *ngFor="let lang of constantes.languages" value="{{lang[0]}}">{{lang[1]}}</ion-select-option>
                         </ion-select>
                     </ion-item>

@@ -25,16 +25,14 @@
             <p style="margin: 10px;">Download a <a style="text-decoration: underline; cursor: pointer;" (click)="downloadCSVExemple()">template of the expected CSV file</a>. See help if required.
             <br>Before providing your file, please choose an import option:</p>
             <ion-item>
-                <ion-label>Update existing games (otherwise replace)</ion-label>
-                <ion-checkbox [(ngModel)]="updateExisting" scope="end" [disabled]="analysisStatus !== 'NONE'"></ion-checkbox>
+                <ion-checkbox [(ngModel)]="updateExisting"  justify="end" scope="end" [disabled]="analysisStatus !== 'NONE'">Update existing games (otherwise replace)</ion-checkbox>
             </ion-item>
             <ion-item>
-                <ion-label>Remove existing games not in the provided file</ion-label>
-                <ion-checkbox [(ngModel)]="removeUnreferenced" scope="end" [disabled]="analysisStatus !== 'NONE'"></ion-checkbox>
+                <ion-checkbox [(ngModel)]="removeUnreferenced"  justify="end" scope="end" [disabled]="analysisStatus !== 'NONE'">Remove existing games not in the provided file</ion-checkbox>
             </ion-item>
             <div style="text-align: right">
                 <span>
-                <input type="file" #inputCompetition accept="*.csv" style="display: none;" (change)="importCompetitionFromCsv($event)" />
+                <input aria-label="file" type="file" #inputCompetition accept="*.csv" style="display: none;" (change)="importCompetitionFromCsv($event)" />
                 <ion-button shape="round" (click)="loadFile()" [disabled]="analysisStatus == 'ANALYSING'">Browse file</ion-button>
             </span>
             </div>

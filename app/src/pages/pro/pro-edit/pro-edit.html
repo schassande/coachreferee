@@ -31,32 +31,25 @@
     </ion-row>
     <ion-list *ngIf="pro">
         <ion-item>
-            <ion-label fixed>Name</ion-label>
-            <ion-textarea placeholder="Enter a short description of the problem" rows="1" required="true" minlength="3" maxlength="100" inputmode="text" autofocus="true" [(ngModel)]="pro.problemShortDesc"></ion-textarea>
+            <ion-textarea label="Name" placeholder="Enter a short description of the problem" rows="1" required="true" minlength="3" maxlength="100" inputmode="text" autofocus="true" [(ngModel)]="pro.problemShortDesc"></ion-textarea>
         </ion-item>
         <ion-item>
-            <ion-label fixed>Problem</ion-label>
-            <ion-textarea placeholder="Enter a description of the problem" rows="5" spellcheck="true" [(ngModel)]="pro.problem"></ion-textarea>
+            <ion-textarea label="Problem" placeholder="Enter a description of the problem" rows="5" spellcheck="true" [(ngModel)]="pro.problem"></ion-textarea>
         </ion-item>
         <ion-item>
-            <ion-label fixed>Remedy</ion-label>
-            <ion-textarea placeholder="Enter a description of the remedy" rows="5" spellcheck="true" [(ngModel)]="pro.remedy"></ion-textarea>
+            <ion-textarea label="Remedy" placeholder="Enter a description of the remedy" rows="5" spellcheck="true" [(ngModel)]="pro.remedy"></ion-textarea>
         </ion-item>
         <ion-item>
-            <ion-label fixed>Outcome</ion-label>
-            <ion-textarea placeholder="Enter a description of the outcome" rows="5" spellcheck="true" [(ngModel)]="pro.outcome"></ion-textarea>
+            <ion-textarea label="Outcome" placeholder="Enter a description of the outcome" rows="5" spellcheck="true" [(ngModel)]="pro.outcome"></ion-textarea>
         </ion-item>
         <ion-item>
-            <ion-label fixed>Skill</ion-label>
-            <ion-input type="text" spellcheck="true" [(ngModel)]="pro.skillName"></ion-input>
+            <ion-input label="Skill" type="text" spellcheck="true" [(ngModel)]="pro.skillName"></ion-input>
         </ion-item>
         <ion-item>
-            <ion-label fixed>Complete</ion-label>
-            <ion-toggle [checked]="pro.complete" (ionChange)="onToggleComplete()"></ion-toggle>
+            <ion-toggle [checked]="pro.complete" (ionChange)="onToggleComplete()" justify="end">Complete</ion-toggle>
         </ion-item>
         <ion-item>
-            <ion-label fixed>Public</ion-label>
-            <ion-toggle [checked]="pro.sharedPublic" (ionChange)="onTogglePublic()"></ion-toggle>
+            <ion-toggle [checked]="pro.sharedPublic" (ionChange)="onTogglePublic()" justify="end">Public</ion-toggle>
         </ion-item>
     </ion-list>
     <div style="height: 50px;"></div>

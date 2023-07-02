@@ -188,7 +188,11 @@ export class CoachingImprovmentFeedbackEditPage implements OnInit {
     };
     this.proService.save(pro).subscribe();
   }
-
+  periodSelect(period: number) {
+    if (!this.readonly) {
+      this.feedback.period = period;
+    }
+  }
   getOtherReferees(): string[] {
     return this.referees.filter((ref, idx) => {
       // console.log('idx= ', idx, ' refereeIndex=', this.refereeIndex);

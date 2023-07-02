@@ -12,16 +12,13 @@
     <div style="text-align: center; margin: 10px 0;">Welcome to Referee Coach application !<br><br>Please enter your email and your password<br>to log in or create an account.</div>
     <ion-list>
         <ion-item>
-            <ion-label position="stacked">Email</ion-label>
-            <ion-input type="email" [(ngModel)]="email" tabindex="1"></ion-input>
+            <ion-input label="Email" type="email" [(ngModel)]="email" tabindex="1"></ion-input>
         </ion-item>
         <ion-item>
-            <ion-label position="stacked">Password</ion-label>
-            <ion-input type="password" [(ngModel)]="password" tabindex="2"></ion-input>
+            <ion-input label="Password" type="password" [(ngModel)]="password" tabindex="2"></ion-input>
         </ion-item>
         <ion-item style="text-align: right;">
-            <ion-label>Remember on this device&nbsp;</ion-label>
-            <ion-checkbox scope="end " [checked]="savePassword "></ion-checkbox>
+            <ion-checkbox scope="end" [checked]="savePassword ">Remember on this device&nbsp;</ion-checkbox>
         </ion-item>
     </ion-list>
     <div style="text-align: right; margin-right: 10px; ">

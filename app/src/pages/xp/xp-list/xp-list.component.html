@@ -14,15 +14,14 @@
 
 <ion-content (swipe)="onSwipe($event)">
     <ion-item *ngIf="isAdmin">
-        <ion-label>Coach</ion-label>
-        <ion-select [(ngModel)]="selectedCoachId" (ionChange)="onCoachChange()" interface="action-sheet">
+        <ion-select label="Coach" [(ngModel)]="selectedCoachId" (ionChange)="onCoachChange()" interface="action-sheet">
             <ion-select-option *ngFor="let coach of coaches" [value]="coach.id">{{coach.shortName}} - {{coach.firstName}}</ion-select-option>
         </ion-select>
     </ion-item>
+    <div *ngIf="loadingXps" style="text-align: center; width: 100%; margin: 20px 0;"><ion-spinner ></ion-spinner></div>
     <div *ngIf="years && years.length > 0">
         <ion-item *ngIf="years.length > 1">
-            <ion-label>Year</ion-label>
-            <ion-select [(ngModel)]="selectedYear" (ionChange)="onYearChange()" interface="action-sheet">
+            <ion-select label="Year" [(ngModel)]="selectedYear" (ionChange)="onYearChange()" interface="action-sheet">
                 <ion-select-option *ngFor="let year of years" [value]="year">{{year}}</ion-select-option>
             </ion-select>
         </ion-item>

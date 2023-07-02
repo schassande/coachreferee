@@ -1,6 +1,6 @@
 import { CompetitionService } from '../../../app/service/CompetitionService';
 import { CompetitionSelectorComponent } from '../../widget/competition-selector';
-import { ModalController, NavController, ToastController } from '@ionic/angular';
+import { ModalController, NavController, PopoverController, ToastController } from '@ionic/angular';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { SkillProfile } from '../../../app/model/skill';
 import { Observable, of } from 'rxjs';
@@ -43,20 +43,22 @@ export class AssessmentEditPage implements OnInit {
  };
 
   constructor(
-    public modalController: ModalController,
+    public appSettingsService: AppSettingsService,
+    public assessmentService: AssessmentService,
+    private competitionService: CompetitionService,
+    public connectedUserService: ConnectedUserService,
     public dateService: DateService,
     private changeDetectorRef: ChangeDetectorRef,
-    private route: ActivatedRoute,
+    public modalController: ModalController,
     private navController: NavController,
-    public connectedUserService: ConnectedUserService,
-    private competitionService: CompetitionService,
-    public userService: UserService,
-    public refereeService: RefereeService,
-    public assessmentService: AssessmentService,
-    public skillProfileService: SkillProfileService,
-    public appSettingsService: AppSettingsService,
+    private popController: PopoverController,
     private refereeSelectorService: RefereeSelectorService,
-    public toastController: ToastController) {
+    public refereeService: RefereeService,
+    private route: ActivatedRoute,
+    public skillProfileService: SkillProfileService,
+    public toastController: ToastController,
+    public userService: UserService
+    ) {
   }
 
   ngOnInit() {
@@ -86,7 +88,7 @@ export class AssessmentEditPage implements OnInit {
       // load referees
       mergeMap(() => this.assessmentService.loadingReferees(this.assessment, this.id2referee)),
       map(() => {
-        console.log('Param=' + JSON.stringify(this.param));
+        // c onsole.log('Param=' + JSON.stringify(this.param));
         if (this.assessment.dataStatus ===  'NEW' && this.param.refereeId) {
           this.setRefereeId(this.param.refereeId);
         }
@@ -216,6 +218,9 @@ export class AssessmentEditPage implements OnInit {
     this.userService.update(this.assessment.coachId, (user: User) => { user.defaultCompetition = c; return user; }).subscribe();
   }
   async onClickCompetition() {
+    if (this.readonly) {
+      return;
+    }
     const modal = await this.modalController.create({
       component: CompetitionSelectorComponent,
       componentProps: { name: this.assessment.competition}
@@ -249,6 +254,10 @@ export class AssessmentEditPage implements OnInit {
 
   set date(dateStr: string) {
     this.assessmentService.setStringDate(this.assessment, dateStr);
+    this.popController.dismiss();
+  }
+  setTimeSlot(timeSlot: string) {
+    this.assessment.timeSlot = timeSlot;
   }
 
   get closed() {
@@ -288,6 +297,7 @@ export class AssessmentEditPage implements OnInit {
 }
 
   computeTimeSlot(ts: Date): string {
+    ts.setMinutes(Math.ceil(ts.getMinutes()/5)*5);
     return this.assessmentService.computeTimeSlot(ts);
   }
 

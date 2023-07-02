@@ -105,6 +105,11 @@ export class CoachingPositiveFeedbackEditPage implements OnInit {
       return of('');
     }
   }
+  periodSelect(period: number) {
+    if (!this.readonly) {
+      this.feedback.period = period;
+    }
+  }
 
   isFeedbackValid(): boolean {
     return this.feedback.skillName && this.feedback.skillName !== null && this.feedback.skillName.trim().length > 0;

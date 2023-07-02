@@ -112,11 +112,13 @@ import { TextLimiterPipe } from 'src/pages/widget/TextLimiterPipe';
 import { HomeEntry } from 'src/pages/home/HomeEntry';
 import {MatIconModule} from '@angular/material/icon';
 import {MatSelectModule} from '@angular/material/select';
+import { ItemDateSelectorComponent } from 'src/pages/xp/xp-edit/item-date-selector-component';
+import { RankSelectorComponent } from 'src/pages/coaching/coaching-game/rank-selector';
 @NgModule({
     declarations: [AppComponent,
         AdminHomeComponent, UserManagerComponent, RefereeImportComponent, CoachingActivityPage,
         AssessRefereePage, AssessmentEditPage, AssessmentListPage,
-        CoachingGamePage, CoachingImprovmentFeedbackEditPage, CoachingListPage, CoachingPositiveFeedbackEditPage,
+        CoachingGamePage, CoachingImprovmentFeedbackEditPage, CoachingListPage, CoachingPositiveFeedbackEditPage, RankSelectorComponent,
         CompetitionImportComponent, CompetitionListPage, CompetitionEditComponent,
         CompetitionCoachesPage, CompetitionHomePage, CompetitionRankingPage, CompetitionUpgradesPage, CompetitionRefereesPage,
         CompetitionRankingPage, CompetitionRankingBestOf2Page, CompetitionGamesPage, CompetitionRankingListComponent,
@@ -127,7 +129,7 @@ import {MatSelectModule} from '@angular/material/select';
         SettingsPage,
         SkillEditPage, SkillProfileEditPage, SkillProfileListPage, SkillSetEditPage,
         UserEditPage, UserLoginComponent, UserWaitingValidationPage,
-        XpListComponent, XpEditComponent,
+        XpListComponent, XpEditComponent, ItemDateSelectorComponent,
         SharingComponent, CompetencyComponent, CompetencyPointsComponent, CompetitionSelectorComponent,
         CameraIconComponent, UserSelectorComponent,
         TextLimiterPipe],

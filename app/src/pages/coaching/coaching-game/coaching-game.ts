@@ -5,7 +5,7 @@ import { LocalAppSettings } from '../../../app/model/settings';
 import { AppSettingsService } from '../../../app/service/AppSettingsService';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Component, ViewChild, OnInit, ChangeDetectorRef } from '@angular/core';
-import { AlertController, NavController, IonSegment, ModalController, ToastController, getTimeGivenProgression } from '@ionic/angular';
+import { AlertController, NavController, IonSegment, ModalController, ToastController, getTimeGivenProgression, PopoverController } from '@ionic/angular';
 import { Observable, of, Subscription } from 'rxjs';
 import { mergeMap, map, catchError } from 'rxjs/operators';
 
@@ -100,6 +100,7 @@ export class CoachingGamePage implements OnInit {
     private modalController: ModalController,
     private navController: NavController,
     private helpService: HelpService,
+    private popoverController: PopoverController,
     private refereeSelectorService: RefereeSelectorService,
     public refereeService: RefereeService,
     private route: ActivatedRoute,
@@ -254,7 +255,6 @@ export class CoachingGamePage implements OnInit {
     this.coaching.currentPeriod = period;
     this.saveCoaching();
   }
-
   saveNback() {
     if (!this.coaching || this.coaching.closed || !this.isValid() || !this.coachingOwner)  {
       this.navController.navigateRoot(`/coaching/list`);
@@ -567,8 +567,9 @@ export class CoachingGamePage implements OnInit {
     return this.coachingService.getCoachingDateAsString(this.coaching);
   }
 
-  set date(dateStr: string) {
+  set date(dateStr: any) {
     this.coachingService.setStringDate(this.coaching, dateStr);
+    this.popoverController.dismiss();
     this.onCoachingChange();
   }
   searchReferee(idx: number) {
@@ -601,7 +602,6 @@ export class CoachingGamePage implements OnInit {
     return this.coachingService.computeTimeSlot(ts);
   }
   setTimeSlot(timeSlot: string) {
-    console.log(timeSlot);
     this.coaching.timeSlot = timeSlot;
     this.onCoachingChange();
   }

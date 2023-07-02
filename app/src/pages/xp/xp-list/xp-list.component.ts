@@ -38,6 +38,8 @@ export class XpListComponent implements OnInit {
   yearDuration = 0;
 
   sending = false;
+  loadingXps = false;
+
 
   constructor(
     private navController: NavController,
@@ -134,6 +136,7 @@ export class XpListComponent implements OnInit {
     this.selectedCoachId = this.selectedCoach.id;
     this.coaches = [this.selectedCoach];
     if (this.isAdmin) {
+      this.loadingXps = true;
       return this.userService.all().pipe(
         map((ruser) => {
           if (ruser.data) {
@@ -142,6 +145,7 @@ export class XpListComponent implements OnInit {
           } else {
             this.coaches = [this.selectedCoach];
           }
+          this.loadingXps = false;
           return this.selectedCoach;
         })
       );
@@ -151,6 +155,7 @@ export class XpListComponent implements OnInit {
   }
 
   private computeXps(): Observable<number> {
+    this.loadingXps = true;
     return this.xpService.findXps(this.selectedCoach).pipe(
       map((rxps) => {
         const y2x = new Map<number, Xp[]>();
@@ -174,6 +179,7 @@ export class XpListComponent implements OnInit {
       map(() => {
         const initialSelectedYear = this.year2xps.size ? this.year2xps.keys().next().value : null;
         this.setSelectYear(initialSelectedYear);
+        this.loadingXps = false;
         return this.selectedYear;
         })
     );

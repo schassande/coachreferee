@@ -49,8 +49,7 @@
                 <ion-label>List of users</ion-label>
             </ion-item-divider>
             <ion-item>
-                <ion-label>Status</ion-label>
-                <ion-select slot="end" (ionChange)="onStatusChange()" [(ngModel)]="status" interface="action-sheet">
+                <ion-select label="Status" slot="end" (ionChange)="onStatusChange()" [(ngModel)]="status" interface="action-sheet">
                     <ion-select-option value="">All</ion-select-option>
                     <ion-select-option value="ACTIVE">ACTIVE</ion-select-option>
                     <ion-select-option value="LOCKED">LOCKED</ion-select-option>
@@ -60,8 +59,7 @@
                 </ion-select>
             </ion-item>
             <ion-item>
-                <ion-label>Role</ion-label>
-                <ion-select slot="end" (ionChange)="onRoleChange()" [(ngModel)]="role" interface="action-sheet">
+                <ion-select label="Role" slot="end" (ionChange)="onRoleChange()" [(ngModel)]="role" interface="action-sheet">
                     <ion-select-option value="">All</ion-select-option>
                     <ion-select-option value="REFEREE">Referee</ion-select-option>
                     <ion-select-option value="REFEREE_COACH">Referee Coach</ion-select-option>
@@ -69,8 +67,7 @@
                 </ion-select>
             </ion-item>
             <ion-item>
-                <ion-label>Region</ion-label>
-                <ion-select slot="end" (ionChange)="onRegionChange()" [(ngModel)]="region" interface="action-sheet">
+                <ion-select label="Region" slot="end" (ionChange)="onRegionChange()" [(ngModel)]="region" interface="action-sheet">
                     <ion-select-option value="">All</ion-select-option>
                     <ion-select-option value="Europe">Europe</ion-select-option>
                     <ion-select-option value="Australia">Australia</ion-select-option>

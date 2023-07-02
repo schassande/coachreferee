@@ -17,12 +17,14 @@
         <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;">
             <ion-item-divider color="light" style="text-align: center; font-size: 1.2em;">Game info</ion-item-divider>
             <ion-item>
-                <ion-label>Competition:</ion-label>
-                <a (click)="onClickCompetition()">{{assessment.competition ? assessment.competition : 'Click here'}}</a>
+                <ion-label style="padding-top: 10px;" (click)="onClickCompetition()">
+                    <span>Competition:&nbsp;</span>
+                    <span *ngIf="!readonly"><a>{{assessment.competition ? assessment.competition : 'Click here'}}</a></span>
+                    <span *ngIf="readonly">{{assessment.competition}}</span>
+                </ion-label>
             </ion-item>
             <ion-item *ngIf="assessment.dataStatus == 'NEW'">
-                <ion-label>Type:</ion-label>
-                <ion-select item-content *ngIf="!readonly" [(ngModel)]="assessment.profileType" (ionChange)="onProfileTypechange()" style="text-align: center;">
+                <ion-select label="Type:" item-content *ngIf="!readonly" [(ngModel)]="assessment.profileType" (ionChange)="onProfileTypechange()" style="text-align: center;">
                     <ion-select-option value="REFEREE">Referee</ion-select-option>
                     <ion-select-option value="REFEREE_COACH">Coach</ion-select-option>
                 </ion-select>
@@ -31,31 +33,24 @@
                 <ion-grid fixed="true" class="coachEditGrid">
                     <ion-row>
                         <ion-col size="4" align-self="flex-start">
-                            <ion-item button="true" id="open-assdate-input">
-                                <ion-label position="stacked">Date:</ion-label>
-                                <ion-input>{{ dateService.date2string(assessment.date) }}</ion-input>
-                                <ion-popover trigger="open-assdate-input" side="bottom" alignment="end" *ngIf="!readonly">
+                            <div id="open-assdate-input">
+                                <ion-input label="Date:" labelPlacement="stacked" [value]="dateService.date2string(assessment.date)" style="text-align: center;"></ion-input>
+                                <ion-popover trigger="{{readonly ? undefined : 'open-assdate-input' }}" side="bottom" alignment="end" *ngIf="!readonly">
                                     <ng-template>
-                                        <ion-datetime #popoverAssDate presentation="date" first-day-of-week="1" (ionChange)="date = popoverAssDate.value[0]"></ion-datetime>
+                                        <ion-datetime #popoverAssDate presentation="date" first-day-of-week="1" (ionChange)="date = '' + popoverAssDate.value"></ion-datetime>
                                     </ng-template>
                                 </ion-popover>
-                            </ion-item>
+                            </div>
                         </ion-col>
                         <ion-col size="4" align-self="flex-start">
-                            <ion-item button="true" id="open-timeslot-input">
-                                <ion-label position="stacked">Slot:</ion-label>
-                                <ion-input>{{ assessment.timeSlot }}</ion-input>
-                                <ion-popover trigger="open-timeslot-input" side="bottom" alignment="end" *ngIf="!readonly">
-                                    <ng-template>
-                                        <ion-datetime #popoverTimeSlot hour-cycle="h23" minuteValues="0,5,10,15,20,25,30,35,40,45,50,55" presentation="time" (ionChange)="assessment.timeSlot = popoverTimeSlot.value[0]"></ion-datetime>
-                                    </ng-template>
-                                </ion-popover>
-                            </ion-item>
+                            <div>
+                                <ion-input label="Time" labelPlacement="stacked" readonly="true" [ngxTimepicker]="fullTime" [format]="24" [disableClick]="readonly" type="text" [value]="assessment.timeSlot" style="text-align: center;"></ion-input>
+                                <ngx-material-timepicker #fullTime [minutesGap]="5" (timeChanged)="setTimeSlot($event)"></ngx-material-timepicker>
+                            </div>
                         </ion-col>
                         <ion-col size="4" align-self="flex-start">
-                            <ion-label position="stacked">Field:</ion-label>
-                            <ion-input *ngIf="readonly" type="text" [(ngModel)]="assessment.field" readonly="true" style="text-align: center;"></ion-input>
-                            <ion-select item-content *ngIf="!readonly" [(ngModel)]="assessment.field" style="text-align: center;">
+                            <ion-input label="Field:" labelPlacement="stacked" *ngIf="readonly" type="text" [(ngModel)]="assessment.field" readonly="true" style="text-align: center;"></ion-input>
+                            <ion-select label="Field:" labelPlacement="stacked" item-content *ngIf="!readonly" [(ngModel)]="assessment.field" style="text-align: center;">
                                 <ion-select-option *ngFor="let item of [].constructor(25); let i = index" value="{{i+1}}">{{i+1}}</ion-select-option>
                             </ion-select>
                         </ion-col>
@@ -66,27 +61,24 @@
                 <ion-grid fixed="true" class="coachEditGrid">
                     <ion-row>
                         <ion-col size="4" align-self="flex-start">
-                            <ion-label position="stacked">Speed:</ion-label>
-                            <ion-input *ngIf="readonly" type="text" [(ngModel)]="assessment.gameSpeed" readonly="true" style="text-align: center;"></ion-input>
-                            <ion-select *ngIf="!readonly" [(ngModel)]="assessment.gameSpeed" class="stackedSelect" style="text-align: center;">
+                            <ion-input label="Speed:" labelPlacement="stacked" *ngIf="readonly" type="text" [(ngModel)]="assessment.gameSpeed" readonly="true" style="text-align: center;"></ion-input>
+                            <ion-select label="Speed:" labelPlacement="stacked" *ngIf="!readonly" [(ngModel)]="assessment.gameSpeed" class="stackedSelect" style="text-align: center;">
                                 <ion-select-option value="Low">Low</ion-select-option>
                                 <ion-select-option value="Medium">Medium</ion-select-option>
                                 <ion-select-option value="High">High</ion-select-option>
                             </ion-select>
                         </ion-col>
                         <ion-col size="4" align-self="flex-start">
-                            <ion-label position="stacked">Skill:</ion-label>
-                            <ion-input *ngIf="readonly" type="text" [(ngModel)]="assessment.gameSkill" readonly="true" style="text-align: center;"></ion-input>
-                            <ion-select *ngIf="!readonly" [(ngModel)]="assessment.gameSkill" class="stackedSelect" style="text-align: center;">
+                            <ion-input label="Skill:" labelPlacement="stacked" *ngIf="readonly" type="text" [(ngModel)]="assessment.gameSkill" readonly="true" style="text-align: center;"></ion-input>
+                            <ion-select label="Skill:" labelPlacement="stacked" *ngIf="!readonly" [(ngModel)]="assessment.gameSkill" class="stackedSelect" style="text-align: center;">
                                 <ion-select-option value="Low">Low</ion-select-option>
                                 <ion-select-option value="Medium">Medium</ion-select-option>
                                 <ion-select-option value="High">High</ion-select-option>
                             </ion-select>
                         </ion-col>
                         <ion-col size="4" align-self="flex-start">
-                            <ion-label position="stacked">Category:</ion-label>
-                            <ion-input *ngIf="readonly" type="text" [(ngModel)]="assessment.gameCategory" readonly="true" style="text-align: center;"></ion-input>
-                            <ion-select *ngIf="!readonly" [(ngModel)]="assessment.gameCategory" class="stackedSelect" style="text-align: center;">
+                            <ion-input label="Category:" labelPlacement="stacked" *ngIf="readonly" type="text" [(ngModel)]="assessment.gameCategory" readonly="true" style="text-align: center;"></ion-input>
+                            <ion-select label="Category:" labelPlacement="stacked" *ngIf="!readonly" [(ngModel)]="assessment.gameCategory" class="stackedSelect" style="text-align: center;">
                                 <ion-select-option value="OPEN">OPEN</ion-select-option>
                                 <ion-select-option value="XO">XO</ion-select-option>
                                 <ion-select-option value="MO">MO</ion-select-option>
@@ -122,9 +114,8 @@
             <ion-icon *ngIf="!readonly" slot="end" name="search" (click)="searchReferee(0)"></ion-icon>
         </ion-item>
         <ion-item>
-            <ion-label>Assessed Level:</ion-label>
-            <ion-input *ngIf="readonly" type="text" [(ngModel)]="assessment.profileName" readonly="true" style="text-align: right;"></ion-input>
-            <ion-select *ngIf="!readonly" [(ngModel)]="profileId" (ionChange)="updateAssessedLevel()">
+            <ion-input label="Assessed Level:" *ngIf="readonly" type="text" [(ngModel)]="assessment.profileName" readonly="true" style="text-align: right;"></ion-input>
+            <ion-select label="Assessed Level:" *ngIf="!readonly" [(ngModel)]="profileId" (ionChange)="updateAssessedLevel()">
                 <ion-select-option *ngFor="let profile of profiles" value="{{profile.id}}">{{profile.name}}</ion-select-option>
             </ion-select>
         </ion-item>

@@ -14,14 +14,12 @@
 
 <ion-content>
     <ion-item *ngIf="!loading">
-        <ion-label>Upgrade to:</ion-label>
-        <ion-select slot="end" [(ngModel)]="currentUgradeLevel" (ionChange)="onUpgradeLevelChanged()">
+        <ion-select label="Upgrade to:" slot="end" [(ngModel)]="currentUgradeLevel" (ionChange)="onUpgradeLevelChanged()">
             <ion-select-option *ngFor="let upgradeLevel of upgradeLevels" [value]="upgradeLevel">{{upgradeLevel}}</ion-select-option>
         </ion-select>
     </ion-item>
     <ion-item *ngIf="!loading">
-        <ion-label>Referee:</ion-label>
-        <ion-select slot="end" [(ngModel)]="refereeToUpgrade" (ionChange)="onRefereeChanged()">
+        <ion-select label="Referee:" slot="end" [(ngModel)]="refereeToUpgrade" (ionChange)="onRefereeChanged()">
             <ion-select-option *ngFor="let ru of refereesToUpgrade" [value]="ru">{{ru.referee.firstName}} ({{ru.referee.shortName}})</ion-select-option>
         </ion-select>
     </ion-item>

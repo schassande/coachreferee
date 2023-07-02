@@ -1,7 +1,7 @@
 import { UserSelectorComponent } from './../../widget/user-selector-component';
 import { ConnectedUserService } from './../../../app/service/ConnectedUserService';
 import { HelpService } from './../../../app/service/HelpService';
-import { AlertController, ModalController, NavController } from '@ionic/angular';
+import { AlertController, ModalController, NavController, PopoverController } from '@ionic/angular';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
@@ -42,6 +42,7 @@ export class CompetitionEditComponent implements OnInit {
     private helpService: HelpService,
     private modalController: ModalController,
     private navController: NavController,
+    private popController: PopoverController,
     private route: ActivatedRoute,
     private userService: UserService
     ) {
@@ -148,6 +149,7 @@ export class CompetitionEditComponent implements OnInit {
   set date(dateStr: string) {
     this.competition.date = this.dateService.string2date(dateStr, this.competition.date);
     this.competition.year = this.competition.date.getFullYear();
+    this.popController.dismiss();
     this.computeDays();
   }
 

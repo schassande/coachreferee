@@ -10,10 +10,12 @@ export const REFEREE_COACH_LEVELS = [ 'NONE', 'EURO_0', 'EURO_1', 'EURO_2', 'EUR
                                 'AUS_0', 'AUS_1', 'AUS_2', 'AUS_3' ];
 export type RefereeLevel =  '' | 'EURO_0' |'EURO_1' | 'EURO_2' | 'EURO_3' |'EURO_4' |'EURO_5'
                                 | 'NZ_0' | 'NZ_1' | 'NZ_2' | 'NZ_3' |'NZ_4'
-                                | 'AUS_0' |'AUS_1' | 'AUS_2' | 'AUS_3' | 'AUS_4' | 'AUS_5' | 'AUS_6';
+                                | 'AUS_0' |'AUS_1' | 'AUS_2' | 'AUS_3' | 'AUS_4' | 'AUS_5' | 'AUS_6'
+                                | 'FIT_0' | 'FIT_1' | 'FIT_2' | 'FIT_3' | 'FIT_4';
 export const REFEREE_LEVELS =  ['' , 'EURO_0', 'EURO_1' , 'EURO_2' , 'EURO_3', 'EURO_4', 'EURO_5',
                                 'NZ_0', 'NZ_1', 'NZ_2', 'NZ_3', 'NZ_4',
-                                'AUS_0', 'AUS_1', 'AUS_2', 'AUS_3', 'AUS_4', 'AUS_5', 'AUS_6'];
+                                'AUS_0', 'AUS_1', 'AUS_2', 'AUS_3', 'AUS_4', 'AUS_5', 'AUS_6',
+                                'FIT_0', 'FIT_1', 'FIT_2', 'FIT_3', 'FIT_4'];
 
 export type Gender = 'M' | 'F';
 export type RefereeCategory = 'OPEN' | 'SENIOR' | 'JUNIOR';

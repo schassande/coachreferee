@@ -24,21 +24,21 @@
 <ion-content>
     <ion-list *ngIf="feedback" (swipe)="onSwipe($event)">
         <ion-item>
-            <ion-label fixed>Skill name:</ion-label>
-            <ion-input type="text" [(ngModel)]="feedback.skillName" [readonly]="readonly" tabindex="1" autofocus></ion-input>
+            <ion-input label="Skill name:" type="text" [(ngModel)]="feedback.skillName" [readonly]="readonly" tabindex="1" autofocus></ion-input>
         </ion-item>
         <ion-item>
-            <ion-label fixed>Description:</ion-label>
-            <ion-textarea placeholder="Enter a description of positive feedback" rows="5" tabindex="2" type="text" [(ngModel)]="feedback.description" [readonly]="readonly"></ion-textarea>
+            <ion-textarea label="Description:" placeholder="Enter a description of positive feedback" rows="5" tabindex="2" type="text" [(ngModel)]="feedback.description" [readonly]="readonly"></ion-textarea>
         </ion-item>
         <ion-item>
-            <ion-label>Period:</ion-label>
-            <ion-input type="number" [(ngModel)]="feedback.period" [readonly]="readonly" tabindex="3"></ion-input>
+            <ion-label fixed>Period</ion-label>
+            <ion-badge color="{{feedback.period == 1 ? 'primary' : 'light' }}" style="font-size: 1.5em; padding: 5px 10px; border-radius: 20px; margin-left: 10px;" (click)="periodSelect(1)">1</ion-badge>
+            <ion-badge color="{{feedback.period == 2 ? 'primary' : 'light' }}" style="font-size: 1.5em; padding: 5px 10px; border-radius: 20px; margin-left: 10px;" (click)="periodSelect(2)">2</ion-badge>
+            <ion-badge color="{{feedback.period == 3 ? 'primary' : 'light' }}" style="font-size: 1.5em; padding: 5px 10px; border-radius: 20px; margin-left: 10px;" (click)="periodSelect(3)">3</ion-badge>
+            <ion-badge color="{{feedback.period == 4 ? 'primary' : 'light' }}" style="font-size: 1.5em; padding: 5px 10px; border-radius: 20px; margin-left: 10px;" (click)="periodSelect(4)">4</ion-badge>
         </ion-item>
         <ion-item>
-            <ion-label>Deliver:</ion-label>
-            <ion-input *ngIf="readonly" type="text" [(ngModel)]="feedback.deliver" [readonly]="readonly" tabindex="4"></ion-input>
-            <ion-toggle *ngIf="!readonly" [(ngModel)]="feedback.deliver" tabindex="4"></ion-toggle>
+            <ion-input *ngIf="readonly" label="Deliver:" type="text" [(ngModel)]="feedback.deliver" [readonly]="readonly" tabindex="4"></ion-input>
+            <ion-toggle *ngIf="!readonly" [(ngModel)]="feedback.deliver" tabindex="4" justify="end">Deliver:</ion-toggle>
         </ion-item>
     </ion-list>
 </ion-content>

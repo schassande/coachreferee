@@ -54,6 +54,18 @@ export class UserService  extends RemotePersistentDataService<User> {
         if (!item.accountStatus) {
             item.accountStatus = 'ACTIVE';
         }
+        if (!item.referee.refereeLevel) {
+            if (item.region === 'Europe') {
+                item.referee.refereeLevel = 'EURO_0';
+            } else if (item.region === 'Australia') {
+                item.referee.refereeLevel = 'AUS_0';
+            } else if (item.region === 'New Zealand') {
+                item.referee.refereeLevel = 'AUS_0';
+            } else if (item.region === 'Others') {
+                item.referee.refereeLevel = 'AUS_0';
+            }
+            
+        }
     }
 
     public save(user: User, cred: UserCredential = null): Observable<ResponseWithData<User>> {

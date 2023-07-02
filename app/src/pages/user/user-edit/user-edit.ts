@@ -40,6 +40,7 @@ export class UserEditPage implements OnInit {
   }
 
   ngOnInit() {
+    // TODO autocompute country and region based on time zone Intl.DateTimeFormat().resolvedOptions().timeZone)
     this.route.paramMap.pipe(
       map( (paramMap: ParamMap) => {
         const userId = paramMap.get('id');
