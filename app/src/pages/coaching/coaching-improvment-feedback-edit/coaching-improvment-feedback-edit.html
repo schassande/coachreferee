@@ -46,6 +46,12 @@
             </ion-item>
         </ion-item-group>
 
+        <ion-item *ngIf="coachingTemplate">
+            <ion-select  label="Topic" labelPlacement="stacked"*ngIf="!readonly" [(ngModel)]="feedback.topicName" class="stackedSelect" style="text-align: center;" interface="action-sheet">
+                <ion-select-option *ngFor="let topic of coachingTemplate.topics" value="{{topic.name}}">{{topic.name}}</ion-select-option>
+            </ion-select>
+        </ion-item>
+
         <ion-item-group *ngIf="feedback">
             <ion-item-divider color="light">Feedback</ion-item-divider>
             <ion-item>

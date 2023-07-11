@@ -50,6 +50,15 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
       if (!(d instanceof Date) ) {
         item.date = d.toDate();
       }
+      if (!item.coachingStructure) {
+        if (item.referees.length > 0 
+          && item.referees[0].comments
+          && item.referees[0].comments.length > 1) {
+          item.coachingStructure = 'TEXT';
+        } else {
+          item.coachingStructure = '+-';
+        }
+      }
     }
 
     getCoachingByReferee(refereeId: string): Observable<ResponseWithData<Coaching[]>> {

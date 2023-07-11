@@ -8,7 +8,8 @@ import { NavController } from '@ionic/angular';
 import { CoachingService } from '../../../app/service/CoachingService';
 import { ConnectedUserService } from '../../../app/service/ConnectedUserService';
 import { User } from '../../../app/model/user';
-import { Coaching, PositiveFeedback } from '../../../app/model/coaching';
+import { Coaching, CoachingTemplate, PositiveFeedback } from '../../../app/model/coaching';
+import { CoachingTemplateService } from 'src/app/service/CoachingTemplateService';
 
 /**
  * Generated class for the CoachingPositiveFeedbackEditPage page.
@@ -33,13 +34,16 @@ export class CoachingPositiveFeedbackEditPage implements OnInit {
   coachingCoach = '';
   coachingOwner = true;
   appCoach: User;
+  coachingTemplate: CoachingTemplate;
 
   constructor(
     private route: ActivatedRoute,
     private navController: NavController,
     private helpService: HelpService,
     public connectedUserService: ConnectedUserService,
-    private coachingService: CoachingService) {
+    private coachingService: CoachingService,
+    private coachingTemplateService: CoachingTemplateService,
+    ) {
   }
 
   ngOnInit() {
@@ -61,13 +65,20 @@ export class CoachingPositiveFeedbackEditPage implements OnInit {
             skillName: '',
             description: '',
             period: this.coaching.currentPeriod,
-            deliver: false
+            deliver: false,
+            topicName: ''
           };
         }
         this.referees = this.coaching.referees.map((ref) => ref.refereeShortName);
         this.coachingOwner =  this.coaching.coachId === this.appCoach.id;
         this.coachingCoach = (this.coachingOwner ? 'me' : 'another coach');
         this.readonly = !this.coachingOwner || this.coaching.closed;
+      }),
+      map(() => {
+        if (this.coaching.coachingTemplateId) {
+          this.coachingTemplateService.get(this.coaching.coachingTemplateId)
+            .subscribe((rt) => this.coachingTemplate = rt.data)
+        }
       })
     ).subscribe();
   }

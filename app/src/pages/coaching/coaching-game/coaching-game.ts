@@ -6,7 +6,7 @@ import { AppSettingsService } from '../../../app/service/AppSettingsService';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Component, ViewChild, OnInit, ChangeDetectorRef } from '@angular/core';
 import { AlertController, NavController, IonSegment, ModalController, ToastController, getTimeGivenProgression, PopoverController } from '@ionic/angular';
-import { Observable, of, Subscription } from 'rxjs';
+import { forkJoin, Observable, of, Subscription } from 'rxjs';
 import { mergeMap, map, catchError } from 'rxjs/operators';
 
 import { ConnectedUserService } from '../../../app/service/ConnectedUserService';
@@ -16,7 +16,7 @@ import { ResponseWithData } from '../../../app/service/response';
 import { CoachingService } from '../../../app/service/CoachingService';
 import { BookmarkService, Bookmark } from '../../../app/service/BookmarkService';
 import { Referee, User, UserGroup, UserPreference } from '../../../app/model/user';
-import { Coaching, PositiveFeedback, Feedback, RefereeCoaching } from '../../../app/model/coaching';
+import { Coaching, PositiveFeedback, Feedback, RefereeCoaching, CoachingTemplate, CoachingStructure } from '../../../app/model/coaching';
 import { DateService } from 'src/app/service/DateService';
 import { RefereeSelectorService } from 'src/pages/referee/referee-selector-service';
 import { CompetitionSelectorComponent } from 'src/pages/widget/competition-selector';
@@ -26,6 +26,7 @@ import { UserGroupService } from 'src/app/service/UserGroupService';
 import { UserSelectorComponent } from 'src/pages/widget/user-selector-component';
 import { CompetitionService } from 'src/app/service/CompetitionService';
 import { UserPreferenceService } from 'src/app/service/UserPreferenceService';
+import { CoachingTemplateService } from 'src/app/service/CoachingTemplateService';
 
 /**
  * Generated class for the CoachingGamePage page.
@@ -40,7 +41,8 @@ export interface CoachingCreationParams extends GameAllocation {
 }
 const USER_PREF_CAT = 'COACHING_GAME';
 const UP_EDIT_STYLE = 'EDIT_STYLE';
-type UpEditStyle = 'FREE' | 'CAT';
+const UP_COACHING_TEMPLATE = 'COACHING_TEMPLATE';
+type UpEditStyle = 'FREE' | 'CAT' | 'TEM';
 
 @Component({
   selector: 'app-page-coaching-game',
@@ -82,8 +84,13 @@ export class CoachingGamePage implements OnInit {
   refereeName1: string;
   refereeName2: string;
   agenda: AgendaItem[];
-  freeEditStyle = false;
   openPreviousCoaching = false;
+  otherCoachingsloaded = false;
+  coachingTemplates: CoachingTemplate[] = [];
+  preferedCoachingTemplateId: string;
+  preferedCoachingStructure: CoachingStructure;
+  coachingTemplate: CoachingTemplate;
+  topicFeedbacks: TopicFeedbacks[][] = [];
 
   @ViewChild(IonSegment) segment: IonSegment;
 
@@ -94,6 +101,7 @@ export class CoachingGamePage implements OnInit {
     private bookmarkService: BookmarkService,
     private changeDetectorRef: ChangeDetectorRef,
     public coachingService: CoachingService,
+    private coachingTemplateService: CoachingTemplateService,
     private competitionService: CompetitionService,
     public connectedUserService: ConnectedUserService,
     public dateService: DateService,
@@ -120,11 +128,15 @@ export class CoachingGamePage implements OnInit {
     this.coaching = null;
     this.appCoach = this.connectedUserService.getCurrentUser();
     this.loadParams().pipe(
+      mergeMap(() => this.loadCoachingTemplates()),
       mergeMap(() => this.loadUserPreference()),
       mergeMap(() => this.loadCoaching()),
       mergeMap((response) => {
         this.coaching = response.data;
         if (this.coaching) {
+          if (this.coaching.coachingTemplateId) {
+            this.coachingTemplate = this.coachingTemplates.find((ct) => ct.id === this.coaching.coachingTemplateId);
+          }
           return of(this.coaching);
         } else {
           return this.initCoaching();
@@ -133,6 +145,7 @@ export class CoachingGamePage implements OnInit {
       map(() => {
         this.clean(this.coaching);
         this.computeCoachingValues();
+        this.computeTopicFeedbacks();
         this.loadingReferees();
         this.computeSharedWith();
         this.bookmarkPage();
@@ -143,18 +156,51 @@ export class CoachingGamePage implements OnInit {
     ).subscribe();
   }
 
+  loadCoachingTemplates():Observable<any> {
+    return this.coachingTemplateService.all().pipe(
+      map((rtemplates) => this.coachingTemplates = rtemplates.data)
+    )
+  }
   loadUserPreference():Observable<any> {
     return this.userPreferenceService.getMyPreferences(USER_PREF_CAT).pipe(
       map((rup) => this.userPreferenceService.toMap(rup.data)),
       map((userPreferences: Map<string,UserPreference>) => {
-        this.freeEditStyle = this.userPreferenceService.getValue(userPreferences, UP_EDIT_STYLE, 'CAT') !== 'CAT';
+        // compute the prefered coaching structure of the user
+        this.preferedCoachingStructure = '+-';
+        const userPrefValue = this.userPreferenceService.getValue<string>(userPreferences, UP_EDIT_STYLE, this.preferedCoachingStructure);
+        switch(userPrefValue){
+          case 'FREE': //map old value to new ones
+            this.preferedCoachingStructure = 'TEXT';
+            break;
+          case 'CAT': //map old value to new ones
+            this.preferedCoachingStructure = '+-';
+            break;
+          case 'TEM': //map old value to new ones
+            this.preferedCoachingStructure = 'BPS';
+            break;
+          default:
+            this.preferedCoachingStructure = userPrefValue as CoachingStructure;
+            break;
+        }
+        // compute the prefered coaching template of the user
+        this.preferedCoachingTemplateId = this.userPreferenceService.getValue<string>(userPreferences, UP_COACHING_TEMPLATE, undefined);
+        if (this.preferedCoachingTemplateId) {
+          this.coachingTemplate = this.coachingTemplates.find((ct) => ct.id === this.preferedCoachingTemplateId);
+        } else if (this.coachingTemplates.length > 0) {
+          this.coachingTemplate = this.coachingTemplates[0];
+          this.preferedCoachingTemplateId = this.coachingTemplate.id;
+        }
       })
     );
   }
-  toggleEditStyle() {
-    this.freeEditStyle = !this.freeEditStyle;
-    this.userPreferenceService.setMyPreference(USER_PREF_CAT, UP_EDIT_STYLE, 
-      this.freeEditStyle ? 'FREE' : 'CAT').subscribe();
+  onCoachingStructureChange() {
+    this.userPreferenceService.setMyPreference(USER_PREF_CAT, UP_EDIT_STYLE, this.coaching.coachingStructure).subscribe();
+    this.onCoachingChange();
+  }
+  onCoachingTemplateChange() {
+    this.coachingTemplate = this.coachingTemplates.find((ct) => ct.id === this.preferedCoachingTemplateId);
+    this.userPreferenceService.setMyPreference(USER_PREF_CAT, UP_COACHING_TEMPLATE, this.coaching.coachingTemplateId).subscribe();
+    this.onCoachingChange();
   }
   computeRefereeNames() {
     this.refereeName0 = this.getReferee(0);
@@ -194,6 +240,8 @@ export class CoachingGamePage implements OnInit {
           creationDate : new Date(),
           lastUpdate : new Date(),
           dataStatus: 'NEW',
+          coachingStructure: this.preferedCoachingStructure,
+          coachingTemplateId: this.preferedCoachingTemplateId,
           competition: defaultCompetitionName,
           competitionId: defaultCompetitionId,
           field: this.param.field ? this.param.field : '1',
@@ -236,6 +284,46 @@ export class CoachingGamePage implements OnInit {
     this.readonly = !this.coachingOwner || this.coaching.closed;
   }
 
+  private computeTopicFeedbacks() {
+    // for each referee
+    this.topicFeedbacks = this.coaching.referees.map((rc, idx) => {
+      // group feedback item by topic
+      let refereeTopicFeedbacks: TopicFeedbacks[] = [];
+      this.coaching.referees[idx].feedbacks.forEach((f,idx) => {
+        this.getOrCreateHolder(refereeTopicFeedbacks, f.topicName).feedbacks.push({idx, ...f});
+      });
+      this.coaching.referees[idx].positiveFeedbacks.forEach((f,idx) => {
+        this.getOrCreateHolder(refereeTopicFeedbacks, f.topicName).positiveFeedbacks.push({idx, ...f});
+      });
+      if (this.coachingTemplate) {
+        refereeTopicFeedbacks = this.coachingTemplate.topics.map(t => {
+          const rtfIdx = refereeTopicFeedbacks.findIndex(rtf => rtf.topicName === t.name);
+          if (rtfIdx >= 0) {
+            const rtf = refereeTopicFeedbacks.splice(rtfIdx, 1)[0];
+            rtf.description = t.description;
+            return rtf;
+          } else {
+            return {topicName: t.name, description: t.description, feedbacks:[], positiveFeedbacks: []};
+          }
+        }).concat(refereeTopicFeedbacks);
+      }
+      return refereeTopicFeedbacks;
+    });
+  }
+  showHelpFeedback(tf: TopicFeedbacks) {
+    this.alertCtrl.create({header: tf.topicName, message: tf.description})
+      .then( (alert) => alert.present());
+  }
+  private getOrCreateHolder(holders: TopicFeedbacks[], topicName: string) {
+    const _topicName = topicName ? topicName : 'Other';
+    let holder = holders.find(tf => tf.topicName === _topicName);
+    if (!holder) {
+      holder = { topicName: _topicName, description: undefined, feedbacks: [], positiveFeedbacks: []};
+      holders.push(holder);
+    }
+    return holder;
+  }
+
   private clean(coaching: Coaching): Coaching {
     if (coaching && coaching.referees) {
       let idx = 0;
@@ -265,6 +353,7 @@ export class CoachingGamePage implements OnInit {
     }
   }
   public onCoachingChange() {
+    this.computeTopicFeedbacks();
     this.saveCoaching();
   }
   public saveCoaching() {
@@ -335,8 +424,9 @@ export class CoachingGamePage implements OnInit {
     });
   }
   private loadOtherCoachings() {
-    this.coaching.refereeIds.forEach((refId) => {
-      this.coachingService.getCoachingByReferee(refId).pipe(
+    this.otherCoachingsloaded = false;
+    forkJoin(this.coaching.refereeIds.map((refId) => {
+      return this.coachingService.getCoachingByReferee(refId).pipe(
         map((rcoachings) => {
           if (rcoachings.data) {
             const cs: Coaching[] = rcoachings.data
@@ -351,8 +441,8 @@ export class CoachingGamePage implements OnInit {
             this.id2coachings.set(refId, ocs);
           }
         })
-      ).subscribe();
-    });
+      );
+    })).subscribe(() => this.otherCoachingsloaded = true);
   }
 
   private bookmarkPage() {
@@ -763,5 +853,18 @@ interface AgendaItem {
 }
 interface OtherCoaching extends Coaching {
   refereeCoaching: RefereeCoaching;
+}
 
+interface TopicFeedbacks {
+  topicName: string;
+  description: string;
+  positiveFeedbacks: PositiveFeedbackWithIndex[];
+  feedbacks: FeedbackWithIndex[];
+}
+
+interface PositiveFeedbackWithIndex extends PositiveFeedback {
+  idx: number;
+}
+interface FeedbackWithIndex extends Feedback {
+  idx: number;
 }

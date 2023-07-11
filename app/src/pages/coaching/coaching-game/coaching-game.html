@@ -169,8 +169,17 @@
                 <ion-item-divider color="light" style="text-align: center; font-size: 1.2em; padding: 10px;">
                     <ion-label>Preferences</ion-label>
                 </ion-item-divider>
-                <ion-item (click)="toggleEditStyle()">
-                    <ion-toggle justify="end" [ngModel]="freeEditStyle">Free edit style</ion-toggle>
+                <ion-item>
+                    <ion-select  label="Structure" labelPlacement="stacked"*ngIf="!readonly" [(ngModel)]="coaching.coachingStructure" class="stackedSelect" style="text-align: center;" interface="action-sheet" (ionChange)="onCoachingStructureChange()">
+                        <ion-select-option value="+-">Strength and weakness</ion-select-option>
+                        <ion-select-option value="TEXT">Free text</ion-select-option>
+                        <ion-select-option value="BPS">Breakpoint Sheet</ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <ion-item>
+                    <ion-select  label="Template structure" labelPlacement="stacked"*ngIf="!readonly" [(ngModel)]="coaching.coachingTemplateId" class="stackedSelect" style="text-align: center;" interface="action-sheet" (ionChange)="onCoachingTemplateChange()">
+                        <ion-select-option *ngFor="let coachTemp of coachingTemplates" value="{{coachTemp.id}}">{{coachTemp.name}}</ion-select-option>
+                    </ion-select>
                 </ion-item>
             </ion-item-group>
             <ion-item-group style="border-left: 1px solid lightgrey; border-right: 1px solid lightgrey;" *ngIf="coachingOwner">
@@ -222,33 +231,64 @@
             <ion-icon name="eye-outline"></ion-icon>
         </div>
         <ion-list>
-            <ion-item-group *ngIf="freeEditStyle || (coaching.referees[currentRefereeIdx].comments && coaching.referees[currentRefereeIdx].comments.length > 1)">
+            <ion-item-group *ngIf="coaching.coachingStructure === 'TEXT'">
                 <ion-item-divider color=" light ">Comment area</ion-item-divider>
                 <ion-textarea placeholder="Comment about the referee" rows="10" autoGrow="true" autofocus="true" inputmode="text" wrap="soft" [(ngModel)]="coaching.referees[currentRefereeIdx].comments" readonly="{{readonly}}" (ionChange)="onCoachingChange()" debounce="2000"></ion-textarea>
             </ion-item-group>
-            <ion-item-group *ngIf="!freeEditStyle && (!readonly || coaching.referees[currentRefereeIdx].positiveFeedbacks.length > 0)">
-                <ion-item-divider color="light ">Positive points ({{coaching.referees[currentRefereeIdx].positiveFeedbacks.length}})</ion-item-divider>
-                <ion-item *ngFor="let positiveFeedback of coaching.referees[currentRefereeIdx].positiveFeedbacks; let idx=index " [ngClass]="{ 'period1' : positiveFeedback.period==1 , 'period2' : positiveFeedback.period==2 }">
-                    <p (click)="selectPositiveFeedback(positiveFeedback, idx)" class="feedbackTxt">{{positiveFeedback.skillName}}</p>
-                    <ion-icon slot="end" name="paper-plane-outline" (click)="deliverPositiveFeedback(positiveFeedback, idx) " class="star" [ngClass]="{ 'yellowStar' : positiveFeedback.deliver} "></ion-icon>
-                    <ion-badge slot="end" (click)="switchPeriod(positiveFeedback)" color="{{positiveFeedback.period===1 ? 'light' : 'primary'}}" style="padding: 5px 10px; border-radius: 20px;">{{positiveFeedback.period}}</ion-badge>
-                    <ion-icon slot="end" *ngIf="!readonly" name="trash" (click)="deletePositiveFeedback(idx)"></ion-icon>
-                </ion-item>
-                <div *ngIf="coaching.referees[currentRefereeIdx].positiveFeedbacks.length==0 && !readonly " style="padding: 5px; font-size: 0.8em; text-align: center;">No positive feedback, click on
-                    <mat-icon style="color: green; vertical-align: bottom;">add_circle</mat-icon> to add one.</div>
-            </ion-item-group>
-            <ion-item-group *ngIf="!freeEditStyle && (!readonly || coaching.referees[currentRefereeIdx].feedbacks.length > 0)">
-                <ion-item-divider color="light ">Axis of improvment ({{coaching.referees[currentRefereeIdx].feedbacks.length}})</ion-item-divider>
-                <ion-item *ngFor="let feedback of coaching.referees[currentRefereeIdx].feedbacks; let idx=index " [ngClass]="{ 'period1' : feedback.period==1 , 'period2' : feedback.period==2 }">
-                    <p (click)="selectFeedback(feedback, idx) " class="feedbackTxt ">{{feedback.problemShortDesc}}</p>
-                    <ion-icon slot="end" name="paper-plane-outline" (click)="deliverFeedback(feedback, idx) " class="star" [ngClass]="{ 'yellowStar' : feedback.deliver}"></ion-icon>
-                    <ion-icon slot="end" name="{{feedback.appliedLater ? 'trending-up-outline' : 'remove-outline'}}" (click)="toggleAppliedLater(feedback)"></ion-icon>
-                    <ion-badge slot="end" (click)="switchPeriod(feedback) " color="{{feedback.period===1 ? 'light' : 'primary'}} " style="padding: 5px 10px; border-radius: 20px;">{{feedback.period}}</ion-badge>
-                    <ion-icon slot="end" *ngIf="!readonly" name="trash" (click)="deleteFeedback(idx)"></ion-icon>
-                </ion-item>
-                <div *ngIf="coaching.referees[currentRefereeIdx].feedbacks.length==0 && !readonly" style="padding: 5px; font-size: 0.8em; text-align: center;">No axis of improvment, click on
-                    <mat-icon style="color: red; vertical-align: bottom;">add_circle</mat-icon> to add one.</div>
-            </ion-item-group>
+            <div *ngIf="coaching.coachingStructure === '+-'">
+                <ion-item-group>
+                    <ion-item-divider color="light ">Positive points ({{coaching.referees[currentRefereeIdx].positiveFeedbacks.length}})</ion-item-divider>
+                    <ion-item *ngFor="let positiveFeedback of coaching.referees[currentRefereeIdx].positiveFeedbacks; let idx=index " [ngClass]="{ 'period1' : positiveFeedback.period==1 , 'period2' : positiveFeedback.period==2 }">
+                        <p (click)="selectPositiveFeedback(positiveFeedback, idx)" class="feedbackTxt"><span *ngIf="positiveFeedback.topicName" class="topicName">{{positiveFeedback.topicName}}: </span>{{positiveFeedback.skillName}}</p>
+                        <ion-icon slot="end" name="paper-plane-outline" (click)="deliverPositiveFeedback(positiveFeedback, idx) " class="star" [ngClass]="{ 'yellowStar' : positiveFeedback.deliver} "></ion-icon>
+                        <ion-badge slot="end" (click)="switchPeriod(positiveFeedback)" color="{{positiveFeedback.period===1 ? 'light' : 'primary'}}" style="padding: 5px 10px; border-radius: 20px;">{{positiveFeedback.period}}</ion-badge>
+                        <ion-icon slot="end" *ngIf="!readonly" name="trash" (click)="deletePositiveFeedback(idx)"></ion-icon>
+                    </ion-item>
+                    <div *ngIf="coaching.referees[currentRefereeIdx].positiveFeedbacks.length==0 && !readonly " style="padding: 5px; font-size: 0.8em; text-align: center;">No positive feedback, click on
+                        <mat-icon style="color: green; vertical-align: bottom;" (click)="newPositiveFeedback($event)">add_circle</mat-icon> to add one.
+                    </div>
+                </ion-item-group>
+                <ion-item-group>
+                    <ion-item-divider color="light ">Axis of improvment ({{coaching.referees[currentRefereeIdx].feedbacks.length}})</ion-item-divider>
+                    <ion-item *ngFor="let feedback of coaching.referees[currentRefereeIdx].feedbacks; let idx=index " [ngClass]="{ 'period1' : feedback.period==1 , 'period2' : feedback.period==2 }">
+                        <p (click)="selectFeedback(feedback, idx) " class="feedbackTxt "><span *ngIf="feedback.topicName" class="topicName">{{feedback.topicName}}: </span>{{feedback.problemShortDesc}}</p>
+                        <ion-icon slot="end" name="paper-plane-outline" (click)="deliverFeedback(feedback, idx) " class="star" [ngClass]="{ 'yellowStar' : feedback.deliver}"></ion-icon>
+                        <ion-icon slot="end" name="{{feedback.appliedLater ? 'trending-up-outline' : 'remove-outline'}}" (click)="toggleAppliedLater(feedback)"></ion-icon>
+                        <ion-badge slot="end" (click)="switchPeriod(feedback) " color="{{feedback.period===1 ? 'light' : 'primary'}} " style="padding: 5px 10px; border-radius: 20px;">{{feedback.period}}</ion-badge>
+                        <ion-icon slot="end" *ngIf="!readonly" name="trash" (click)="deleteFeedback(idx)"></ion-icon>
+                    </ion-item>
+                    <div *ngIf="coaching.referees[currentRefereeIdx].feedbacks.length==0 && !readonly" style="padding: 5px; font-size: 0.8em; text-align: center;">No axis of improvment, click on
+                        <mat-icon style="color: red; vertical-align: bottom;" (click)="newFeedback($event)">add_circle</mat-icon> to add one.</div>
+                </ion-item-group>
+            </div>
+            <div *ngIf="coaching.coachingStructure === 'BPS'" style="margin-bottom: 20px;">
+                <ion-item-group *ngFor="let tf of topicFeedbacks[currentRefereeIdx]">
+                    <ion-item-divider color="light ">{{tf.topicName}}
+                        <ion-icon slot="end" name="help-circle-outline" id="click-help-trigger" (click)="showHelpFeedback(tf)"></ion-icon>                        
+                    </ion-item-divider>
+                    <div *ngIf="tf.positiveFeedbacks.length === 0 && tf.feedbacks.length === 0" style="width: 100%; margin: 0 5px; font-size: 0.8em;">
+                        <div style="text-align: center;">No feedback, use&nbsp;
+                        <mat-icon style="color: red; vertical-align: bottom;" (click)="newFeedback($event)">add_circle</mat-icon>
+                        &nbsp;or&nbsp;
+                        <mat-icon style="color: green; vertical-align: bottom;" (click)="newPositiveFeedback($event)">add_circle</mat-icon>
+                        &nbsp;to add one.
+                        </div>
+                    </div>
+                        <ion-item *ngFor="let f of tf.positiveFeedbacks" [ngClass]="{ 'period1' : f.period==1 , 'period2' : f.period==2 }">
+                        <p (click)="selectPositiveFeedback(f, f.idx)" class="feedbackTxt">+&nbsp;{{f.skillName}}</p>
+                        <ion-icon slot="end" name="paper-plane-outline" (click)="deliverPositiveFeedback(f, f.idx) " class="star" [ngClass]="{ 'yellowStar' : f.deliver} "></ion-icon>
+                        <ion-badge slot="end" (click)="switchPeriod(f)" color="{{f.period===1 ? 'light' : 'primary'}}" style="padding: 5px 10px; border-radius: 20px;">{{f.period}}</ion-badge>
+                        <ion-icon slot="end" *ngIf="!readonly" name="trash" (click)="deletePositiveFeedback(f.idx)"></ion-icon>
+                    </ion-item>
+                    <ion-item *ngFor="let f of tf.feedbacks" [ngClass]="{ 'period1' : f.period==1 , 'period2' : f.period==2 }">
+                        <p (click)="selectFeedback(f, f.idx) " class="feedbackTxt ">-&nbsp;{{f.problemShortDesc}}</p>
+                        <ion-icon slot="end" name="paper-plane-outline" (click)="deliverFeedback(f, f.idx) " class="star" [ngClass]="{ 'yellowStar' : f.deliver}"></ion-icon>
+                        <ion-icon slot="end" name="{{f.appliedLater ? 'trending-up-outline' : 'remove-outline'}}" (click)="toggleAppliedLater(f)"></ion-icon>
+                        <ion-badge slot="end" (click)="switchPeriod(f) " color="{{f.period===1 ? 'light' : 'primary'}} " style="padding: 5px 10px; border-radius: 20px;">{{f.period}}</ion-badge>
+                        <ion-icon slot="end" *ngIf="!readonly" name="trash" (click)="deleteFeedback(f.idx)"></ion-icon>
+                    </ion-item>
+                </ion-item-group>
+            </div>
             <ion-item-group>
                 <ion-item-divider color="light ">Misc</ion-item-divider>
                 <ion-row>
@@ -265,7 +305,7 @@
                         <ion-item>
                             <ion-input label="Upgrade" labelPlacement="stacked"  *ngIf="!lookingForUpgrade() " type="text " readonly="true " style="text-align: center; " value="N/A "></ion-input>
                             <ion-input label="Upgrade" labelPlacement="stacked" *ngIf="readonly && lookingForUpgrade()" type="text" [value]="coaching.referees[currentRefereeIdx].upgrade" readonly="true" style="text-align: center;"></ion-input>
-                            <ion-select label="Upgrade" labelPlacement="stacked"  *ngIf="!readonly && lookingForUpgrade()" [(ngModel)]="coaching.referees[currentRefereeIdx].upgrade" (ionChange)="saveCoaching()" slot="end" style="max-width: 100%;">
+                            <ion-select label="Upgrade" labelPlacement="stacked"  *ngIf="!readonly && lookingForUpgrade()" [(ngModel)]="coaching.referees[currentRefereeIdx].upgrade" (ionChange)="saveCoaching()">
                                 <ion-select-option value="DNS">Do Not See</ion-select-option>
                                 <ion-select-option value="DNSE">Do Not See Enough</ion-select-option>
                                 <ion-select-option value="No">No</ion-select-option>
@@ -276,7 +316,7 @@
                     </ion-col>
                 </ion-row>
             </ion-item-group>
-            <ion-item-group *ngIf="currentReferee.id && id2coachings.get(currentReferee.id) && id2coachings.get(currentReferee.id).length > 0">
+            <ion-item-group *ngIf="currentReferee.id && otherCoachingsloaded">
                 <ion-item-divider color="light" (click)="openPreviousCoaching = !openPreviousCoaching">
                     <ion-icon slot="start" name="chevron-down-outline" *ngIf="openPreviousCoaching"></ion-icon>
                     <ion-icon slot="start" name="chevron-forward-outline" *ngIf="!openPreviousCoaching"></ion-icon>

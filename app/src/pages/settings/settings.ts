@@ -21,6 +21,7 @@ import { LEVELS_EURO } from './levelEuropean';
 import { environment } from '../../environments/environment';
 import * as csv from 'csvtojson';
 import { OfflinesService } from 'src/app/service/OfflineService';
+import { CoachingTemplateService } from 'src/app/service/CoachingTemplateService';
 
 
 /**
@@ -50,6 +51,7 @@ export class SettingsPage implements OnInit {
     private appSettingsService: AppSettingsService,
     private assessmentService: AssessmentService,
     private coachingService: CoachingService,
+    private coachingTemplateService: CoachingTemplateService,
     private connectedUserService: ConnectedUserService,
     private navController: NavController,
     private offlinesService: OfflinesService,
@@ -260,7 +262,9 @@ export class SettingsPage implements OnInit {
       this.toast('NZ levels imported.');
     });
   }
-
+  importCoachingTemplate() {
+    this.coachingTemplateService.initialiseDefaultTemplates();
+  }
   public exportData() {
       this.alertController.create({
         header: 'Which data do you want to export?',

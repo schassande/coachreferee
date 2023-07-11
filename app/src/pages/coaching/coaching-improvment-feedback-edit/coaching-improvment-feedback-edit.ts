@@ -1,7 +1,7 @@
 import { HelpService } from './../../../app/service/HelpService';
 import { CoachingService } from '../../../app/service/CoachingService';
 import { User } from '../../../app/model/user';
-import { Coaching } from '../../../app/model/coaching';
+import { Coaching, CoachingTemplate } from '../../../app/model/coaching';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { AlertController, NavController } from '@ionic/angular';
@@ -13,6 +13,7 @@ import { AlertOptions, AlertInput } from '@ionic/core';
 import { map } from 'rxjs/operators';
 import { mergeMap } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
+import { CoachingTemplateService } from 'src/app/service/CoachingTemplateService';
 
 /**
  * Generated class for the CoachingImprovmentFeedbackEditPage page.
@@ -43,6 +44,7 @@ export class CoachingImprovmentFeedbackEditPage implements OnInit {
   pros: PRO[];
   applyToReferee: boolean[] = [];
   applyToAll = false;
+  coachingTemplate: CoachingTemplate;
 
   constructor(
     private route: ActivatedRoute,
@@ -50,6 +52,7 @@ export class CoachingImprovmentFeedbackEditPage implements OnInit {
     private helpService: HelpService,
     public connectedUserService: ConnectedUserService,
     private coachingService: CoachingService,
+    private coachingTemplateService: CoachingTemplateService,
     public proService: PROService,
     public alertCtrl: AlertController) {
   }
@@ -82,13 +85,20 @@ export class CoachingImprovmentFeedbackEditPage implements OnInit {
             problem: '',
             remedy: '',
             outcome: '',
-            deliver: false
+            deliver: false,
+            topicName: ''
           };
         }
         this.referees = this.coaching.referees.map((ref) => ref.refereeShortName);
         this.coachingOwner =  this.coaching.coachId === this.appCoach.id;
         this.coachingCoach = (this.coachingOwner ? 'me' : 'another coach');
         this.readonly = !this.coachingOwner || this.coaching.closed;
+      }),
+      map(() => {
+        if (this.coaching.coachingTemplateId) {
+          this.coachingTemplateService.get(this.coaching.coachingTemplateId)
+            .subscribe((rt) => this.coachingTemplate = rt.data)
+        }
       })
     ).subscribe();
   }

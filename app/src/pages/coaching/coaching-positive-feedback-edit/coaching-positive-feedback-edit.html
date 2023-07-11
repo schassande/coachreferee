@@ -26,6 +26,11 @@
         <ion-item>
             <ion-input label="Skill name:" type="text" [(ngModel)]="feedback.skillName" [readonly]="readonly" tabindex="1" autofocus></ion-input>
         </ion-item>
+        <ion-item *ngIf="coachingTemplate">
+            <ion-select  label="Topic" labelPlacement="stacked"*ngIf="!readonly" [(ngModel)]="feedback.topicName" class="stackedSelect" style="text-align: center;" interface="action-sheet">
+                <ion-select-option *ngFor="let topic of coachingTemplate.topics" value="{{topic.name}}">{{topic.name}}</ion-select-option>
+            </ion-select>
+        </ion-item>
         <ion-item>
             <ion-textarea label="Description:" placeholder="Enter a description of positive feedback" rows="5" tabindex="2" type="text" [(ngModel)]="feedback.description" [readonly]="readonly"></ion-textarea>
         </ion-item>

@@ -24,6 +24,7 @@ export interface Feedback extends PRO {
     period: number;
     appliedLater: boolean;
     deliver: boolean;
+    topicName?: string;
 }
 
 export interface PositiveFeedback {
@@ -31,6 +32,7 @@ export interface PositiveFeedback {
     description: string;
     period: number;
     deliver: boolean;
+    topicName?: string;
 }
 
 export interface Coaching extends PersistentData, SharedElement {
@@ -48,6 +50,8 @@ export interface Coaching extends PersistentData, SharedElement {
     currentPeriod?: number;
     refereeIds: string[];
     referees: RefereeCoaching[];
+    coachingStructure?: CoachingStructure;
+    coachingTemplateId?: string;
 }
 export interface RefereeCoaching {
     refereeId: string;
@@ -58,4 +62,15 @@ export interface RefereeCoaching {
     upgrade: Upgradable;
     rank: number;
 }
+export interface CoachingTemplate extends PersistentData {
+    name: string;
+    topics: {
+        name: string;
+        description: string;
+    }[];
+}
+
+export type CoachingStructure = 'TEXT' /* free text */
+    | '+-'  /* Stength and weakness */ 
+    | 'BPS' /* Breakpoint sheet */;
 

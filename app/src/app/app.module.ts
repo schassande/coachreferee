@@ -114,6 +114,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatSelectModule} from '@angular/material/select';
 import { ItemDateSelectorComponent } from 'src/pages/xp/xp-edit/item-date-selector-component';
 import { RankSelectorComponent } from 'src/pages/coaching/coaching-game/rank-selector';
+import { CoachingTemplateService } from './service/CoachingTemplateService';
 @NgModule({
     declarations: [AppComponent,
         AdminHomeComponent, UserManagerComponent, RefereeImportComponent, CoachingActivityPage,
@@ -150,7 +151,7 @@ import { RankSelectorComponent } from 'src/pages/coaching/coaching-game/rank-sel
         HttpClientModule,
         MarkdownModule.forRoot({ loader: HttpClient }),
         MatIconModule, MatSelectModule,
-        IonicModule.forRoot(),
+        IonicModule.forRoot({innerHTMLTemplatesEnabled: true}),
         IonicStorageModule.forRoot(),
         ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
     ],
@@ -159,6 +160,7 @@ import { RankSelectorComponent } from 'src/pages/coaching/coaching-game/rank-sel
         AssessmentService,
         BookmarkService,
         CoachingService,
+        CoachingTemplateService,
         CompetitionService,
         CompetitionRefereeUpgradeService,
         CompetitionRefereeRankingService,
