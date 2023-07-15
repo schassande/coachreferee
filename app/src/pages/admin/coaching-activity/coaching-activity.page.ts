@@ -6,6 +6,7 @@ import { Component, OnInit } from '@angular/core';
 import { map, mergeMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { DataRegion } from 'src/app/model/common';
+import { ChartConfiguration } from 'chart.js';
 
 @Component({
   selector: 'app-coaching-activity',
@@ -24,7 +25,20 @@ export class CoachingActivityPage implements OnInit {
   dataReady = false;
   users: string[];
   coachingByUsers: number[];
-
+  public barChartOptions: ChartConfiguration['options'] = {
+    responsive: true,
+    // We use these empty structures as placeholders for dynamic theming.
+    scales: {
+      x: {},
+      y: { min: 0 }
+    },
+    plugins: {
+      legend: {
+        display: false,
+      }
+    }
+  };
+  
   constructor(
     private coachingService: CoachingService,
     public dateService: DateService,
@@ -71,19 +85,18 @@ export class CoachingActivityPage implements OnInit {
 
   computeChartData(coachings: Coaching[]) {
     this.labels = [];
-    const filledCoaching = coachings.filter(this.filledCoaching.bind(this));
-    filledCoaching.forEach( (coaching) => {
-      const dateStr = this.dateService.date2string(coaching.date);
-      if (this.labels.indexOf(dateStr) < 0) {
-        this.labels.push(dateStr);
-      }
-    });
-    this.labels = this.labels.sort();
+    let curDate = this.dateService.to1stOfMonth(this.beginDate);
+    while(curDate.getTime() < this.endDate.getTime()) {
+      this.labels.push(this.dateService.month2string(curDate));
+      curDate = this.dateService.nextMonth(curDate);
+    }
 
     this.nbCoachings = this.labels.map(() => 0);
     const usersByDate: string[][] = this.labels.map(() => []);
+    const filledCoaching = coachings.filter(this.filledCoaching.bind(this));
     filledCoaching.forEach( (coaching) => {
-      const dateStr = this.dateService.date2string(coaching.date);
+      let monthDate = this.dateService.to1stOfMonth(coaching.date);
+      const dateStr = this.dateService.month2string(monthDate);
       const idx = this.labels.indexOf(dateStr);
       if (idx < 0) {
         console.log('Not found date for the coaching ' + coaching.id, dateStr);
@@ -99,10 +112,10 @@ export class CoachingActivityPage implements OnInit {
       }
     });
     this.nbUsers = usersByDate.map( u => u.length);
-    console.log('labels:', this.labels);
-    console.log('nbCoachings:', this.nbCoachings);
-    console.log('usersByDate:', usersByDate);
-    console.log('nbUsers:', this.nbUsers);
+    // console.log('labels:', this.labels);
+    // console.log('nbCoachings:', this.nbCoachings);
+    // console.log('usersByDate:', usersByDate);
+    // console.log('nbUsers:', this.nbUsers);
 
     let nbCoachingByUser: {coach: string, nb: number}[] = [];
     filledCoaching.forEach( (coaching) => {
@@ -113,7 +126,7 @@ export class CoachingActivityPage implements OnInit {
         nbCoachingByUser.push({coach: coaching.coachId, nb: 1});
       }
     });
-    nbCoachingByUser = nbCoachingByUser.sort( (elem1, elem2) => elem1.nb - elem2.nb);
+    nbCoachingByUser = nbCoachingByUser.filter(elem => elem.nb > 1).sort( (elem1, elem2) => elem1.nb - elem2.nb);
     let obs: Observable<any> = of('');
     nbCoachingByUser.forEach(elem => {
       const newObs: Observable<any> = this.userService.get(elem.coach).pipe(

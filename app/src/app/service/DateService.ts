@@ -22,11 +22,20 @@ export class DateService {
   public isToday(day: Date): boolean {
     return this.compareDate(day, new Date()) === 0;
   }
+  public to1stOfMonth(day: Date) {
+    let first = new Date(day);
+    first.setDate(1);
+    return first;
 
+  }
   public date2string(aDate: Date) {
     return aDate.getFullYear()
       + DATE_SEP + this.to2Digit(aDate.getMonth() + 1)
       + DATE_SEP + this.to2Digit(aDate.getDate());
+  }
+  public month2string(aDate: Date) {
+    return aDate.getFullYear()
+      + DATE_SEP + this.to2Digit(aDate.getMonth() + 1);
   }
 
   public time2string(aDate: Date) {
@@ -53,6 +62,9 @@ export class DateService {
   }
   public nextDay(date: Date): Date {
     return moment(date.getTime()).add(1, 'days').toDate();
+  }
+  public nextMonth(date: Date): Date {
+    return moment(date.getTime()).add(1, 'months').toDate();
   }
 
   public to00h00(day: Date): Date {

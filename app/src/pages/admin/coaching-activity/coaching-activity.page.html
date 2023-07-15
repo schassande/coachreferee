@@ -46,8 +46,15 @@
         -->
     </ion-list>
     <div *ngIf="dataReady">
-        <canvas baseChart chartType="bar" [datasets]="[{ data: nbCoachings, label: 'Nb Coaching'}]" [labels]="labels" [options]="{ responsive: true, scales: { yAxes: [{ display: true, ticks: { beginAtZero: true } }] } }"></canvas>
-        <canvas baseChart chartType="bar" [datasets]="[{ data: nbUsers, label: 'Nb active users'}]" [labels]="labels" [options]="{ scales: { yAxes: [{ display: true, ticks: { beginAtZero: true, stepSize: 1 } }] } }"></canvas>
-        <canvas baseChart chartType="bar" [datasets]="[{ data: coachingByUsers, label: 'Coaching by users'}]" [labels]="users"></canvas>
+        <div class="charTitle">Number of coachings per month</div>
+        <canvas baseChart type="bar" [datasets]="[{ data: nbCoachings, label: 'Nb Coaching'}]" [labels]="labels" 
+        [options]="barChartOptions"></canvas>
+        <div class="charTitle">Number of active users per month</div>
+        <canvas baseChart type="bar" [datasets]="[{ data: nbUsers, label: 'Nb active users'}]" [labels]="labels" 
+            [options]="barChartOptions"></canvas>
+            <div class="charTitle">User actitivies</div>
+            <canvas baseChart type="pie" 
+            [datasets]="[{ data: coachingByUsers, label: 'Coaching by users'}]" 
+            [labels]="users"></canvas>
     </div>
 </ion-content>
