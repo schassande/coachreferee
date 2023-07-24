@@ -3,15 +3,18 @@ import { LocalAppSettings } from './../model/settings';
 import { AppSettingsService } from './AppSettingsService';
 import { AlertController, ToastController, LoadingController } from '@ionic/angular';
 import { Firestore, query, Query, where } from '@angular/fire/firestore';
-import { Auth,
+import { Auth, authState,
     createUserWithEmailAndPassword,
     sendPasswordResetEmail,
     signInWithEmailAndPassword,
     signInWithPopup,
-    UserCredential } from '@angular/fire/auth';
+    signOut,
+    UserCredential,
+    browserLocalPersistence
+ } from '@angular/fire/auth';
 
 import { ResponseWithData, Response } from './response';
-import { Observable, of, from, Subject } from 'rxjs';
+import { Observable, of, from, Subject, first } from 'rxjs';
 import { ConnectedUserService } from './ConnectedUserService';
 import { Injectable } from '@angular/core';
 import { User, CONSTANTES, AuthProvider, CurrentApplicationName, AppRole, RefereeLevel, RefereeCoachLevel, AccountStatus } from './../model/user';
@@ -169,7 +172,8 @@ export class UserService  extends RemotePersistentDataService<User> {
     public login(email: string, password: string): Observable<ResponseWithData<User>> {
         console.log('UserService.login(' + email + ', ' + password + ')');
         let credential = null;
-        return from(signInWithEmailAndPassword(this.angularFireAuth, email, password)).pipe(
+        return from(this.angularFireAuth.setPersistence(browserLocalPersistence)).pipe(
+            mergeMap(() => from(signInWithEmailAndPassword(this.angularFireAuth, email, password))),
             mergeMap( (cred: UserCredential) => {
                 credential = cred;
                 // console.log('login: cred=', JSON.stringify(cred, null, 2));
@@ -222,13 +226,41 @@ export class UserService  extends RemotePersistentDataService<User> {
 
     public logout() {
         console.log('UserService.logout()');
+        signOut(this.angularFireAuth);
         this.connectedUserService.userDisconnected();
     }
 
     /**
      * Try to autologin an user with data stored from local storage.
+     * Attempt to reuse the current authenticated person. If not then try to autologin 
+     * with the login/password stored on local storage
      */
     public autoLogin(): Observable<ResponseWithData<User>> {
+        return authState(this.angularFireAuth).pipe(
+            first(),
+            mergeMap(user => {
+              if (user) {
+                 // Already connected
+                return this.connectByEmail(user.email);
+              } else {
+                // Not connected => try to authenticated with the login/password stored in the local storage
+                return this.autoLoginWithLoginPassFromStorage();
+              }
+            })
+          );
+    }
+    /**
+     * Try to autologin an user with the data stored  in the local storage.
+     * 
+     * Load the user app setting to know if he accepts to store password.
+     * if yes 
+     *   if online then try to connect with the stored login/password
+     *   if offline then make connected in anycase.    
+     * if no then return no user.
+     * 
+     * @returns a response containing the user or the error 
+     */
+    private autoLoginWithLoginPassFromStorage(): Observable<ResponseWithData<User>> {
         let loading = null;
         return from(this.loadingController.create({ message: 'Auto login...', translucent: true})).pipe(
             mergeMap( (ctrl) => {
