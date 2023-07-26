@@ -4,42 +4,32 @@ This file lists the development task to do:
 
 ## Bugs
 
-- Scrolling with tabs does work on iPhone. Tested on safari and on chrome
-- Import duplicates coaching
 
 ## Possibles features by priority
 
 Priority 1:
 
-- coachiing game page / exis of improvment / Be able to indicate an improvement without enter into the detail of the feedback item (just clicking on an icon => 2 colors/shape of the icon in the line)
-- test competition referee ranking on a competition with plenty of referees
-- work in progress indicator: competition import
-- work in progress indicator: sharing of coaching
 - work in progress indicator: account creation
 - Function sendXpReport
-- Migrate to IOnic 5 / Angular 9
 - Create user group used to simplify the sharing
-- Une page myday avec coaching du jour
 
 Priority 2:
 
 - Localisation des serveurs en europe
 - Cleaning script of past empty coaching
 - Style of the online help
-- In context menu, of coaching game, add the next and the previous game
 - Settings: limit to referee to a region or a group => defintion of referee group
 - Find a solution to force pushing data when switch online
 - Offline photo for users & referees
 - Create a trigger to delete unused photo on storage every week end
-- Referee list : infinite scroll, group by short name or level
-- Coaching list : infinite scroll
-- Assessment list : infinite scroll
 - Auto detect disconnected mode.
 - Organize Angular code in submodules with lazy loading.
 
 ## Next version
 
-- fix bug: on invitation the email to the user and the admin must not indicate a validation is required.
+## Versin 2.24.0 2023/07/26
+
+- Auto login with Firebase credential
 
 ## Versin 2.6.4 2020/03/14
 
