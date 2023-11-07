@@ -1,6 +1,6 @@
 import * as func                       from 'firebase-functions';
+import * as admin                      from "firebase-admin";
 import * as cors                       from  'cors';
-import * as admin                      from 'firebase-admin';
 import * as sendCoachingLib            from './send-coaching';
 import * as sendAssessmentLib          from './send-assessment';
 import * as sendAccountNotValidatedLib from './send-account-not-validated'
@@ -12,32 +12,35 @@ import * as sendValidationRequiredLib  from './send-validation-required';
 import * as newCompetitionEventLib  from './new-competition-event';
 import { Competition } from './model/competition';
 import { collectionCompetition } from './common';
+import * as refereesApi from "./api/referees";
+import * as competitionsApi from "./api/competitions";
+import * as coachingsApi from "./api/coachings";
+import * as apiKey   from './api/apikey';
+import * as usersApi   from './api/users';
+const express = require('express')
 
-
-admin.initializeApp(func.config().firebase);
+admin.initializeApp({ 
+    ...func.config().firebase,
+    credential: admin.credential.cert({
+      privateKey: func.config().private.key.replace(/\\n/g, '\n'),
+      projectId: func.config().project.id,
+      clientEmail: func.config().client.email
+    })
+});
 
 const ctx = { 
     db : admin.firestore(), 
     gmailEmail : 'coachreferee@gmail.com', 
     // gmailPassword : func.config().gmail.password
 };
-// ===================================================================
-// Scheduled functions
-// exports.voteAndUpgradeReminder = func.pubsub.schedule('4 00 * * 1')
-//    .timeZone('Europe/London')
-//    .onRun(async (context) => {
-//        console.log('voteAndUpgradeReminder BEGIN ' + context.timestamp);
-//        await voteAndUpgradeReminderLib.func(ctx);
-//        console.log('voteAndUpgradeReminder END ' + context.timestamp);
-//    });
 
 // ===================================================================
 // Triggered functions
-
 // On competition created from the database
 exports.newCompetitionEvent = func.firestore.document(collectionCompetition + '/{cid}').onCreate(async (snap, context) => {
      await newCompetitionEventLib.func(snap.data() as Competition, context, ctx);
 });
+// ===================================================================
 
 // ===================================================================
 // Functions exposed over HTTPS
@@ -79,7 +82,7 @@ export async function requestWithCorsAndId(request:any, response:any, coreFuncti
         //Verify token
         admin.auth().verifyIdToken(tokenId)
             .then((decoded: admin.auth.DecodedIdToken) => {
-                // console.log('decoded: ' + decoded);
+                // log console.log('decoded: ' + decoded);
                 return coreFunction(request, response, ctx)
                     .catch((err: any) => {
                         console.log(err);
@@ -91,3 +94,28 @@ export async function requestWithCorsAndId(request:any, response:any, coreFuncti
             });
     });
 }
+
+const app = express()
+app.disable("x-powered-by");
+// Any requests to /api/referees, /api/competitions, /api/apikey
+
+app.use("/users", usersApi.usersRouter);
+app.use("/referees", refereesApi.refereesRouter);
+app.use("/competitions", competitionsApi.competitionsRouter);
+app.use("/coachings", coachingsApi.coachingsRouter);
+app.use("/apikey", apiKey.apiKeyRouter);
+export const api = func.https.onRequest(app);
+// ===================================================================
+
+
+// ===================================================================
+// Scheduled functions
+// exports.voteAndUpgradeReminder = func.pubsub.schedule('4 00 * * 1')
+//    .timeZone('Europe/London')
+//    .onRun(async (context) => {
+//        console.log('voteAndUpgradeReminder BEGIN ' + context.timestamp);
+//        await voteAndUpgradeReminderLib.func(ctx);
+//        console.log('voteAndUpgradeReminder END ' + context.timestamp);
+//    });
+// ===================================================================
+
