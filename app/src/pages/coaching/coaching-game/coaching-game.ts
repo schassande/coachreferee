@@ -776,7 +776,7 @@ export class CoachingGamePage implements OnInit {
       return;
     }
     const begin = this.dateService.to00h00(new Date(this.coaching.date));
-    const end = this.dateService.nextDay(this.dateService.to00h00(new Date(this.coaching.date)));
+    const end = this.dateService.to00h00(new Date(this.coaching.date));
     this.coachingService.getCoachingByRefereeCoachCompetition(this.coaching.coachId, begin, end).subscribe((rcs) => {
       if (rcs.data) {
         this.agenda = rcs.data.map((c: Coaching) => {

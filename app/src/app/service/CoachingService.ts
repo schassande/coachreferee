@@ -98,7 +98,7 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
       return this.query(query(this.getBaseQuery(),
           where('coachId', '==', coachId),
           where('date', '>=', this.dateService.to00h00(this.adjustDate(beginDate, this.dateService))),
-          where('date', '<=', this.dateService.to00h00(this.adjustDate(endDate, this.dateService)))
+          where('date', '<=', this.dateService.to23h59(this.adjustDate(endDate, this.dateService)))
         ));
     }
     getCoachingByCoachNCompetition(coachId: string, competitionId: string): Observable<ResponseWithData<Coaching[]>> {

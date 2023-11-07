@@ -74,4 +74,11 @@ export class DateService {
     day.setUTCMilliseconds(0);
     return day;
   }
+  public to23h59(day: Date): Date {
+    day.setUTCMinutes(59);
+    day.setUTCSeconds(59);
+    day.setUTCHours(23);
+    day.setUTCMilliseconds(99);
+    return day;
+  }
 }
