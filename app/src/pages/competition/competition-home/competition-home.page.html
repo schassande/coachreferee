@@ -114,29 +114,4 @@
             </ion-card>
         </ion-col>
     </ion-row>
-    <ion-row style="text-align: center;">
-        <ion-col col="12">
-            <ion-card style="vertical-align: top;" routerLink="/competition/{{competition.id}}/import">
-                <ion-card-header color="light">
-                    <ion-card-title style="font-size: 1.2em;">
-                        Allocations ({{competition.allocations.length}})
-                        <div style="float: right; vertical-align: top;">
-                            <mat-icon>edit</mat-icon>
-                        </div>
-                    </ion-card-title>
-                </ion-card-header>
-                <ion-card-content style="text-align: left;">
-                    <ion-item *ngFor="let alloc of competition.allocations| slice:0:3">
-                        <ion-label>
-                            {{dateService.date2string(alloc.date)}} {{alloc.timeSlot}} Field:{{alloc.field}} Cat:{{alloc.gameCategory}}
-                            <span *ngIf="alloc.id"><br>GameId: {{alloc.id}}</span>
-                            <br>Referees:<span *ngFor="let ref of alloc.referees"> {{ref.refereeShortName}}</span>
-                            <br>Coaches:<span *ngFor="let coach of alloc.refereeCoaches"> {{coach.coachShortName}}</span>
-                        </ion-label>
-                    </ion-item>
-                    <ion-item *ngIf="competition.allocations.length > 3">...</ion-item>
-                </ion-card-content>
-            </ion-card>
-        </ion-col>
-    </ion-row>
 </ion-content>
