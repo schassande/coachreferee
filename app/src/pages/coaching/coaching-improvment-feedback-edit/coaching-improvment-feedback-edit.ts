@@ -156,14 +156,13 @@ export class CoachingImprovmentFeedbackEditPage implements OnInit {
     return this.feedback.problemShortDesc && this.feedback.problemShortDesc !== null && this.feedback.problemShortDesc.trim().length > 0;
   }
 
-  onSearchBarInput($event) {
-    if (this.searchInput && this.searchInput.trim().length > 0) {
-      this.proService.searchPros(this.searchInput).subscribe((response: ResponseWithData<PersistentPRO[]>) => {
+  onSearchBarInput() {
+    const req = this.searchInput;
+    if (req && req.trim().length > 0) {
+      this.feedback.problemShortDesc = this.searchInput.trim();
+      this.proService.searchPros(req.trim()).subscribe((response: ResponseWithData<PersistentPRO[]>) => {
         this.pros = response.data;
         this.showProList = this.pros && this.pros.length > 0;
-        if (!this.showProList) {
-          this.feedback.problemShortDesc = this.searchInput;
-        }
       });
     } else {
       this.pros = null;

@@ -23,22 +23,9 @@
                 <ion-icon name="save"></ion-icon>&nbsp;Save</ion-button>
         </ion-col>
     </ion-row>
-    <div *ngIf="coaching && !readonly" style="text-align: right;">
-        <span>Apply to: </span>
-        <span style="margin-left: 5%;">
-            <ion-checkbox [(ngModel)]="applyToAll"></ion-checkbox>
-            <ion-label style="margin-left: 5px;">All</ion-label>
-        </span>
-        <span style="margin-right: 10px;">
-            <span *ngFor="let ref of coaching.referees; let idx = index;" style="margin-left: 5%;">
-                <ion-checkbox [disabled]="applyToAll" [checked]="applyToReferee[idx]" (ionChange)="toggleApplyToReferee(idx)"></ion-checkbox>
-                <ion-label style="margin-left: 5px;">{{ref.refereeShortName}}</ion-label>
-            </span>
-        </span>
-    </div>
 
     <ion-list>
-        <ion-searchbar *ngIf="!readonly" [(ngModel)]="searchInput" showCancelButton="never" (ionInput)="onSearchBarInput($event)" tabindex="1" inputmode="text" type="text" spellcheck="true" autocorrect="off"  animated="true" debounce="500"></ion-searchbar>
+        <ion-searchbar *ngIf="!readonly" [(ngModel)]="searchInput" showCancelButton="never" (ionInput)="onSearchBarInput()" inputmode="text" type="text" spellcheck="false" autocorrect="off"  animated="true" debounce="400"></ion-searchbar>
         <div *ngIf="pros && pros.length === 0" style="text-align: center; font-style: italic">No PRO found.</div>
         <ion-item-group *ngIf="!readonly && showProList" style="margin: 0 10px 25px 50px; border: 1px solid lightgray;">
             <ion-item *ngFor="let pro of pros">
@@ -51,7 +38,21 @@
                 <ion-select-option *ngFor="let topic of coachingTemplate.topics" value="{{topic.name}}">{{topic.name}}</ion-select-option>
             </ion-select>
         </ion-item>
-
+    </ion-list>        
+    <div *ngIf="!readonly" style="text-align: right; margin-bottom: 10px;">
+        <span>To:</span>
+        <span style="margin-left: 5px;">
+            <ion-checkbox [(ngModel)]="applyToAll"></ion-checkbox>
+            <ion-label style="margin-left: 5px;">All</ion-label>
+        </span>
+        <span style="margin-right: 10px;" *ngIf="coaching">
+            <span *ngFor="let ref of coaching.referees; let idx = index;" style="margin-left: 5%;">
+                <ion-checkbox [disabled]="applyToAll" [checked]="applyToReferee[idx]" (ionChange)="toggleApplyToReferee(idx)"></ion-checkbox>
+                <ion-label style="margin-left: 5px;">{{ref.refereeShortName}}</ion-label>
+            </span>
+        </span>
+    </div>
+    <ion-list>
         <ion-item-group *ngIf="feedback">
             <ion-item-divider color="light">Feedback</ion-item-divider>
             <ion-item>
@@ -61,18 +62,24 @@
                 <ion-badge color="{{feedback.period == 3 ? 'primary' : 'light' }}" style="font-size: 1.5em; padding: 5px 10px; border-radius: 20px; margin-left: 10px;" (click)="periodSelect(3)">3</ion-badge>
                 <ion-badge color="{{feedback.period == 4 ? 'primary' : 'light' }}" style="font-size: 1.5em; padding: 5px 10px; border-radius: 20px; margin-left: 10px;" (click)="periodSelect(4)">4</ion-badge>
             </ion-item>
-            <ion-item>
-                <ion-input label="Deliver" *ngIf="readonly" type="text" [readonly]="true" tabindex="9">{{feedback.deliver?'Yes':'No'}}</ion-input>
-                <ion-toggle *ngIf="!readonly" [(ngModel)]="feedback.deliver" tabindex="9" justify="end">
-                        <ion-icon name="paper-plane-outline" style="margin-right: 5px;"></ion-icon>Deliver
-                </ion-toggle>
-            </ion-item>
-            <ion-item>
-                <ion-input label="Improve later" *ngIf="readonly" type="text" [readonly]="true" tabindex="6">{{feedback.appliedLater?'Yes':'No'}}</ion-input>
-                <ion-toggle *ngIf="!readonly" [(ngModel)]="feedback.appliedLater" tabindex="6" justify="end">
-                    <ion-icon name="trending-up-outline" style="margin-right: 5px;"></ion-icon>Improve later
-                </ion-toggle>
-            </ion-item>
+            <ion-row>
+                <ion-col size-lg="6" size-sm="12" size-md="12">
+                    <ion-item>
+                        <ion-input label="Deliver" *ngIf="readonly" type="text" [readonly]="true">{{feedback.deliver?'Yes':'No'}}</ion-input>
+                        <ion-toggle *ngIf="!readonly" [(ngModel)]="feedback.deliver" justify="end">
+                                <ion-icon name="paper-plane-outline" style="margin-right: 5px;"></ion-icon>Deliver
+                        </ion-toggle>
+                    </ion-item>        
+                </ion-col>
+                <ion-col size-lg="6" size-sm="12" size-md="12">
+                    <ion-item>
+                        <ion-input label="Improve later" *ngIf="readonly" type="text" [readonly]="true">{{feedback.appliedLater?'Yes':'No'}}</ion-input>
+                        <ion-toggle *ngIf="!readonly" [(ngModel)]="feedback.appliedLater" justify="end">
+                            <ion-icon name="trending-up-outline" style="margin-right: 5px;"></ion-icon>Improve later
+                        </ion-toggle>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
         </ion-item-group>
         <ion-item-group *ngIf="feedback">
             <ion-item-divider color="light">
@@ -85,16 +92,16 @@
                 <ion-input label="Name" type="text" placeholder="Short description of the problem (Required)" [(ngModel)]="feedback.problemShortDesc" placeholder="short desc (required)" autocorrect="on" spellcheck="true" inputmode="text" [readonly]="readonly"></ion-input>
             </ion-item>
             <ion-item>
-                <ion-textarea label="Problem"  placeholder="Description of the problem" rows="3" [(ngModel)]="feedback.problem" [readonly]="readonly" autocorrect="on" spellcheck="true" inputmode="text" tabindex="2"></ion-textarea>
+                <ion-textarea label="Problem"  placeholder="Description of the problem" rows="3" [(ngModel)]="feedback.problem" [readonly]="readonly" autocorrect="on" spellcheck="true" inputmode="text"></ion-textarea>
             </ion-item>
             <ion-item>
-                <ion-textarea label="Remedy" placeholder="Description of the remedy" rows="3" [(ngModel)]="feedback.remedy" [readonly]="readonly" autocorrect="on" spellcheck="true" inputmode="text" tabindex="3"></ion-textarea>
+                <ion-textarea label="Remedy" placeholder="Description of the remedy" rows="3" [(ngModel)]="feedback.remedy" [readonly]="readonly" autocorrect="on" spellcheck="true" inputmode="text"></ion-textarea>
             </ion-item>
             <ion-item>
-                <ion-textarea label="Outcome" placeholder="Description of the outcome" rows="3" [(ngModel)]="feedback.outcome" [readonly]="readonly" autocorrect="on" spellcheck="true" inputmode="text" tabindex="4"></ion-textarea>
+                <ion-textarea label="Outcome" placeholder="Description of the outcome" rows="3" [(ngModel)]="feedback.outcome" [readonly]="readonly" autocorrect="on" spellcheck="true" inputmode="text"></ion-textarea>
             </ion-item>
             <ion-item>
-                <ion-input label="Skill" type="text" placeholder="Name of skill" [(ngModel)]="feedback.skillName" [readonly]="readonly" autocorrect="on" spellcheck="true" inputmode="text" tabindex="5"></ion-input>
+                <ion-input label="Skill" type="text" placeholder="Name of skill" [(ngModel)]="feedback.skillName" [readonly]="readonly" autocorrect="on" spellcheck="true" inputmode="text"></ion-input>
             </ion-item>
         </ion-item-group>
     </ion-list>
