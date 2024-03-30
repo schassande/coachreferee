@@ -1,7 +1,7 @@
-import { Observable, of, Subject } from 'rxjs';
+import { mergeMap, Observable, of, Subject } from 'rxjs';
 import { Response, ResponseWithData } from './response';
 import { Injectable } from '@angular/core';
-import { ApplicationName, ApplicationNames, Referee, User } from './../model/user';
+import { ApplicationName, ApplicationNames, Referee, RefereeLevel, User } from './../model/user';
 import { PersistentDataFilter } from './PersistentDataFonctions';
 import { UserService } from './UserService';
 import { ConnectedUserService } from './ConnectedUserService';
@@ -83,5 +83,14 @@ export class RefereeService {
             content += `,${ref.referee.nextRefereeLevel ? ref.referee.nextRefereeLevel : ''}\n`;
         });
         return content;
+    }
+    public setNextLevel(refereeId: string, nextLevel: RefereeLevel): Observable<ResponseWithData<Referee>|null> {
+        return this.get(refereeId).pipe(
+            mergeMap( rr => {
+                if (!rr.data) return null;
+                rr.data.referee.nextRefereeLevel = nextLevel;
+                return this.save(rr.data);
+            })
+        )
     }
 }

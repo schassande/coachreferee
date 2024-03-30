@@ -15,7 +15,7 @@ import { UserService } from '../../../app/service/UserService';
 import { ResponseWithData } from '../../../app/service/response';
 import { CoachingService } from '../../../app/service/CoachingService';
 import { BookmarkService, Bookmark } from '../../../app/service/BookmarkService';
-import { Referee, User, UserGroup, UserPreference } from '../../../app/model/user';
+import { Referee, User, UserGroup, UserPreference, getNextRefereeLevel } from '../../../app/model/user';
 import { Coaching, PositiveFeedback, Feedback, RefereeCoaching, CoachingTemplate, CoachingStructure } from '../../../app/model/coaching';
 import { DateService } from 'src/app/service/DateService';
 import { RefereeSelectorService } from 'src/pages/referee/referee-selector-service';
@@ -315,7 +315,7 @@ export class CoachingGamePage implements OnInit {
       .then( (alert) => alert.present());
   }
   private getOrCreateHolder(holders: TopicFeedbacks[], topicName: string) {
-    const _topicName = topicName ? topicName : 'Other';
+    const _topicName = topicName || 'Other';
     let holder = holders.find(tf => tf.topicName === _topicName);
     if (!holder) {
       holder = { topicName: _topicName, description: undefined, feedbacks: [], positiveFeedbacks: []};
@@ -325,7 +325,7 @@ export class CoachingGamePage implements OnInit {
   }
 
   private clean(coaching: Coaching): Coaching {
-    if (coaching && coaching.referees) {
+    if (coaching!.referees) {
       let idx = 0;
       while (idx < coaching.referees.length) {
         if (coaching.referees[idx].refereeShortName) {
@@ -481,7 +481,7 @@ export class CoachingGamePage implements OnInit {
       const res: boolean = ref && ref.referee.nextRefereeLevel && ref.referee.nextRefereeLevel != null;
       return res;
     } else {
-      // console.log('lookingForUpgrade: referee not found !', this.coaching.referees[this.currentRefereeIdx].refereeId, this.id2referee);
+      // HELLO console.log('lookingForUpgrade: referee not found !', this.coaching.referees[this.currentRefereeIdx].refereeId, this.id2referee);
       return false;
     }
   }
@@ -585,7 +585,7 @@ export class CoachingGamePage implements OnInit {
   }
 
   onSwipe(event) {
-    // console.log('onSwipe', event);
+    // Hello console.log('onSwipe', event);
     if (event.direction === 4) {
       this.saveNback();
     }
@@ -793,9 +793,9 @@ export class CoachingGamePage implements OnInit {
   }
   getAgendaItemColor(coaching: Coaching): string {
     const delta = this.getDateTime(this.coaching).getTime() - this.getDateTime(coaching).getTime(); 
-    return coaching.id === this.coaching.id 
-      ? 'success' 
-      : (delta > 0 ? 'warning' : 'normal');
+    if (coaching.id === this.coaching.id) return 'success';
+    else if (delta > 0) return 'warning'
+    else return 'normal';
   }
   getDateTime(coaching: Coaching): Date {
     if (!coaching) return new Date();
@@ -843,6 +843,25 @@ export class CoachingGamePage implements OnInit {
         })
       ).subscribe();
     } // else the coaching is not linked to a competition 
+  }
+  askBecomeUpgradable() {
+    if (this.currentReferee.referee.nextRefereeLevel) return;
+    const nextLevel = getNextRefereeLevel(this.currentReferee.referee.refereeLevel);
+    if (!nextLevel || nextLevel === this.currentReferee.referee.refereeLevel) return;
+    this.alertCtrl.create({
+      message: 'Do you want to change the referee as looking for an upgrade?',
+      buttons: [
+        { text: 'Cancel', role: 'cancel'},
+        {
+          text: nextLevel,
+          handler: () => {
+            this.refereeService.setNextLevel(this.currentReferee.id, nextLevel).subscribe()
+            this.currentReferee.referee.nextRefereeLevel = nextLevel;
+          }
+        }
+      ]
+    }).then( (alert) => alert.present() );
+
   }
 }
 interface AgendaItem {

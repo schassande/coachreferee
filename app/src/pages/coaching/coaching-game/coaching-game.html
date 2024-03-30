@@ -303,7 +303,7 @@
                     </ion-col>
                     <ion-col col="6">
                         <ion-item>
-                            <ion-input label="Upgrade" labelPlacement="stacked"  *ngIf="!lookingForUpgrade() " type="text " readonly="true " style="text-align: center; " value="N/A "></ion-input>
+                            <ion-input label="Upgrade" labelPlacement="stacked"  *ngIf="!lookingForUpgrade() " type="text " readonly="true " style="text-align: center; " value="N/A " (click)="askBecomeUpgradable()"></ion-input>
                             <ion-input label="Upgrade" labelPlacement="stacked" *ngIf="readonly && lookingForUpgrade()" type="text" [value]="coaching.referees[currentRefereeIdx].upgrade" readonly="true" style="text-align: center;"></ion-input>
                             <ion-select label="Upgrade" labelPlacement="stacked"  *ngIf="!readonly && lookingForUpgrade()" [(ngModel)]="coaching.referees[currentRefereeIdx].upgrade" (ionChange)="saveCoaching()">
                                 <ion-select-option value="DNS">Do Not See</ion-select-option>
@@ -355,7 +355,7 @@
                     </ion-button>
                 </ion-item-divider>
                 <ion-item *ngFor="let assessment of id2assessments.get(currentReferee.id)">
-                    {{assessment.competition}} - {{dateService.date2string(assessment.date)}} - {{assessment.profileName}}
+                    {{assessment.competition}} - {{dateService.date2string(assessment.date)}} - {{assessment.profileName}}: {{assessment.competency}}
                 </ion-item>
                 <ion-item *ngIf="!currentReferee.id || !id2assessments.get(currentReferee.id) || !id2assessments.get(currentReferee.id).length ">
                     <div style="font-size: 0.8em; text-align: center; width: 100%;">
