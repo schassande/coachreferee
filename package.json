@@ -16,7 +16,7 @@
         "postversion": "git push && git push --tags",
 
         "build-app": "cd app && npm run build",
-        "predeploy-app": "npm run build",
+        "predeploy-app": "npm run build-app",
         "deploy-app": "firebase target:apply hosting  app refcoach-676e3 && firebase deploy --only hosting:app",
 
         "prerelease-patch": "npm run deploy-app",
