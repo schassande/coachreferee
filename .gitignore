@@ -2,3 +2,5 @@
 hosting/app/*
 html/*
 node_modules*
+.firebase/*
+
