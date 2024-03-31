@@ -12,7 +12,7 @@
         "noproxy": "set HTTP_PROXY= && set HTTPS_PROXY=",
         "start": "cd app && npm run start",
         
-        "version": "npm run build",
+        "version": "npm run deploy-app",
         "postversion": "git push && git push --tags",
 
         "build-app": "cd app && npm run build",
