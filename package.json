@@ -18,7 +18,7 @@
         "deploy-app": "firebase target:apply hosting  app refcoach-676e3 && firebase deploy --only hosting:app",
         "deploy-www": "firebase target:apply hosting  www coachreferee-site && firebase deploy --only hosting:www",
         "deploy-functions": "firebase deploy --only functions",
-        "markdown": "echo 'TODO Convert app/src/assets/help/*.md to html'"
+        "md": "generate_help.sh"
     },
     "private": true,
     "devDependencies": {
