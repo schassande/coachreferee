@@ -16,11 +16,8 @@
         "build-app": "cd app && npm run build",
         "predeploy-app": "npm run build-app",
         "deploy-app": "firebase target:apply hosting  app refcoach-676e3 && firebase deploy --only hosting:app",
-        "release-patch": "npm version patch",
-        "release-minor": "npm version minor",
-        "release-major": "npm version major",
         "deploy-www": "firebase target:apply hosting  www coachreferee-site && firebase deploy --only hosting:www",
-        "deploy-function": "firebase deploy --only functions",
+        "deploy-functions": "firebase deploy --only functions",
         "markdown": "echo 'TODO Convert app/src/assets/help/*.md to html'"
     },
     "private": true,
