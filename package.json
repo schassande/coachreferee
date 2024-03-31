@@ -19,14 +19,14 @@
         "predeploy-app": "npm run build-app",
         "deploy-app": "firebase target:apply hosting  app refcoach-676e3 && firebase deploy --only hosting:app",
 
-        "prerelease-patch": "npm run deploy-app",
         "release-patch": "npm version patch",
+        "postrelease-patch": "npm run deploy-app",
 
-        "prerelease-minor": "npm run deploy-app",
         "release-minor": "npm version minor",
+        "postrelease-minor": "npm run deploy-app",
 
-        "prerelease-major": "npm run deploy-app",
         "release-major": "npm version major",
+        "postrelease-major": "npm run deploy-app",
 
         "deploy-www": "firebase target:apply hosting  www coachreferee-site && firebase deploy --only hosting:www",
         "deploy-function": "firebase deploy --only functions",
