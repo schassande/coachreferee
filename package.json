@@ -10,14 +10,28 @@
     },
     "scripts": {
         "noproxy": "set HTTP_PROXY= && set HTTPS_PROXY=",
-        "start": "cd app && ionic serve",
-        "build": "cd app && ionic build --prod --service-worker",
-        "deploy": "cd firebase && firebase deploy",
-        "target-www": "firebase target:apply hosting  www coachreferee-site",
-        "target-app": "firebase target:apply hosting  app refcoach-676e3",
-        "deploy-www": "firebase deploy --only hosting:www",
-        "deploy-app": "firebase deploy --only hosting:app",
-        "deploy-function": "firebase deploy --only functions"
+        "start": "cd app && npm run start",
+        
+        "version": "npm run build",
+        "postversion": "git push && git push --tags",
+
+        "build-app": "cd app && npm run build",
+        "predeploy-app": "npm run build",
+        "deploy-app": "firebase target:apply hosting  app refcoach-676e3 && firebase deploy --only hosting:app",
+
+        "prerelease-patch": "npm run deploy-app",
+        "release-patch": "npm version patch",
+
+        "prerelease-minor": "npm run deploy-app",
+        "release-minor": "npm version minor",
+
+        "prerelease-major": "npm run deploy-app",
+        "release-major": "npm version major",
+
+        "deploy-www": "firebase target:apply hosting  www coachreferee-site && firebase deploy --only hosting:www",
+        "deploy-function": "firebase deploy --only functions",
+
+        "markdown": "echo 'TODO Convert app/src/assets/help/*.md to html'"
     },
     "private": true,
     "devDependencies": {

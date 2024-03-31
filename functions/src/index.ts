@@ -98,7 +98,7 @@ export async function requestWithCorsAndId(request:any, response:any, coreFuncti
 const app = express()
 app.disable("x-powered-by");
 // Any requests to /api/referees, /api/competitions, /api/apikey
-
+app.use(cors.default)
 app.use("/users", usersApi.usersRouter);
 app.use("/referees", refereesApi.refereesRouter);
 app.use("/competitions", competitionsApi.competitionsRouter);

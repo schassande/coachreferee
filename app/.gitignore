@@ -31,3 +31,4 @@ npm-debug.log*
 /plugins
 /www
 firebase-config.json
+src/environments/environment.*.nogit.ts

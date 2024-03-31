@@ -3,10 +3,11 @@
   "version": "2.24.0",
   "description": "Ref Coach project",
   "author": "Sebastien Chassande-Barrioz",
-  "homepage": "https://refcoach",
+  "homepage": "https://refereecoach.com",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "prebuild": "node replace.build.js",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",

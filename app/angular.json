@@ -32,6 +32,10 @@
                             "src/manifest.webmanifest"
                         ],
                         "styles": ["src/theme/variables.scss", "src/global.scss"],
+                        "fileReplacements": [{
+                            "replace": "src/environments/environment.ts",
+                            "with": "src/environments/environment.dev.nogit.ts"
+                        }],
                         "scripts": [],
                         "aot": false,
                         "vendorChunk": true,
@@ -45,7 +49,7 @@
                         "production": {
                             "fileReplacements": [{
                                 "replace": "src/environments/environment.ts",
-                                "with": "src/environments/environment.prod.ts"
+                                "with": "src/environments/environment.prod.nogit.ts"
                             }],
                             "optimization": true,
                             "outputHashing": "all",
