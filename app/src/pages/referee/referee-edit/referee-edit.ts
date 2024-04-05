@@ -8,6 +8,7 @@ import { ConnectedUserService } from './../../../app/service/ConnectedUserServic
 import { ResponseWithData } from './../../../app/service/response';
 import { RefereeService } from './../../../app/service/RefereeService';
 import { Referee, CONSTANTES, User } from './../../../app/model/user';
+import { getDownloadURL, ref, Storage } from '@angular/fire/storage';
 
 /**
  * Generated class for the RefereeNewPage page.
@@ -27,6 +28,7 @@ export class RefereeEditPage implements OnInit {
 
   constructor(
     public connectedUserService: ConnectedUserService,
+    private firebaseStorage: Storage,
     private helpService: HelpService,
     public loadingCtrl: LoadingController,
     public modalController: ModalController,
@@ -133,8 +135,10 @@ export class RefereeEditPage implements OnInit {
     });
   }
 
-  private setReferee(ref: Referee) {
-    this.referee = this.ensureDataSharing(ref);
+  private async setReferee(referee: Referee) {
+    if (referee.photo && referee.photo.path)
+      referee.photo.url = await getDownloadURL(ref(this.firebaseStorage, referee.photo.path));
+    this.referee = this.ensureDataSharing(referee);
   }
 
   private ensureDataSharing(ref: Referee): Referee {
@@ -174,6 +178,7 @@ export class RefereeEditPage implements OnInit {
   }
 
   onImage(event: PhotoEvent) {
+    console.log('onImage', event);
     if (event && event.url) {
       this.referee.photo.url = event.url;
       this.referee.photo.path = event.path;

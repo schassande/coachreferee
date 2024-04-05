@@ -18,6 +18,7 @@ import { RefereeEditPage } from '../referee-edit/referee-edit';
 import { RefereeService } from '../../../app/service/RefereeService';
 import { ResponseWithData } from '../../../app/service/response';
 import { ToolService } from '../../../app/service/ToolService';
+import { getDownloadURL, ref, Storage } from '@angular/fire/storage';
 
 /**
  * Generated class for the RefereeViewPage page.
@@ -45,6 +46,7 @@ export class RefereeViewPage implements OnInit {
     public modalCtrl: ModalController,
     private route: ActivatedRoute,
     private navController: NavController,
+    private firebaseStorage: Storage,
     private helpService: HelpService,
     public refereeService: RefereeService,
     public dateService: DateService,
@@ -92,9 +94,12 @@ export class RefereeViewPage implements OnInit {
     });
   }
 
-  private setReferee(referee: Referee) {
+  private async setReferee(referee: Referee) {
     // console.log('RefereeView.setReferee(' + referee + ')');
+    if (referee.photo && referee.photo.path)
+      referee.photo.url = await getDownloadURL(ref(this.firebaseStorage, referee.photo.path));
     this.referee = referee;
+
     this.refereeCountry = this.toolService.getValue(CONSTANTES.countries, this.referee.country);
     this.refereeLanguage = this.toolService.getValues(CONSTANTES.languages, this.referee.speakingLanguages);
     this.bookmarkPage();

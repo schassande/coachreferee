@@ -1,7 +1,7 @@
 import { mergeMap, map, catchError } from 'rxjs/operators';
-import { Observable, from } from 'rxjs';
+import { Observable, from, of } from 'rxjs';
 import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
-import { getDownloadURL, ref, Storage, StorageReference, uploadString } from '@angular/fire/storage';
+import { getDownloadURL, ref, Storage, StorageReference, uploadString, uploadBytesResumable } from '@angular/fire/storage';
 import { ToastController } from '@ionic/angular';
 import { v4 as uuid } from 'uuid';
 
@@ -64,51 +64,34 @@ export class CameraIconComponent  {
         });
     }
 
-    uploadImage(imageURI) {
+    async uploadImage(imageURI) {
         console.log('uploadImage: imageURI=', imageURI);
         this.loading = true;
         // Champ present pour un fichier : name, size, type="image/jpeg"
         const fileName = uuid() + '.jpg';
-        const r: StorageReference =  ref(this.afStorage, this.storageDirectory + '/' + fileName);
-        let obs: Observable<any>;
-        if (imageURI.name && imageURI.size) {
-            obs = from(uploadString(r, imageURI));
-        } else {
-            obs = this.encodeImageUri(imageURI).pipe(
-                mergeMap( (image64) => {
-                    // console.log('uploadImage: image64.length=', image64.length, imageURI);
-                        // Perhaps this syntax might change, it's no error here!
-                    return from(uploadString(r, image64));
-                })
-            );
+        const fullPath = this.storageDirectory + '/' + fileName;
+        console.log('fullPath', fullPath);
+        try {
+            const r: StorageReference =  ref(this.afStorage, fullPath);
+            console.log('uploading');
+            await uploadBytesResumable(r, imageURI);
+            console.log('uploaded');
+            const url = await getDownloadURL(r);
+            console.log('url', url);
+            this.loading = false;
+            if (this.userAlert) {
+                this.toastController.create({ message: 'Photo saved.', duration: 3000 })
+                    .then((toast) => toast.present());
+            }
+            this.photo.emit({ path: fullPath, url, error: null });
+        } catch(err) {
+            this.loading = false;
+            console.log('uploadImage: err=', err);
+            if (this.userAlert) {
+                this.toastController.create({ message: 'Error when saving photo: ' + err, duration: 3000 })
+                    .then((toast) => toast.present());
+            }
+            this.photo.emit({ url: null, path: null, error: err });
         }
-        return obs.pipe(
-            mergeMap( (snapshot: any) => {
-                    // console.log('uploadImage: snapshot=' + JSON.stringify(snapshot.metadata, null, 2));
-                const gsUrl = 'gs://' + environment.firebase.storageBucket + '/' + snapshot.metadata.fullPath;
-                // console.log('gsUrl=' + gsUrl);
-                return getDownloadURL(ref(this.afStorage, gsUrl)).then((url: string) => {
-                  return { path: snapshot.metadata.fullPath, url, error: null };
-                });
-            }),
-            map( (event: PhotoEvent) => {
-                if (this.userAlert) {
-                    this.toastController.create({ message: 'Photo saved.', duration: 3000 })
-                        .then((toast) => toast.present());
-                }
-                this.loading = false;
-                this.photo.emit(event);
-            }),
-            catchError( (err, caught) => {
-                this.loading = false;
-                console.log('uploadImage: err=', err);
-                if (this.userAlert) {
-                    this.toastController.create({ message: 'Error when saving photo: ' + err, duration: 3000 })
-                        .then((toast) => toast.present());
-                }
-                this.photo.emit({ url: null, path: null, error: err });
-                return caught;
-            })
-        ).subscribe();
     }
 }

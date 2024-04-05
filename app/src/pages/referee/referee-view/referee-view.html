@@ -23,7 +23,6 @@
             <ion-icon *ngIf="!referee.photo || !referee.photo.url" size="large" name="person"></ion-icon>
             <img src="{{referee.photo.url}}" *ngIf="referee.photo && referee.photo.url" height="100">
         </div>
-
         <div style="margin: 20px 0 0 10px; text-align: center;">
             <span style="font-size: 1.4em;">{{referee.firstName}} {{referee.lastName}}</span>
             <br>from {{refereeCountry}}

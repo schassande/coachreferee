@@ -29,7 +29,12 @@
             <ion-icon name="settings-outline"></ion-icon>
         </ion-segment-button>
         <ion-segment-button value="{{i}}" *ngFor="let referee of coaching.referees; index as i" class="refTab" style="--background-checked: gold;">
-            <p>{{referee.refereeShortName | textLimiter : 3}}<sup><span [ngClass]="{'badge-warning': referee.positiveFeedbacks.length==0}">{{referee.positiveFeedbacks.length}}</span>-<span [ngClass]="{'badge-warning': referee.feedbacks.length==0}">{{referee.feedbacks.length}}</span></sup></p>
+            <ion-avatar *ngIf="id2referee.get(referee.refereeId) && id2referee.get(referee.refereeId).photo && id2referee.get(referee.refereeId).photo.url; else noPhoto">
+                <img src="{{id2referee.get(referee.refereeId).photo.url}}"/>
+            </ion-avatar>
+            <ng-template #noPhoto >
+                <p>{{referee.refereeShortName | textLimiter : 3}}<sup><span [ngClass]="{'badge-warning': referee.positiveFeedbacks.length==0}">{{referee.positiveFeedbacks.length}}</span>-<span [ngClass]="{'badge-warning': referee.feedbacks.length==0}">{{referee.feedbacks.length}}</span></sup></p>
+            </ng-template>
         </ion-segment-button>
         <ion-segment-button value="4" style="--background-checked: gold;">
             <ion-icon name="calendar-outline"></ion-icon>
@@ -227,7 +232,7 @@
     <!-- ======================================================================================================= -->
     <div *ngIf="currentReferee">
         <div style="text-align: center;margin: 10px 0; font-size: 1.2em;" routerLink="/referee/view/{{coaching.referees[currentRefereeIdx].refereeId}}">
-            {{currentReferee.firstName}} {{currentReferee.lastName}}, {{currentReferee.referee.refereeLevel}}/{{currentReferee.referee.refereeCategory}}
+            <ion-label>{{currentReferee.firstName}} {{currentReferee.lastName}}, {{currentReferee.referee.refereeLevel}}/{{currentReferee.referee.refereeCategory}}</ion-label>
             <ion-icon name="eye-outline"></ion-icon>
         </div>
         <ion-list>
