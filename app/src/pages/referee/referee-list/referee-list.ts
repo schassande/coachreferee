@@ -9,6 +9,7 @@ import { CONSTANTES, Referee, RefereeLevel, User } from '../../../app/model/user
 import { DataRegion } from 'src/app/model/common';
 import { UserSearchCriteria, UserService } from 'src/app/service/UserService';
 import { ConnectedUserService } from 'src/app/service/ConnectedUserService';
+import { AppSettingsService } from 'src/app/service/AppSettingsService';
 
 /**
  * Generated class for the RefereeListPage page.
@@ -41,17 +42,31 @@ export class RefereeListPage implements OnInit {
     public modalController: ModalController,
     private navController: NavController,
     public refereeService: RefereeService,
+    private settingsService: AppSettingsService,
     private userService: UserService
     ) {
   }
 
   ngOnInit() {
     this.helpService.setHelp('referee-list');
-    this.region = this.connectedUserService.getCurrentUser().region;
-    this.searchReferee();
+    this.settingsService.getRefereeSearch().subscribe(settings => {      
+      this.searchInput = settings.q;
+      this.country = settings.country;
+      this.region = settings.region || this.connectedUserService.getCurrentUser().region;
+      this.refereeLevel = settings.refereeLevel || null;
+      this.sortBy = settings.sortBy;
+      this.searchReferee();
+    });
   }
 
   public searchReferee() {
+    this.settingsService.setRefereeSearch({ 
+      q: this.searchInput, 
+      region: this.region, 
+      country: this.country, 
+      refereeLevel: this.refereeLevel,
+      sortBy: this.sortBy
+     });
     if (!this.searchInput || this.searchInput.trim().length === 0) {
       return;
     } 

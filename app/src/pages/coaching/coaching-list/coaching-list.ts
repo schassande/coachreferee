@@ -6,6 +6,7 @@ import { AlertController, NavController } from '@ionic/angular';
 import { ResponseWithData } from '../../../app/service/response';
 import { Coaching } from '../../../app/model/coaching';
 import { CoachingList, CoachingService } from '../../../app/service/CoachingService';
+import { AppSettingsService } from 'src/app/service/AppSettingsService';
 
 /**
  * Generated class for the CoachingListPage page.
@@ -36,16 +37,21 @@ export class CoachingListPage implements OnInit {
     public coachingService: CoachingService,
     private dateService: DateService,
     private helpService: HelpService,
-    private navController: NavController
+    private navController: NavController,
+    private settingsService: AppSettingsService
     ) {
   }
 
   ngOnInit() {
     this.helpService.setHelp('coaching-list');
-    const y = new Date().getFullYear();
-    this.year = '' + y;
-    for(let i = 0; i<5; i++) this.years.push('' + (y-i));
-    this.searchCoaching();
+    this.settingsService.getCoachingSearch().subscribe(settings => {      
+      const y = new Date().getFullYear()
+      this.year = '' + (settings!.year || y);
+      for(let i = 0; i<5; i++) this.years.push('' + (y-i));
+      this.searchInput = settings.q;
+      this.today = settings.todayOnly;
+      this.searchCoaching();
+    });
   }
   onToday() {
     this.changeDetectorRef.detectChanges();
@@ -55,6 +61,7 @@ export class CoachingListPage implements OnInit {
   }
   private searchCoaching(forceServer: boolean = false, event: any = null) {
     this.loading = true;
+    this.settingsService.setCoachingSearch({ q: this.searchInput, year: Number.parseInt(this.year), todayOnly: this.today });
     this.coachingService.searchCoachings(this.searchInput, this.currentYearOnly ? Number.parseInt(this.year) : undefined,
         forceServer ? 'server' : 'default')
       .subscribe((response: ResponseWithData<Coaching[]>) => {

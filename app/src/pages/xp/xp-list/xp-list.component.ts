@@ -10,11 +10,11 @@ import { CurrentApplicationName, User } from '../../../app/model/user';
 import { Component, OnInit } from '@angular/core';
 
 import { XpService } from '../../../app/service/XpService';
+import { AppSettingsService } from 'src/app/service/AppSettingsService';
 
 @Component({
   selector: 'app-xp-list',
-  templateUrl: './xp-list.component.html',
-  styleUrls: ['./xp-list.component.scss'],
+  templateUrl: './xp-list.component.html'
 })
 export class XpListComponent implements OnInit {
 
@@ -48,7 +48,8 @@ export class XpListComponent implements OnInit {
     private connectedUserService: ConnectedUserService,
     private userService: UserService,
     private dateService: DateService,
-    public toastController: ToastController
+    public toastController: ToastController,
+    private settingsService: AppSettingsService
     ) { }
 
   public ngOnInit() {
@@ -67,6 +68,7 @@ export class XpListComponent implements OnInit {
       }
     });
     this.computeXps().subscribe();
+    this.saveSearchSettings();
   }
 
   /** The user selects a new year */
@@ -84,6 +86,7 @@ export class XpListComponent implements OnInit {
     }
     this.yearDuration = 0;
     this.xps.forEach((xp) => xp.days.forEach((cd) => this.yearDuration += cd.coachingDuration));
+    this.saveSearchSettings();
   }
 
   /** compute the amount of coaching for an Xp */
@@ -147,6 +150,14 @@ export class XpListComponent implements OnInit {
           }
           this.loadingXps = false;
           return this.selectedCoach;
+        }),
+        mergeMap(()=>this.settingsService.getXPSearch()),
+        map((setting) => {
+          if (setting.coachId && setting.coachId !== this.selectedCoachId && this.coaches.find(c=>c.id === setting.coachId)) {
+            this.selectedCoachId = setting.coachId
+            this.onCoachChange();
+          }      
+          return this.selectedCoach;
         })
       );
     } else {
@@ -176,9 +187,14 @@ export class XpListComponent implements OnInit {
         }
         this.year2xps = y2x;
       }),
-      map(() => {
-        const initialSelectedYear = this.year2xps.size ? this.year2xps.keys().next().value : null;
-        this.setSelectYear(initialSelectedYear);
+      mergeMap(() => this.settingsService.getXPSearch()),
+      map((settings) => {
+        if (this.year2xps.has(settings.year)) {
+          this.setSelectYear(settings.year);
+        } else {
+          const initialSelectedYear = this.year2xps.size ? this.year2xps.keys().next().value : null;        
+          this.setSelectYear(initialSelectedYear);
+        }
         this.loadingXps = false;
         return this.selectedYear;
         })
@@ -188,6 +204,9 @@ export class XpListComponent implements OnInit {
   private setSelectYear(year: number) {
     this.selectedYear = year;
     this.onYearChange();
+  }
+  private saveSearchSettings() {
+    this.settingsService.setXPSearch({year: this.selectedYear, coachId: this.selectedCoachId});
   }
   onSwipe(event) {
     if (event.direction === 4) {

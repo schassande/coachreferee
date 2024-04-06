@@ -182,7 +182,7 @@ export class CoachingService extends RemotePersistentDataService<Coaching> {
         endDate.setFullYear(year+1)
         endDate.setMonth(0);
         endDate.setDate(1);
-        console.log('coachingOfYear: year='+ year, beginDate, endDate);
+        // COMMENT console.log('coachingOfYear: year='+ year, beginDate, endDate);
 
         return forkJoin([
           this.query(query(this.getBaseQueryMyCoahchings(), where('date', '>=', beginDate), where('date', '<', endDate)), options),

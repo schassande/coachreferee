@@ -8,6 +8,7 @@ import { mergeMap, map } from 'rxjs/operators';
 import { DataRegion } from 'src/app/model/common';
 import { ToolService } from 'src/app/service/ToolService';
 import { ConnectedUserService } from 'src/app/service/ConnectedUserService';
+import { AppSettingsService } from 'src/app/service/AppSettingsService';
 
 @Component({
   selector: 'app-user-manager',
@@ -42,7 +43,8 @@ export class UserManagerComponent implements OnInit {
     private connectedUserService: ConnectedUserService,
     private navController: NavController,
     private toolService: ToolService,
-    private userService: UserService
+    private userService: UserService,
+    private settingsService: AppSettingsService
   ) { }
 
   ngOnInit() {
@@ -54,8 +56,15 @@ export class UserManagerComponent implements OnInit {
         );
       this.error = response.error;
       if (this.users) {
-        this.computeStats();
-        this.filterUsers();
+        this.settingsService.getUserSearch().subscribe((setting)=> {
+          this.region = setting.region;
+          this.role = setting.role;
+          this.status = setting.status || 'ACTIVE';
+          this.searchInput = setting.q;
+
+          this.computeStats();
+          this.filterUsers();
+        });
       }
     });
   }
@@ -150,6 +159,7 @@ export class UserManagerComponent implements OnInit {
     console.log(this.stats);
   }
   filterUsers() {
+    this.settingsService.setUserSearch({q: this.searchInput, region: this.region, role: this.role, status: this.status});
     if (this.users && (this.toolService.isValidString(this.status)
                       || this.toolService.isValidString(this.role)
                       || this.toolService.isValidString(this.region)

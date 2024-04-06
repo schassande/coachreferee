@@ -7,6 +7,7 @@ import { CompetitionService } from './../../../app/service/CompetitionService';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { DateService } from 'src/app/service/DateService';
 import { DataRegion } from 'src/app/model/common';
+import { AppSettingsService } from 'src/app/service/AppSettingsService';
 
 /**
  * Generated class for the CompetitionListPage page.
@@ -39,23 +40,27 @@ export class CompetitionListPage implements OnInit {
     private changeDetectorRef: ChangeDetectorRef,
     public dateService: DateService,
     private helpService: HelpService,
-    private navController: NavController
+    private navController: NavController,
+    private settingsService: AppSettingsService
     ) {
   }
 
   ngOnInit() {
     this.helpService.setHelp('competition-list');
     this.isAdmin = this.connectedUserService.isAdmin();
-    this.region = this.connectedUserService.getCurrentUser().region;
-    const y = new Date().getFullYear();
-    this.year = '' + y;
-    for(let i = 0; i<5; i++) this.years.push('' + (y-i));
-    setTimeout(() => {
-      this.doRefresh(null);
-    }, 200);
+    this.settingsService.getCompetitionSearch().subscribe(settings => {      
+      const y = new Date().getFullYear()
+      this.year = '' + (settings!.year || y);
+      for(let i = 0; i<5; i++) this.years.push('' + (y-i));
+      this.searchInput = settings.q;
+      this.region = settings.region || this.connectedUserService.getCurrentUser().region;
+      this.withMe = settings.withMe || false;
+      setTimeout(() => this.doRefresh(null), 200);
+    });
   }
 
   doRefresh(event) {
+    this.settingsService.setCompetitionSearch({ q: this.searchInput, year: Number.parseInt(this.year), region: this.region, withMe: this.withMe });
     this.searchCompetition(false, event);
   }
 

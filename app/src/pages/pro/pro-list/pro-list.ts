@@ -4,6 +4,7 @@ import { AlertController, NavController } from '@ionic/angular';
 import { ResponseWithData } from '../../../app/service/response';
 import { PROService } from '../../../app/service/PROService';
 import { PersistentPRO } from '../../../app/model/coaching';
+import { AppSettingsService } from 'src/app/service/AppSettingsService';
 
 /**
  * Generated class for the ProListPage page.
@@ -26,12 +27,17 @@ export class ProListPage implements OnInit {
     private navController: NavController,
     private helpService: HelpService,
     public proService: PROService,
-    public alertCtrl: AlertController) {
+    public alertCtrl: AlertController,
+    private settingsService: AppSettingsService) {
   }
 
   ngOnInit() {
     this.helpService.setHelp('pro-edit');
-    this.searchPro();
+    this.settingsService.getProSearch().subscribe(settings => {      
+      this.searchInput = settings.q;
+      this.notCompleted = settings.notCompletedOnly;
+      this.searchPro();
+    });
   }
 
   public home(): void {
@@ -48,6 +54,8 @@ export class ProListPage implements OnInit {
     this.searchPro();
   }
   private searchPro() {
+    this.settingsService.setProSearch({ q: this.searchInput, notCompletedOnly: this.notCompleted});
+
     this.proService.searchPros(this.searchInput).subscribe((response: ResponseWithData<PersistentPRO[]>) => {
       if (response.data && this.notCompleted) {
         this.pros = response.data.filter((pro) => !pro.complete);

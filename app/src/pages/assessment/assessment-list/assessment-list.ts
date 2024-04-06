@@ -3,6 +3,7 @@ import { AssessmentService } from '../../../app/service/AssessmentService';
 import { Assessment } from '../../../app/model/assessment';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController } from '@ionic/angular';
+import { AppSettingsService } from 'src/app/service/AppSettingsService';
 
 /**
  * Generated class for the AssessmentListPage page.
@@ -37,15 +38,19 @@ export class AssessmentListPage implements OnInit {
     private alertCtrl: AlertController,
     private assessmentService: AssessmentService,
     private changeDetectorRef: ChangeDetectorRef,
-    private navController: NavController
+    private navController: NavController,
+    private settingsService: AppSettingsService
     ) {
   }
 
   ngOnInit() {
-    const y = new Date().getFullYear();
-    this.year = '' + y;
-    for(let i = 0; i<5; i++) this.years.push('' + (y-i));
-    this.searchAssessment();
+    this.settingsService.getAssessmentSearch().subscribe(settings => {
+      const y = new Date().getFullYear()
+      this.year = '' + (settings!.year || y);
+      for(let i = 0; i<5; i++) this.years.push('' + (y-i));
+      this.searchInput = settings.q;
+      this.searchAssessment();
+    });
   }
 
   private searchAssessment() {
@@ -70,6 +75,7 @@ export class AssessmentListPage implements OnInit {
   }
 
   public onSearchBarInput() {
+    this.settingsService.setAssessmentSearch({ q: this.searchInput, year: Number.parseInt(this.year) });
     this.searchAssessment();
   }
   public isPast(assessment: Assessment): boolean {
