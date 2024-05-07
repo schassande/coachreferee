@@ -360,7 +360,9 @@
                     </ion-button>
                 </ion-item-divider>
                 <ion-item *ngFor="let assessment of id2assessments.get(currentReferee.id)">
-                    {{assessment.competition}} - {{dateService.date2string(assessment.date)}} - {{assessment.profileName}}: {{assessment.competency}}
+                    <div routerLink="/assessment/assess/{{assessment.id}}">
+                        {{assessment.competition}} - {{dateService.date2string(assessment.date)}} - {{assessment.profileName}}: {{assessment.competency}}
+                    </div>
                 </ion-item>
                 <ion-item *ngIf="!currentReferee.id || !id2assessments.get(currentReferee.id) || !id2assessments.get(currentReferee.id).length ">
                     <div style="font-size: 0.8em; text-align: center; width: 100%;">
