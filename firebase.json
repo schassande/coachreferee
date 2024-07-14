@@ -23,6 +23,10 @@
                     "function": "sendAssessment"
                 },
                 {
+                    "source": "/api",
+                    "function": "app"
+                },
+                {
                     "source": "**",
                     "destination": "/index.html"
                 }
