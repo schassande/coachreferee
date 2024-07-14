@@ -159,9 +159,6 @@ export class UserSelectorComponent implements OnInit {
       if (this.filterByCompetition && this.competitionId && this.role === 'REFEREE') {
         this.getCompetitionReferees().subscribe((us) => {
           this.users = this.userService.sortUsers(us.filter(user => {
-            if (this.toolService.isValidString(this.region) && user.region !== this.region) {
-              return false;
-            }
             if (this.toolService.isValidString(this.country) && user.country !== this.country) {
               return false;
             }
