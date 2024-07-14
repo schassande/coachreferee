@@ -4,7 +4,7 @@ import * as tool   from './apikey';
 
 // This is the router which will be imported in our
 // api hub (the index.ts which will be sent to Firebase Functions).
-export let usersRouter = express.Router();
+export const usersRouter = express.Router();
 
 // GET /api/referees/:id
 usersRouter.get("/:id", async function getReferee(req: express.Request, res: express.Response) {
@@ -18,7 +18,9 @@ usersRouter.get("/:id", async function getReferee(req: express.Request, res: exp
 // Useful: Let's make sure we intercept un-matched routes and notify the client with a 404 status code
 // GET /api/referees?region=xxx&country=xxx&shortName=xxx&shortNames=xxx,xxx&email=xxx
 usersRouter.get("*", async (req: express.Request, res: express.Response) => {
+    console.log('1 Search users', req.query);
     if (!tool.ensureApiKey(req, res)) return;
+    console.log('2 Search users', req.query);
     const firestore: admin.firestore.Firestore = admin.firestore();
     let query:admin.firestore.Query<admin.firestore.DocumentData> = firestore.collection('user')
         .where('accountStatus', '==', 'ACTIVE');

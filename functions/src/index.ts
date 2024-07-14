@@ -1,6 +1,6 @@
 import * as func                       from 'firebase-functions';
 import * as admin                      from "firebase-admin";
-import * as cors                       from  'cors';
+const cors = require('cors')({origin: true});
 import * as sendCoachingLib            from './send-coaching';
 import * as sendAssessmentLib          from './send-assessment';
 import * as sendAccountNotValidatedLib from './send-account-not-validated'
@@ -97,8 +97,8 @@ export async function requestWithCorsAndId(request:any, response:any, coreFuncti
 
 const app = express()
 app.disable("x-powered-by");
-// Any requests to /api/referees, /api/competitions, /api/apikey
-app.use(cors.default)
+// Any requests to /api/users, /api/referees, /api/competitions, /api/coachings, /api/apikey
+app.use(cors)
 app.use("/users", usersApi.usersRouter);
 app.use("/referees", refereesApi.refereesRouter);
 app.use("/competitions", competitionsApi.competitionsRouter);

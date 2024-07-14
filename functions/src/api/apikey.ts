@@ -1,7 +1,7 @@
 import * as express from "express";
 import * as func    from 'firebase-functions';
 
-export let apiKeyRouter = express.Router();
+export const apiKeyRouter = express.Router();
 
 export function ensureApiKey(req: express.Request, res:express.Response): boolean {
     const expectedApiKey:string = func.config().private.ref_coach_api_key;
