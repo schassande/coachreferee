@@ -1,9 +1,10 @@
+import { Context } from './index';
 import * as common from './common';
 import * as mailer from './mailer';
 import { Competition } from './model/competition';
 import { User } from './model/user';
 
-export async function func(compet:Competition, context:any, ctx:any):Promise<any> {
+export async function func(compet:Competition, ctx:Context):Promise<any> {
   const competition = adjustFieldOnLoadCompetition(compet);
   const owner: User = await common.loadUser(ctx.db, competition.ownerId, null);
 

@@ -1,6 +1,11 @@
-import * as func                       from 'firebase-functions';
+import { onRequest, Request } from "firebase-functions/v2/https";
+import { onDocumentCreated } from "firebase-functions/v2/firestore";
+// const { defineInt, defineString } = require('firebase-functions/params');
+
+import * as auth                      from "firebase-admin/auth";
 import * as admin                      from "firebase-admin";
-const cors = require('cors')({origin: true});
+import * as cors from 'cors'
+// const cors = require('cors')({origin: true});
 import * as sendCoachingLib            from './send-coaching';
 import * as sendAssessmentLib          from './send-assessment';
 import * as sendAccountNotValidatedLib from './send-account-not-validated'
@@ -17,62 +22,70 @@ import * as competitionsApi from "./api/competitions";
 import * as coachingsApi from "./api/coachings";
 import * as apiKey   from './api/apikey';
 import * as usersApi   from './api/users';
-const express = require('express')
+import * as express from "express";
+
+admin.initializeApp();
+const corsTrue = cors.default({origin: true});
+
+
+const firestore = admin.firestore();
+
+/*
+const privateKey = defineString('PRIVATE_KEY').replace(/\\n/g, '\n');
+const projectId = defineString('PROJECT_ID');
+const clientEmail = defineString('CLIENT_EMAIL');
 
 admin.initializeApp({ 
-    ...func.config().firebase,
+    ...firebase,
     credential: admin.credential.cert({
-      privateKey: func.config().private.key.replace(/\\n/g, '\n'),
-      projectId: func.config().project.id,
-      clientEmail: func.config().client.email
+      privateKey, //: config.private.key.replace(/\\n/g, '\n'),
+      projectId, //: config.project.id,
+      clientEmail //: config.client.email
     })
 });
-
-const ctx = { 
-    db : admin.firestore(), 
+*/
+export interface Context {
+    db: admin.firestore.Firestore,
+    gmailEmail: string
+}
+const ctx: Context = { 
+    db: firestore, 
     gmailEmail : 'coachreferee@gmail.com', 
-    // gmailPassword : func.config().gmail.password
 };
 
 // ===================================================================
 // Triggered functions
 // On competition created from the database
-exports.newCompetitionEvent = func.firestore.document(collectionCompetition + '/{cid}').onCreate(async (snap, context) => {
-     await newCompetitionEventLib.func(snap.data() as Competition, context, ctx);
+exports.newCompetitionEvent = onDocumentCreated(collectionCompetition + '/{cid}', async (snap) => {
+     await newCompetitionEventLib.func(snap.data?.data() as Competition, ctx);
 });
 // ===================================================================
 
 // ===================================================================
 // Functions exposed over HTTPS
-export const sendCoaching = func.https.onRequest(
-    (request, response) => requestWithCorsAndId(request, response, sendCoachingLib.func));
-export const sendAssessment = func.https.onRequest(
-    (request, response) => requestWithCorsAndId(request, response, sendAssessmentLib.func));
-export const sendAccountNotValidated = func.https.onRequest(
-    (request, response) => requestWithCorsAndId(request, response, sendAccountNotValidatedLib.func));
-export const sendAccountValidated = func.https.onRequest(
-    (request, response) => requestWithCorsAndId(request, response, sendAccountValidatedLib.func));
-export const sendInvitation = func.https.onRequest(
-    (request, response) => requestWithCorsAndId(request, response, sendInvitationLib.func));
-export const sendNewAccountToAdmin = func.https.onRequest(
-    (request, response) => requestWithCorsAndId(request, response, sendNewAccountToAdminLib.func));
-export const sendNewAccountToUser = func.https.onRequest(
-    (request, response) => requestWithCorsAndId(request, response, sendNewAccountToUserLib.func));
-export const sendValidationRequired = func.https.onRequest(
-    (request, response) => requestWithCorsAndId(request, response, sendValidationRequiredLib.func));
+export const sendCoaching = onRequest((request:Request, response: express.Response) => 
+    requestWithCorsAndId(request, response, sendCoachingLib.func));
+export const sendAssessment = onRequest((request:Request, response: express.Response) => 
+    requestWithCorsAndId(request, response, sendAssessmentLib.func));
+export const sendAccountNotValidated = onRequest((request:Request, response: express.Response) => 
+    requestWithCorsAndId(request, response, sendAccountNotValidatedLib.func));
+export const sendAccountValidated = onRequest((request:Request, response: express.Response) => 
+    requestWithCorsAndId(request, response, sendAccountValidatedLib.func));
+export const sendInvitation = onRequest((request:Request, response: express.Response) => 
+    requestWithCorsAndId(request, response, sendInvitationLib.func));
+export const sendNewAccountToAdmin = onRequest((request:Request, response: express.Response) => 
+    requestWithCorsAndId(request, response, sendNewAccountToAdminLib.func));
+export const sendNewAccountToUser = onRequest((request:Request, response: express.Response) => 
+    requestWithCorsAndId(request, response, sendNewAccountToUserLib.func));
+export const sendValidationRequired = onRequest((request:Request, response: express.Response) => 
+    requestWithCorsAndId(request, response, sendValidationRequiredLib.func));
 
-export async function requestWithCorsAndId(request:any, response:any, coreFunction:any): Promise<any> {
+export async function requestWithCorsAndId(request:Request, response: express.Response, coreFunction:(request:Request, response: express.Response, ctx: Context) =>Promise<any>): Promise<any> {
     console.log('Incoming request=' + request.method 
         + ', headers=' + JSON.stringify(request.headers) 
         + ', body=' + JSON.stringify(request.body));
-    const corsOptions: any = {
-        origin: function (origin: string, callback: any) {
-            callback(null, true);
-            // ['*', 'https://app.coachreferee.com'],
-        },
-        optionsSuccessStatus: 200
-    }
-    cors.default(corsOptions)(request, response, () => {
+
+    corsTrue(request, response, () => {
         //get token
         const tokenStr = request.get('Authorization');
         if(!tokenStr) {
@@ -80,7 +93,7 @@ export async function requestWithCorsAndId(request:any, response:any, coreFuncti
         }
         const tokenId = tokenStr.split('Bearer ')[1];
         //Verify token
-        admin.auth().verifyIdToken(tokenId)
+        auth.getAuth().verifyIdToken(tokenId)
             .then((decoded: admin.auth.DecodedIdToken) => {
                 // log console.log('decoded: ' + decoded);
                 return coreFunction(request, response, ctx)
@@ -95,16 +108,16 @@ export async function requestWithCorsAndId(request:any, response:any, coreFuncti
     });
 }
 
-const app = express()
+const app = express.default()
 app.disable("x-powered-by");
 // Any requests to /api/users, /api/referees, /api/competitions, /api/coachings, /api/apikey
-app.use(cors)
+app.use(corsTrue)
 app.use("/users", usersApi.usersRouter);
 app.use("/referees", refereesApi.refereesRouter);
 app.use("/competitions", competitionsApi.competitionsRouter);
 app.use("/coachings", coachingsApi.coachingsRouter);
 app.use("/apikey", apiKey.apiKeyRouter);
-export const api = func.https.onRequest(app);
+export const api = onRequest(app);
 // ===================================================================
 
 

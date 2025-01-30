@@ -1,9 +1,10 @@
+import { Context } from './index';
 import { User }        from './model/user';
 import * as common     from './common';
 import * as mailer     from './mailer';
 
 
-export function func(request:any, response:any, ctx:any):Promise<any> {
+export function func(request:any, response:any, ctx:Context):Promise<any> {
     return common.loadUser(ctx.db, request.body.data.userId, response)
     .then( (user: User) => {
         //Build email

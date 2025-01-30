@@ -1,3 +1,4 @@
+import { Context } from './index';
 import * as common          from './common';
 import * as mailer          from './mailer';
 
@@ -5,7 +6,7 @@ import { User, Referee }  from './model/user';
 import { Coaching }       from './model/coaching';
 
 
-export function func(request:any, response:any, ctx:any):Promise<any> {
+export function func(request:any, response:any, ctx:Context):Promise<any> {
     return loadCoachingData(request, response, ctx)
     .then( (data: CoachingData) => {
         //Build email

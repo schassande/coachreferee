@@ -1,9 +1,10 @@
+import { Context } from './index';
 import { Invitation }  from './model/invitation';
 import * as common          from './common';
 import * as mailer     from './mailer';
 
 
-export function func(request:any, response:any, ctx:any):Promise<any> {
+export function func(request:any, response:any, ctx:Context):Promise<any> {
     return loadInvitation(request, response, ctx)
     .then( (invitation: Invitation) => {
         //Build email

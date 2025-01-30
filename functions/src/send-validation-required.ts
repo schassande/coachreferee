@@ -1,10 +1,11 @@
+import { Context } from './index';
 import { User }        from './model/user';
 import * as common     from './common';
 import * as mailer     from './mailer';
 
 
 //sendValidationRequired(userId: string, rolesToValidate: AppRole[], toEmails: string[], ccEmails: string[])
-export function func(request:any, response:any, ctx:any):Promise<any> {
+export function func(request:any, response:any, ctx:Context):Promise<any> {
     return common.loadUser(ctx.db, request.body.data.userId, response)
     .then( (user: User) => {
         //Build email
@@ -37,7 +38,7 @@ export function func(request:any, response:any, ctx:any):Promise<any> {
             }
             if (toEmails.length === 0) {
                 // put the application manager as to
-                toEmails = ctx.gmailEmail;
+                toEmails = [ctx.gmailEmail];
             }
         }
         const email = {
