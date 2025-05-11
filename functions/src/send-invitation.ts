@@ -10,7 +10,7 @@ export function func(request:any, response:any, ctx:Context):Promise<any> {
         //Build email
         const subject = `[CoachReferee.com] Invitation`;
         const email = {
-            cc: ctx.gmailEmail,
+            cc: ctx.email,
             to: invitation.email,
             subject,
             html: `Hi, 
@@ -24,7 +24,7 @@ export function func(request:any, response:any, ctx:Context):Promise<any> {
                     <br>Coach Referee App`
         };
         //Send email
-        return mailer.sendMail(email, response);
+        return mailer.sendMail(ctx, email, response);
     })
 }
 

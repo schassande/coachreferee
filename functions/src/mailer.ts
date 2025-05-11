@@ -1,18 +1,26 @@
-const sgMail = require('@sendgrid/mail');
+import { Context } from ".";
+
 const fs = require("fs");
+const nodemailer = require("nodemailer");
 
-const a = 'SG.Dr3emM2vRhONd' 
-    + 'QlPuawK_Q.z30o_' + ''
-    + '0HhmF4TZzuYiGYSGTtLJ'
-    +'75U9syUPezPMO__oCE';
-sgMail.setApiKey(a);
 
-export function sendMail(email: any, response?: any): Promise<void> { 
-    email.from = 'CoachReferee <no-reply@coachreferee.com>';
-    email.replyTo = 'CoachReferee <coachreferee@gmail.com>';
+export function sendMail(ctx: Context, email: any, response?: any): Promise<void> { 
+    // Configuration de l'email OVH
+    const transporter = nodemailer.createTransport({
+        host: "ssl0.ovh.net",
+        port: 465,
+        secure: true,
+        auth: {
+          user: ctx.email,
+          pass: process.env.SMTP_EMAIL_PASSWORD,
+        },
+    });
+    // Set/Force sender and replyTo
+    email.from = 'CoachReferee <'+ctx.email+'>';
+    email.replyTo = 'CoachReferee <'+ctx.email+'>';
+
     console.log('sendEmail: ' + JSON.stringify(email));
-
-    return sgMail.send(email)
+    return transporter.sendMail(email)
         .then(() => {
             console.log('Email sent')
             if (response) {

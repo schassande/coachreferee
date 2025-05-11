@@ -10,7 +10,7 @@ export async function func(compet:Competition, ctx:Context):Promise<any> {
 
   // Building Email message.
   const mailOptions: any = {
-    to: ctx.gmailEmail,
+    to: ctx.email,
     subject: 'CoachReferee: New competition',
     html : `Hi,<br>
 <p>A new competition has been created in the coaching or upgrade applications:</p>
@@ -28,7 +28,7 @@ export async function func(compet:Competition, ctx:Context):Promise<any> {
   };
   console.log('Sending message: ' + JSON.stringify(mailOptions, null, 2));
   try {
-    return mailer.sendMail(mailOptions).then(() => console.log('New competition email sent to admin.'));
+    return mailer.sendMail(ctx, mailOptions).then(() => console.log('New competition email sent to admin.'));
   } catch(error) {
     console.error('There was an error while sending the email:', error);
   }

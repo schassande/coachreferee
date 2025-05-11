@@ -1,6 +1,6 @@
 import * as m      from '../mailer';
 
-m.sendMail({
+m.sendMail({ db: undefined as any, email: 'admin@coachreferee.com'}, {
     from: 'CoachReferee <no-reply@coachreferee.com>',
     cc: 'CoachReferee <coachreferee@gmail.com>',
     replyTo: 'CoachReferee <coachreferee@gmail.com>',
@@ -10,11 +10,13 @@ m.sendMail({
     attachments: [{   
         filename: 'test-email.ts',
         contentType: 'text',
-        content: m.fileToBase64(`${__dirname}/test-email.js`)
+        content: m.fileToBase64(`${__dirname}/test-email.js`),
+        encoding: 'base64'
         },
         {   
             filename: 'test.pdf',
             contentType: 'application/pdf',
-            content: m.fileToBase64(`${__dirname}/../../test/test.pdf`)
+            content: m.fileToBase64(`${__dirname}/../../test/test.pdf`),
+            encoding: 'base64'
         }]
 }).then(() => console.log('test ok')).catch(err => console.error(err));

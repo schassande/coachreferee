@@ -34,11 +34,11 @@ export function func(request:any, response:any, ctx:Context):Promise<any> {
 
         const email = {
             to: user.email,
-            cc: ctx.gmailEmail,
+            cc: ctx.email,
             subject,
             html: msg
         };
         //Send email
-        return mailer.sendMail(email, response);
+        return mailer.sendMail(ctx, email, response);
     });
 }

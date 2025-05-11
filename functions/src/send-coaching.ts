@@ -19,10 +19,11 @@ export function func(request:any, response:any, ctx:Context):Promise<any> {
             attachments: [{   
                 filename: common.toFileName(subject),
                 contentType: 'text/html',
-                content: mailer.stringToBase64(html)
+                content: mailer.stringToBase64(html),
+                encoding: 'base64'
                 }]
         };
-        return mailer.sendMail(email, response);
+        return mailer.sendMail(ctx, email, response);
     });
 }
 

@@ -20,7 +20,7 @@ export async function func(request:any, response:any, ctx:any):Promise<any> {
     const certificateFile = await generateCertificate(refereeUpgrade, referee);
     const email = {
         to: referee.email,
-        cc: ctx.gmailEmail,
+        cc: ctx.email,
         subject,
         html: `Hi ${referee.firstName},<p>Congratulation!
             <br>The European Referee Commission awards you the referee level ${refereeUpgrade.upgradeLevel} at the date ${common.date2string(refereeUpgrade.decisionDate)}.
@@ -33,7 +33,7 @@ export async function func(request:any, response:any, ctx:any):Promise<any> {
             content: mailer.fileToBase64(certificateFile)
             }]
     };
-    return mailer.sendMail(email, response);
+    return mailer.sendMail(ctx, email, response);
 }
 
 async function loadRefereeUpgrade(request:any, response:any, ctx:any): Promise<RefereeUpgrade> {

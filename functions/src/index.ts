@@ -26,32 +26,14 @@ import * as express from "express";
 
 admin.initializeApp();
 const corsTrue = cors.default({origin: true});
-
-
 const firestore = admin.firestore();
 
-/*
-const privateKey = defineString('PRIVATE_KEY').replace(/\\n/g, '\n');
-const projectId = defineString('PROJECT_ID');
-const clientEmail = defineString('CLIENT_EMAIL');
-
-admin.initializeApp({ 
-    ...firebase,
-    credential: admin.credential.cert({
-      privateKey, //: config.private.key.replace(/\\n/g, '\n'),
-      projectId, //: config.project.id,
-      clientEmail //: config.client.email
-    })
-});
-*/
 export interface Context {
     db: admin.firestore.Firestore,
-    gmailEmail: string
+    email: string;
 }
-const ctx: Context = { 
-    db: firestore, 
-    gmailEmail : 'coachreferee@gmail.com', 
-};
+const ctx: Context = { db: firestore, email: 'admin@coachreferee.com' };
+const secrets = ['APP_API_KEY', 'SMTP_EMAIL_PASSWORD']
 
 // ===================================================================
 // Triggered functions
@@ -61,29 +43,32 @@ exports.newCompetitionEvent = onDocumentCreated(collectionCompetition + '/{cid}'
 });
 // ===================================================================
 
+
 // ===================================================================
 // Functions exposed over HTTPS
-export const sendCoaching = onRequest((request:Request, response: express.Response) => 
+export const sendCoaching = onRequest({secrets}, (request:Request, response: express.Response) => 
     requestWithCorsAndId(request, response, sendCoachingLib.func));
-export const sendAssessment = onRequest((request:Request, response: express.Response) => 
+export const sendAssessment = onRequest({secrets}, (request:Request, response: express.Response) => 
     requestWithCorsAndId(request, response, sendAssessmentLib.func));
-export const sendAccountNotValidated = onRequest((request:Request, response: express.Response) => 
+export const sendAccountNotValidated = onRequest({secrets}, (request:Request, response: express.Response) => 
     requestWithCorsAndId(request, response, sendAccountNotValidatedLib.func));
-export const sendAccountValidated = onRequest((request:Request, response: express.Response) => 
+export const sendAccountValidated = onRequest({secrets}, (request:Request, response: express.Response) => 
     requestWithCorsAndId(request, response, sendAccountValidatedLib.func));
-export const sendInvitation = onRequest((request:Request, response: express.Response) => 
+export const sendInvitation = onRequest({secrets}, (request:Request, response: express.Response) => 
     requestWithCorsAndId(request, response, sendInvitationLib.func));
-export const sendNewAccountToAdmin = onRequest((request:Request, response: express.Response) => 
+export const sendNewAccountToAdmin = onRequest({secrets}, (request:Request, response: express.Response) => 
     requestWithCorsAndId(request, response, sendNewAccountToAdminLib.func));
-export const sendNewAccountToUser = onRequest((request:Request, response: express.Response) => 
+export const sendNewAccountToUser = onRequest({secrets}, (request:Request, response: express.Response) => 
     requestWithCorsAndId(request, response, sendNewAccountToUserLib.func));
-export const sendValidationRequired = onRequest((request:Request, response: express.Response) => 
+export const sendValidationRequired = onRequest({secrets}, (request:Request, response: express.Response) => 
     requestWithCorsAndId(request, response, sendValidationRequiredLib.func));
 
 export async function requestWithCorsAndId(request:Request, response: express.Response, coreFunction:(request:Request, response: express.Response, ctx: Context) =>Promise<any>): Promise<any> {
     console.log('Incoming request=' + request.method 
         + ', headers=' + JSON.stringify(request.headers) 
-        + ', body=' + JSON.stringify(request.body));
+        + ', body=' + JSON.stringify(request.body),
+        + ', process.APP_API_KEY='+process.env.APP_API_KEY!
+        + ', process.SMTP_EMAIL_PASSWORD='+process.env.SMTP_EMAIL_PASSWORD!);
 
     corsTrue(request, response, () => {
         //get token
@@ -117,7 +102,7 @@ app.use("/referees", refereesApi.refereesRouter);
 app.use("/competitions", competitionsApi.competitionsRouter);
 app.use("/coachings", coachingsApi.coachingsRouter);
 app.use("/apikey", apiKey.apiKeyRouter);
-export const api = onRequest(app);
+export const api = onRequest({secrets}, app);
 // ===================================================================
 
 

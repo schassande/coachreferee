@@ -36,7 +36,7 @@ export function func(request:any, response:any, ctx:Context):Promise<any> {
         const subject = `[CoachReferee.com] Account not validated`;
         const email = {
             to: user.email,
-            cc: ctx.gmailEmail,
+            cc: ctx.email,
             subject,
             html: `Hi ${user.firstName} ${user.lastName}, 
                     <br>Your account on the coachrefere.com has NOT been validated !
@@ -45,6 +45,6 @@ export function func(request:any, response:any, ctx:Context):Promise<any> {
                     <br>Coach Referee App`
         };
         //Send email
-        return mailer.sendMail(email, response);
+        return mailer.sendMail(ctx, email, response);
     });
 }

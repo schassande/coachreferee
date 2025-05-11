@@ -17,16 +17,16 @@ export function func(request:any, response:any, ctx:Context):Promise<any> {
         const html = assessmentAsEmailBody(data.assessment, data.skillProfile, data.user, data.referee);
         const email = {
             to: data.user.email,
-            cc: ctx.gmailEmail,
             subject,
             html: `Hi ${data.user.firstName},<br> The assessment sheet is attached to this email.<br>Best regard<br>Coach Referee App`,
             attachments: [{   
                 filename: common.toFileName(subject),
                 contentType: 'text/html',
-                content: mailer.stringToBase64(html)
+                content: mailer.stringToBase64(html),
+                encoding: 'base64'
                 }]
         };
-        return mailer.sendMail(email, response);
+        return mailer.sendMail(ctx, email, response);
     });
 }
 

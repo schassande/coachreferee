@@ -23,7 +23,7 @@ export function func(request:any, response:any, ctx:Context):Promise<any> {
         } else {
             hi = 'Hi Admin';
         }
-        const minCCEmails = [ctx.gmailEmail, user.email]; // emails always in CC
+        const minCCEmails = [ctx.email, user.email]; // emails always in CC
         let ccEmails: string[] = [];
         const hasCC = request.body.data.ccEmails && request.body.data.ccEmails.length > 0;
         if (hasCC) {
@@ -38,7 +38,7 @@ export function func(request:any, response:any, ctx:Context):Promise<any> {
             }
             if (toEmails.length === 0) {
                 // put the application manager as to
-                toEmails = [ctx.gmailEmail];
+                toEmails = [ctx.email];
             }
         }
         const email = {
@@ -52,6 +52,6 @@ export function func(request:any, response:any, ctx:Context):Promise<any> {
                 <br>Coach Referee App</p>`
         };
         //Send email
-        return mailer.sendMail(email, response);
+        return mailer.sendMail(ctx, email, response);
     });
 }

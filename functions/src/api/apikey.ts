@@ -1,10 +1,9 @@
 import * as express from "express";
-import * as func    from 'firebase-functions';
 
 export const apiKeyRouter = express.Router();
 
 export function ensureApiKey(req: express.Request, res:express.Response): boolean {
-    const expectedApiKey:string = func.config().private.ref_coach_api_key;
+    const expectedApiKey:string = process.env.APP_API_KEY!; // '4r8nj88ZVnRYxZ3x2v8DCGh47jE2S4KsRXQtcs5DuSrA98Xd48c5qx4U56PmexVVcr222xF7M2HHSL4xv32Ww9v2R7ZNpe2MB2bm7VzaY9dqMB2bcT88PrFd5neV5353';
     console.log('expectedApiKey='+expectedApiKey+', req.headers.authorization='+req.headers.authorization);
     if (!expectedApiKey) {
         console.log('No expected API key');
